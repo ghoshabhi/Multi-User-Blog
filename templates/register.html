@@ -1,0 +1,77 @@
+{% extends "master.html" %} 
+
+{% block content %} 
+
+{% if error_list %}
+<div style="width:100%" class="active alert alert-danger">
+  <ul>
+    {% for error in error_list %}
+      <li><b>{{error}}</b></li>
+      <br>
+    {% endfor %}
+  </ul>
+</div>  
+{% endif %}
+
+<div class="container">
+  <div class="row">
+
+    <div class="col-lg-6" style="margin:0">
+      <h3><center>Register Here!</center></h3>
+      <br>
+      <form id="login-form" action="/register" method="post" role="form" style="display: block;">
+        <div class="form-group">
+          <input type="text" name="fullname" id="fullname" tabindex="1" class="form-control" placeholder="Full Name" value="">
+        </div>
+        <div class="form-group">
+          <input type="text" name="location" id="location" tabindex="1" class="form-control" placeholder="City,Country" value="">
+        </div>
+        <div class="form-group">
+          <input type="text" name="email" id="email" tabindex="1" class="form-control" placeholder="Email" value="">
+        </div>
+        <div class="form-group">
+          <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Choose a Username" value="">
+        </div>
+        <div class="form-group">
+          <input type="password" name="password" id="password" tabindex="1" class="form-control" placeholder="Password" value="">
+        </div>
+        <div class="form-group">
+          <input type="password" name="confirm_password" tabindex="2" class="form-control" placeholder="Confirm Password">
+        </div>
+
+        <br>
+        <br>
+
+        <div class="form-group">
+          <div class="row">
+            <div class="col-lg-8s">
+              <input type="submit" name="register" id="register" tabindex="4" class="form-control btn btn-login" value="Register Me!">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="text-center">
+                <a href="/login" tabindex="5" class="forgot-password">Returning User ?</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-md-6" style="text-align:center;margin-left:auto">
+      <h2>You could also choose to register from other sites ... <span class="fa fa-arrow-down"></span></h2>
+      <ul class="social-network social-circle">
+        <li><a href="#" class="ico icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a></li>
+        <li><a href="#" class="ico icoGoogle" title="Google +"><i class="fa fa-google-plus"></i></a></li>
+      </ul>
+    </div>
+
+
+  </div>
+</div>
+
+{% endblock %}

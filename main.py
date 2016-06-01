@@ -69,9 +69,10 @@ class HomeHandler(BlogHandler):
         if self.request.cookies.get('user_email'):
             user_email = self.request.cookies.get('user_email')
             user = User.query(User.email == user_email).get()
-            self.render('/home?user=' + user.fullname)
+            self.redirect('/home?user=' + user.fullname)
         else:
             self.render('home.html')
+
 
 class LoginHandler(BlogHandler):
     def get(self):
@@ -144,9 +145,7 @@ class RegistrationHandler(BlogHandler):
                 new_user = User(fullname=fullname,location=location,
                     email=email,user_name=u_name,password=password)
                 new_user_key = new_user.put()
-                # self.session['user'] = new_user
-                # session = sessions.Session()
-                # session['user'] = user
+                
                 self.response.headers.add_header('Set-Cookie','user_email=%s' % str(new_user.email))
                 self.render('login.html',new_user=new_user.fullname)
         else:

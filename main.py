@@ -2,6 +2,8 @@ import os
 import webapp2
 import jinja2
 import re
+import hashlib
+import hmac
 
 from models import *
 
@@ -9,11 +11,39 @@ template_dir = os.path.join(os.path.dirname(__file__),'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                             autoescape = True)
 
+SECRET = "mysecretkey"
 error_list = []
+
+def hash_str(s):
+    return hmac.new(SECRET,s).hexdigest()
+
+def make_secure_val(s):
+    return "%s|%s" % (s,hash_str(s))
+
+def check_secure_val(h):
+    val = h.split("|")[0]
+    if h == make_secure_val(val):
+        return val
+
+USERNAME_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
+def valid_username(username):
+    return username and USERNAME_RE.match(username)
+
+
+PASS_RE = re.compile(r"^.{3,20}$")
+def valid_password(password):
+    return password and PASS_RE.match(password)
+
+
+EMAIL_RE  = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
+def valid_email(email):
+    return not email or EMAIL_RE.match(email)
+
 
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params) 
+
 
 class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -29,11 +59,27 @@ class BlogHandler(webapp2.RequestHandler):
 class HomeHandler(BlogHandler):
     def get(self,user=None):
         if self.request.cookies.get('user_email'):
-            user_email = self.request.cookies.get('user_email')
-            user = User.query(User.email == user_email).get()
-            self.render('home.html',user=user)
+            user_email_cookie = self.request.cookies.get('user_email')
+            if_valid_cookie = check_secure_val(user_email_cookie)
+            if if_valid_cookie:
+                user_email_cookie = self.request.cookies.get('user_email')
+                user_email = user_email_cookie.split("|")[0]
+                user = User.query(User.email == user_email).get()
+                self.render('home.html',user=user)
+            else:
+                self.response.headers.add_header('Set-Cookie','user_email=''')
+                cookie_error = "Your session has expired! Please log in again to continue!"
+                self.render('login.html',cookie_error=cookie_error)
         else:
             self.render('home.html',user=user)
+
+
+        # if self.request.cookies.get('user_email'):
+        #     user_email = self.request.cookies.get('user_email')
+        #     user = User.query(User.email == user_email).get()
+        #     self.render('home.html',user=user)
+        # else:
+        #     self.render('home.html',user=user)
 
 
 class LoginHandler(BlogHandler):
@@ -48,9 +94,17 @@ class LoginHandler(BlogHandler):
             user = User.query(ndb.OR(User.user_name==u_name , User.email==u_name) and User.password==password).get()
             if user:
                 if self.request.cookies.get('user_email'):
-                    self.redirect('/home')
+                    user_email_cookie = self.request.cookies.get('user_email')
+                    if_valid_cookie = check_secure_val(user_email_cookie)
+                    if if_valid_cookie:
+                        self.redirect('/home')
+                    else:
+                        self.response.headers.add_header('Set-Cookie','user_email=''')
+                        cookie_error = "Your session has expired! Please log in again to continue!"
+                        self.render('login.html',cookie_error=cookie_error)
+
                 else:
-                    self.response.headers.add_header('Set-Cookie','user_email=%s' % str(user.email))
+                    self.response.headers.add_header('Set-Cookie','user_email=%s' % make_secure_val(str(user.email)))
                     self.redirect('/home')
             else:
                 error = 'Username and Password do not match!'
@@ -67,17 +121,6 @@ class LogOutHandler(BlogHandler):
             We appreciate your presence!"
         self.render('login.html',thank_you_for_visiting = thank_you_for_visiting)
 
-USERNAME_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
-def valid_username(username):
-    return username and USERNAME_RE.match(username)
-
-PASS_RE = re.compile(r"^.{3,20}$")
-def valid_password(password):
-    return password and PASS_RE.match(password)
-
-EMAIL_RE  = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
-def valid_email(email):
-    return not email or EMAIL_RE.match(email)
 
 class RegistrationHandler(BlogHandler):
     def get(self):
@@ -116,7 +159,8 @@ class RegistrationHandler(BlogHandler):
                     email=email,user_name=u_name,password=password)
                 new_user_key = new_user.put()
                 
-                self.response.headers.add_header('Set-Cookie','user_email=%s' % str(new_user.email))
+
+                self.response.headers.add_header('Set-Cookie','user_email=%s' % make_secure_val(str(new_user.email)))
                 self.render('login.html',new_user=new_user.fullname)
         else:
             error_list.append("You did not fill atleast one of the fields!")

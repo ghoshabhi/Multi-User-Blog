@@ -47,6 +47,12 @@
 </div>
 {% endif %}
 
+{% if coookie_error %}
+<div style="width:100%" class="active alert alert-warning">
+  <em>{{ cookie_error }}</em>
+</div>
+{% endif %}
+
   <div class="row">
 
     <div class="col-lg-5" style="margin:0">

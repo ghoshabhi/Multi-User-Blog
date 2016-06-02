@@ -91,7 +91,7 @@ class LoginHandler(BlogHandler):
         password = self.request.get('password')
         
         if u_name and password:
-            user = User.query(ndb.OR(User.user_name==u_name , User.email==u_name) and User.password==password).get()
+            user = User.query(ndb.OR(User.user_name==u_name , User.email==u_name) and User.password== hash_str(password)).get()
             if user:
                 if self.request.cookies.get('user_email'):
                     user_email_cookie = self.request.cookies.get('user_email')
@@ -152,11 +152,25 @@ class RegistrationHandler(BlogHandler):
                 error_list.append("Both Passwords should match!")
                 has_error = True
 
+            user = User.query(User.email == email).get()
+            if user:
+                error_list.append("That email address already exists!")
+                has_error = True
+            
+            user = User.query(User.user_name == u_name).get()
+            if user:
+                error_list.append('Sorry that username is already taken!\
+                    You should try another username!')
+                has_error = True
+
             if has_error:
                 self.render('register.html',error_list=error_list)
             else:
-                new_user = User(fullname=fullname,location=location,
-                    email=email,user_name=u_name,password=password)
+                new_user = User(fullname=fullname,
+                                location=location,
+                                email=email,
+                                user_name=u_name,
+                                password= hash_str(password))
                 new_user_key = new_user.put()
                 
 

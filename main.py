@@ -65,13 +65,13 @@ class User(ndb.Model):
 
 
 class HomeHandler(BlogHandler):
-    def get(self):
+    def get(self,user=None):
         if self.request.cookies.get('user_email'):
             user_email = self.request.cookies.get('user_email')
             user = User.query(User.email == user_email).get()
-            self.redirect('/home?user=' + user.fullname)
+            self.render('home.html',user=user)
         else:
-            self.render('home.html')
+            self.render('home.html',user=user)
 
 
 class LoginHandler(BlogHandler):

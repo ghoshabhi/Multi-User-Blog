@@ -26,22 +26,6 @@ class BlogHandler(webapp2.RequestHandler):
         self.write(self.render_str(template, **kw))
 
 
-# class Post(ndb.Model):
-#     subject = ndb.StringProperty(required=True)
-#     content = ndb.TextProperty(required=True)
-#     created = ndb.DateTimeProperty(auto_now_add = True)
-#     last_modified = ndb.DateTimeProperty(auto_now = True)
-#     user = ndb.KeyProperty(required=True)
-
-# class User(ndb.Model):
-#     fullname = ndb.StringProperty(required=True)
-#     user_name = ndb.StringProperty(required=True)
-#     email = ndb.StringProperty(required=True)
-#     password = ndb.TextProperty(indexed=True,required=True)
-#     photo = ndb.StringProperty()
-#     location = ndb.StringProperty()
-
-
 class HomeHandler(BlogHandler):
     def get(self,user=None):
         if self.request.cookies.get('user_email'):
@@ -64,10 +48,10 @@ class LoginHandler(BlogHandler):
             user = User.query(ndb.OR(User.user_name==u_name , User.email==u_name) and User.password==password).get()
             if user:
                 if self.request.cookies.get('user_email'):
-                    self.redirect('/home?user=' + user.fullname)
+                    self.redirect('/home')
                 else:
                     self.response.headers.add_header('Set-Cookie','user_email=%s' % str(user.email))
-                    self.redirect('/home?user=' + user.fullname)
+                    self.redirect('/home')
             else:
                 error = 'Username and Password do not match!'
                 self.render("login.html",error=error)
@@ -78,7 +62,7 @@ class LoginHandler(BlogHandler):
 
 class LogOutHandler(BlogHandler):
     def get(self):
-        self.response.headers.add_header('Set-Cookie','user_email=None')
+        self.response.headers.add_header('Set-Cookie','user_email=''')
         thank_you_for_visiting = "Thank you for visiting this site.\
             We appreciate your presence!"
         self.render('login.html',thank_you_for_visiting = thank_you_for_visiting)

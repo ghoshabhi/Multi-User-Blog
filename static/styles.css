@@ -44,3 +44,7 @@ body {
 code {
   font-size: 80%;
 }
+
+/* Image CSS */
+.img-center {
+  margin: 0 auto;

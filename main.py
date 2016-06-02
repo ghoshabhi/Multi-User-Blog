@@ -45,6 +45,15 @@ def render_str(template, **params):
     return t.render(params) 
 
 
+def check_for_valid_cookie(self):
+    user_email_cookie = self.request.cookies.get('user_email')
+    if_valid_cookie = check_secure_val(user_email_cookie)
+    if if_valid_cookie:
+         return self.request.cookies.get('user_email').split("|")[0]
+    else:
+        return None
+
+
 class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
@@ -58,29 +67,29 @@ class BlogHandler(webapp2.RequestHandler):
 
 class HomeHandler(BlogHandler):
     def get(self,user=None):
-        if self.request.cookies.get('user_email'):
-            user_email_cookie = self.request.cookies.get('user_email')
-            if_valid_cookie = check_secure_val(user_email_cookie)
-            if if_valid_cookie:
-                user_email_cookie = self.request.cookies.get('user_email')
-                user_email = user_email_cookie.split("|")[0]
-                user = User.query(User.email == user_email).get()
-                self.render('home.html',user=user)
-            else:
-                self.response.headers.add_header('Set-Cookie','user_email=''')
-                cookie_error = "Your session has expired! Please log in again to continue!"
-                self.render('login.html',cookie_error=cookie_error)
+        user_email = check_for_valid_cookie(self)
+
+        if user_email:
+            user = User.query(User.email == user_email).get()
+            self.render('home.html',user=user)
         else:
             self.render('home.html',user=user)
 
 
         # if self.request.cookies.get('user_email'):
-        #     user_email = self.request.cookies.get('user_email')
-        #     user = User.query(User.email == user_email).get()
-        #     self.render('home.html',user=user)
+        #     user_email_cookie = self.request.cookies.get('user_email')
+        #     if_valid_cookie = check_secure_val(user_email_cookie)
+        #     if if_valid_cookie:
+        #         user_email_cookie = self.request.cookies.get('user_email')
+        #         user_email = user_email_cookie.split("|")[0]
+        #         user = User.query(User.email == user_email).get()
+        #         self.render('home.html',user=user)
+        #     else:
+        #         self.response.headers.add_header('Set-Cookie','user_email=''')
+        #         cookie_error = "Your session has expired! Please log in again to continue!"
+        #         self.render('login.html',cookie_error=cookie_error)
         # else:
         #     self.render('home.html',user=user)
-
 
 class LoginHandler(BlogHandler):
     def get(self):
@@ -181,10 +190,21 @@ class RegistrationHandler(BlogHandler):
             self.render('register.html',error_list=error_list)
 
 
+class AboutUsHandler(BlogHandler):
+    def get(self):
+        user_email = check_for_valid_cookie(self)
+        if user_email:
+            user = User.query(User.email == user_email).get()
+            self.render('aboutus.html',user=user)
+        else:
+            self.render('aboutus.html',user=user)
+
+
 app = webapp2.WSGIApplication([
     ('/', HomeHandler),
     ('/home', HomeHandler),
     ('/login', LoginHandler),
     ('/register',RegistrationHandler),
-    ('/logout', LogOutHandler)
+    ('/logout', LogOutHandler),
+    ('/aboutus',AboutUsHandler)
     ], debug=True)

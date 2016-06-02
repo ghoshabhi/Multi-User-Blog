@@ -12,6 +12,7 @@
             <li class="dropdown-header">Preferences</li>
             <li><a href="#">Profile</a></li>
             <li><a href="#">Report Problem</a></li>
+            <li><a href="/logout">Sign Out</a></li>
           </ul>
       </li>
   {% else %}
@@ -32,9 +33,17 @@
   {{error}}
 </div>
 {% endif %}
+
 {% if new_user %}
 <div style="width:100%" class="active alert alert-success">
   Thank You for connencting with us <b>{{new_user}}</b>! Please Log In here!
+</div>
+{% endif %}
+
+
+{% if thank_you_for_visiting %}
+<div style="width:100%" class="active alert alert-success">
+  <em>{{ thank_you_for_visiting }}</em>
 </div>
 {% endif %}
 

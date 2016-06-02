@@ -2,10 +2,8 @@ import os
 import webapp2
 import jinja2
 import re
-# import sessions
-from webapp2_extras import sessions
 
-from google.appengine.ext import ndb
+from models import *
 
 template_dir = os.path.join(os.path.dirname(__file__),'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
@@ -27,41 +25,21 @@ class BlogHandler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
-    def dispatch(self):
-        # Get a session store for this request.
-        self.session_store = sessions.get_store(request=self.request)
 
-        try:
-            # Dispatch the request.
-            webapp2.RequestHandler.dispatch(self)
-        finally:
-            # Save all sessions.
-            self.session_store.save_sessions(self.response)
+# class Post(ndb.Model):
+#     subject = ndb.StringProperty(required=True)
+#     content = ndb.TextProperty(required=True)
+#     created = ndb.DateTimeProperty(auto_now_add = True)
+#     last_modified = ndb.DateTimeProperty(auto_now = True)
+#     user = ndb.KeyProperty(required=True)
 
-    @webapp2.cached_property
-    def session(self):
-        # Returns a session using the default cookie key.
-        return self.session_store.get_session()
-
-config = {}
-config['webapp2_extras.sessions'] = {
-    'secret_key': 'my-super-secret-key',
-}
-
-class Post(ndb.Model):
-    subject = ndb.StringProperty(required=True)
-    content = ndb.TextProperty(required=True)
-    created = ndb.DateTimeProperty(auto_now_add = True)
-    last_modified = ndb.DateTimeProperty(auto_now = True)
-    user = ndb.KeyProperty(required=True)
-
-class User(ndb.Model):
-    fullname = ndb.StringProperty(required=True)
-    user_name = ndb.StringProperty(required=True)
-    email = ndb.StringProperty(required=True)
-    password = ndb.TextProperty(indexed=True,required=True)
-    photo = ndb.StringProperty()
-    location = ndb.StringProperty()
+# class User(ndb.Model):
+#     fullname = ndb.StringProperty(required=True)
+#     user_name = ndb.StringProperty(required=True)
+#     email = ndb.StringProperty(required=True)
+#     password = ndb.TextProperty(indexed=True,required=True)
+#     photo = ndb.StringProperty()
+#     location = ndb.StringProperty()
 
 
 class HomeHandler(BlogHandler):
@@ -96,6 +74,14 @@ class LoginHandler(BlogHandler):
         else:
             error = "Both username and password are needed! You did not enter one of them!"
             self.render("login.html",error=error)
+
+
+class LogOutHandler(BlogHandler):
+    def get(self):
+        self.response.headers.add_header('Set-Cookie','user_email=None')
+        thank_you_for_visiting = "Thank you for visiting this site.\
+            We appreciate your presence!"
+        self.render('login.html',thank_you_for_visiting = thank_you_for_visiting)
 
 USERNAME_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 def valid_username(username):
@@ -157,6 +143,6 @@ app = webapp2.WSGIApplication([
     ('/', HomeHandler),
     ('/home', HomeHandler),
     ('/login', LoginHandler),
-    ('/register',RegistrationHandler)
-    ], config = config,
-       debug=True)
+    ('/register',RegistrationHandler),
+    ('/logout', LogOutHandler)
+    ], debug=True)

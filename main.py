@@ -4,6 +4,7 @@ import jinja2
 import re
 import hashlib
 import hmac
+import json
 
 from models import *
 
@@ -47,9 +48,12 @@ def render_str(template, **params):
 
 def check_for_valid_cookie(self):
     user_email_cookie = self.request.cookies.get('user_email')
-    if_valid_cookie = check_secure_val(user_email_cookie)
-    if if_valid_cookie:
-         return self.request.cookies.get('user_email').split("|")[0]
+    if user_email_cookie:
+        if_valid_cookie = check_secure_val(user_email_cookie)
+        if if_valid_cookie:
+             return self.request.cookies.get('user_email').split("|")[0]
+        else:
+            return None
     else:
         return None
 
@@ -189,6 +193,18 @@ class RegistrationHandler(BlogHandler):
             error_list.append("You did not fill atleast one of the fields!")
             self.render('register.html',error_list=error_list)
 
+class NewPostHandler(BlogHandler):
+    def get(self):
+        user_email = check_for_valid_cookie(self)
+        if user_email:
+            user = User.query(User.email == user_email).get()
+            self.render('newpost.html',user=user)
+        else:
+            self.render('newpost.html',user=user)
+    def post(self):
+        content = self.request.get('content')
+        self.response.out.write(content)
+
 
 class AboutUsHandler(BlogHandler):
     def get(self):
@@ -206,5 +222,6 @@ app = webapp2.WSGIApplication([
     ('/login', LoginHandler),
     ('/register',RegistrationHandler),
     ('/logout', LogOutHandler),
-    ('/aboutus',AboutUsHandler)
+    ('/aboutus',AboutUsHandler),
+    ('/newpost',NewPostHandler)
     ], debug=True)

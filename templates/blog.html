@@ -28,22 +28,11 @@
 
 
 {% block content %}
-  <div class="row">
-    <form id="form1" method='post'>
-      <div class="col-md-9">
-        <h2 id="post-title" name="post-title" style="margin-bottom:10px; padding:5px" class="editable">
-          <span class="text-muted credit">Give your blog a Title</span>
-        </h2>
-        <textarea id="content" name="content">Start writing here...</textarea>
-        <br>
-      </div>
-      <div class='col-md-9'>
-        <input type="submit" name="login-submit" id="post-submit" tabindex="4" class="btn btn-md btn-success" value="Submit Post">
-        <input type="submit" name="login-submit" id="save-draft" tabindex="4" class="btn btn-md btn-warning" value="Save Draft">
-        <input type="submit" name="login-submit" id="cancel-post" tabindex="4" class="btn btn-md btn-danger" value="Cancel">
-      </div>
-    </form>
-  </div>
-  <br><br>
+  {% if post %}
+    <h1>{{post.title | safe}}</h1>
+    <br><br>
+    <div>
+      {{post.content | safe}}
+    </div>
+  {% endif %}
 {% endblock %}
-

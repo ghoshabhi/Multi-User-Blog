@@ -7,6 +7,7 @@ import hmac
 import json
 
 from models import *
+from google.appengine.ext import ndb
 
 template_dir = os.path.join(os.path.dirname(__file__),'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
@@ -186,7 +187,6 @@ class RegistrationHandler(BlogHandler):
                                 password= hash_str(password))
                 new_user_key = new_user.put()
                 
-
                 self.response.headers.add_header('Set-Cookie','user_email=%s' % make_secure_val(str(new_user.email)))
                 self.render('login.html',new_user=new_user.fullname)
         else:
@@ -200,10 +200,45 @@ class NewPostHandler(BlogHandler):
             user = User.query(User.email == user_email).get()
             self.render('newpost.html',user=user)
         else:
-            self.render('newpost.html',user=user)
+            cookie_error = "Your session has expired please login again to continue!"
+            self.render('login.html',cookie_error = cookie_error)
+    
     def post(self):
-        content = self.request.get('content')
-        self.response.out.write(content)
+        user_email = check_for_valid_cookie(self)
+        if user_email:
+            content = self.request.get('content')
+            title = self.request.get('post-title')
+            user = User.query(User.email == user_email).get()
+
+            new_post = Post(
+                    title = title,
+                    content = content,
+                    user = user.key
+                    )
+            new_post_key = new_post.put()
+            self.redirect('/blog/%s' % str(new_post_key.id()))
+        else:
+            cookie_error = "Your session has expired please login again to continue!"
+            self.render('login.html',cookie_error = cookie_error)
+
+
+class PostPage(BlogHandler):
+    def get(self, post_id):
+        user_email = check_for_valid_cookie(self)
+        if user_email:
+            user = User.query(User.email == user_email).get()
+            # post_key = ndb.Key(User,post_id)
+            # post = post_key.get()
+            post = Post.get_by_id(int(post_id))
+
+            if not post:
+                self.error(404)
+                return
+
+            self.render("blog.html", post = post,user=user)
+        else:
+            cookie_error = "Your session has expired please login again to continue!"
+            self.render('login.html',cookie_error = cookie_error)
 
 
 class AboutUsHandler(BlogHandler):
@@ -223,5 +258,6 @@ app = webapp2.WSGIApplication([
     ('/register',RegistrationHandler),
     ('/logout', LogOutHandler),
     ('/aboutus',AboutUsHandler),
-    ('/newpost',NewPostHandler)
+    ('/newpost',NewPostHandler),
+    ('/blog/([0-9]+)', PostPage)
     ], debug=True)

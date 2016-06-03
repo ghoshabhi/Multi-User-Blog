@@ -82,22 +82,23 @@
         toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
       });
 
-      $('#post-submit').click(function(){
-        var content = tinymce.activeEditor.getContent({format : 'raw'});
-        //console.log(JSON.stringify({"content" : content}));
-        console.log(content);
-        $.ajax({
-            type: 'POST',
-            dataType: 'json',
-            url: '/newpost',
-            data: {
-                content : content
-            }
-          })
-            .done(function(data){
-              console.log('Ajax Call Complete!');
-            });
-        });
+      // $('#post-submit').click(function(e){
+      //   e.preventDefault();
+      //   var content = tinymce.activeEditor.getContent();
+      //   //console.log(JSON.stringify({"content" : content}));
+      //   console.log(content);
+      //   $.ajax({
+      //       type: 'POST',
+      //       dataType: 'json',
+      //       url: '/newpost',
+      //       data: {
+      //           "content" : content
+      //       }
+      //     })
+      //       .done(function(data){
+      //         console.log('Ajax Call Complete!');
+      //       });
+      //   });
 </script>
 
 </body>

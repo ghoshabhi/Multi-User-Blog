@@ -214,7 +214,8 @@ class NewPostHandler(BlogHandler):
             title = self.request.get('post-title')
             user = User.query(User.email == user_email).get()
 
-            if title and content:
+            if title!='Click here to give a Title!' and \
+             content!='<p>Start writing here...</p>':
                 new_post = Post(
                     title = title,
                     content = content,
@@ -236,10 +237,13 @@ class NewPostHandler(BlogHandler):
         #     title = self.request.get('post-title')
         #     user = User.query(User.email == user_email).get()
             
-        #     if title and content:
+        #     if title!='Click here to give a Title!' and content!='<p>Start writing here...</p>':
         #         self.write('Thank You!<br>' + title + "<br>" + content)
         #     else:
         #         self.write('Empty Content!')
+        # else:
+        #     cookie_error = "Your session has expired please login again to continue!"
+        #     self.render('login.html',cookie_error = cookie_error)
 
 class PostPage(BlogHandler):
     def get(self, post_id):

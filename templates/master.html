@@ -77,7 +77,7 @@
         plugins: [
           "advlist autolink autosave link image lists charmap print preview hr anchor pagebreak spellchecker",
           "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-          "table contextmenu directionality emoticons template textcolor paste fullpage textcolor colorpicker textpattern"
+          "table contextmenu directionality emoticons template textcolor paste textcolor colorpicker textpattern"
         ],
         autosave_interval: "20s",
         toolbar1: "newdocument fullpage | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect",
@@ -134,18 +134,15 @@
 
 <script type="text/javascript">
   $('#login-submit').click(function() {
-  var content = tinymce.EditorManager.get('content1').getContent();
-  console.log(content);
-  new_content = JSON.stringify(content);
-  console.log(new_content);
-  if (( new_content !='<!DOCTYPE html>\n<html>\n<head>\n</head>\n<body>\n\n</body>\n</html>')) {
-        console.log('has content');
-        console.log(content);
+    var content = tinymce.get('content1').getContent({format: 'text'});
+      if($.trim(content) == '')
+      { 
+        alert('editor is empty ...');
       }
-   else {
-        console.log('empty');
+      else{
+        alert(tinymce.get('content1').getContent());
       }
-});
+    });
 </script>
 
 </body>

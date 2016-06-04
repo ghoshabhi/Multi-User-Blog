@@ -207,6 +207,28 @@ class NewPostHandler(BlogHandler):
             self.render('login.html',cookie_error = cookie_error)
     
     def post(self):
+        user_email = check_for_valid_cookie(self)
+        if user_email:
+            content = self.request.get('content')
+            title = self.request.get('post-title')
+            user = User.query(User.email == user_email).get()
+
+            if title and content:
+                new_post = Post(
+                    title = title,
+                    content = content,
+                    user = user.key
+                    )
+                new_post_key = new_post.put()
+                self.redirect('/blog/%s' % str(new_post_key.id()))
+            else:
+                empty_post = "Both Title and Content needed for the Blog!"
+                self.render('newpost.html',empty_post = empty_post)
+        else:
+            cookie_error = "Your session has expired please login again to continue!"
+            self.render('login.html',cookie_error = cookie_error)
+
+        # Debug method to avoid DB writes!
         # user_email = check_for_valid_cookie(self)
         # if user_email:
         #     content = self.request.get('content')
@@ -217,28 +239,6 @@ class NewPostHandler(BlogHandler):
         #         self.write('Thank You!<br>' + title + "<br>" + content)
         #     else:
         #         self.write('Empty Content!')
-
-        user_email = check_for_valid_cookie(self)
-        if user_email:
-            content = self.request.get('content')
-            title = self.request.get('post-title')
-            user = User.query(User.email == user_email).get()
-
-            if title!=empty_title and content!=empty_content:
-                new_post = Post(
-                    title = title,
-                    content = content,
-                    user = user.key
-                    )
-                new_post_key = new_post.put()
-                self.redirect('/blog/%s' % str(new_post_key.id()))
-            else:
-                empty_things = "Both Title and Content needed for the Blog!"
-                self.render('newpost.html',empty_things=empty_things)
-        else:
-            cookie_error = "Your session has expired please login again to continue!"
-            self.render('login.html',cookie_error = cookie_error)
-
 
 class PostPage(BlogHandler):
     def get(self, post_id):

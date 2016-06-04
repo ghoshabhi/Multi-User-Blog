@@ -26,13 +26,14 @@
   {% endif %}
 {% endblock navigation %}
 
-{% if empty_things %}
-  <div style="width:100%" class="active alert alert-warning">
-    <em>{{ empty_things }}</em>
+
+{% block content %}
+{% if empty_post %}
+  <div style="width:100%" class="active alert alert-danger">
+    <em>{{ empty_post }}</em>
   </div>
 {% endif %}
 
-{% block content %}
   <div class="row">
     <form id="form1" method='post'>
       <div class="col-md-9">

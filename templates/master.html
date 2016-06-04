@@ -75,12 +75,12 @@
         selector: "textarea",
         height: 500,
         plugins: [
-          "advlist autolink autosave link image lists charmap print preview hr anchor pagebreak spellchecker",
+          "advlist autolink autosave save link image lists charmap print preview hr anchor pagebreak spellchecker",
           "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
           "table contextmenu directionality emoticons template textcolor paste textcolor colorpicker textpattern"
         ],
         autosave_interval: "20s",
-        toolbar1: "newdocument fullpage | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect",
+        toolbar1: "newdocument fullpage save | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect",
         toolbar2: "cut copy paste | searchreplace | bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image media code | insertdatetime preview | forecolor backcolor",
         toolbar3: "table | hr removeformat | subscript superscript | charmap emoticons | print fullscreen | ltr rtl | spellchecker | visualchars visualblocks nonbreaking template pagebreak restoredraft",
 
@@ -130,6 +130,21 @@
           '//www.tinymce.com/css/codepen.min.css'
         ]
       });
+
+    $(document).ready(function(){
+      console.log('ready!');
+        $('.postTitle h2').on('click', function() {
+        $('.postTitle h2').html('');
+      });
+
+        $('.postTitle').on('focusout', function() {
+          if ($('.postTitle h2').html() == '') {
+            $('.postTitle h2').html('Click here to give a Title!');
+          }
+        });
+    });
+
+
 </script>
 
 <script type="text/javascript">

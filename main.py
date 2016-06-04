@@ -79,9 +79,10 @@ class HomeHandler(BlogHandler):
 
         if user_email:
             user = User.query(User.email == user_email).get()
-            self.render('home.html',user=user)
+            posts = Post.query()
+            self.render('home.html',user=user,posts=posts)
         else:
-            self.render('home.html',user=user)
+            self.render('home.html',user=user,posts=posts)
 
 
         # if self.request.cookies.get('user_email'):
@@ -223,7 +224,7 @@ class NewPostHandler(BlogHandler):
                 self.redirect('/blog/%s' % str(new_post_key.id()))
             else:
                 empty_post = "Both Title and Content needed for the Blog!"
-                self.render('newpost.html',empty_post = empty_post)
+                self.render('newpost.html',user = user,empty_post = empty_post)
         else:
             cookie_error = "Your session has expired please login again to continue!"
             self.render('login.html',cookie_error = cookie_error)

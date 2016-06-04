@@ -1,188 +1,101 @@
 {% extends "master.html" %} 
 
 {% block navigation %}
-  {% if user %}
-    <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><em>{{user.fullname}}</em><b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a href="/newpost">New Post</a></li>
-            <li><a href="#">All Posts</a></li>
-            <li><a href="#">Drafts</a></li>
-            <li class="divider"></li>
-            <li class="dropdown-header">Preferences</li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">Report Problem</a></li>
-            <li><a href="/logout">Sign Out</a></li>
-          </ul>
-      </li>
-  {% else %}
-    <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome<b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a href="/login">Login</a></li>
-            <li><a href="/register">Signup</a></li>
-          </ul>
-         </li>
-  {% endif %}
-{% endblock navigation %}
+ {% if user %}
+  <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><em>{{user.fullname}}</em><b class="caret"></b></a>
+    <ul class="dropdown-menu">
+      <li><a href="/newpost">New Post</a></li>
+      <li><a href="#">All Posts</a></li>
+      <li><a href="#">Drafts</a></li>
+      <li class="divider"></li>
+      <li class="dropdown-header">Preferences</li>
+      <li><a href="#">Profile</a></li>
+      <li><a href="#">Report Problem</a></li>
+      <li><a href="/logout">Sign Out</a></li>
+    </ul>
+  </li>
+{% else %}
+  <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome<b class="caret"></b></a>
+    <ul class="dropdown-menu">
+      <li><a href="/login">Login</a></li>
+      <li><a href="/register">Signup</a></li>
+    </ul>
+  </li>
+{% endif %} 
+{% endblock navigation %} 
 
 {% block content %}
 <div id="masthead">
-    <div class="row">
-      <div class="col-md-7">
-        <h1>Blog
+  <div class="row">
+    <div class="col-md-7">
+      <h1>Blog
           <p class="lead"><i>Pen down your thoughts...</i></p>
         </h1>
-      </div>
-      <div class="col-md-5">
-        <div class="well well-lg">
-          <div class="row">
-            <div class="col-sm-12">
-              Ad Space
-            </div>
+    </div>
+    <!-- <div class="col-md-5">
+      <div class="well well-lg">
+        <div class="row">
+          <div class="col-sm-12">
+            Ad Space
           </div>
         </div>
       </div>
-    </div>
-  
+    </div> -->
+  </div>
+
 
 </div>
 
 
-  <div class="row">
+<div class="row">
 
-    <div class="col-md-12">
+  <div class="col-md-12">
 
-      <div class="panel">
-        <div class="panel-body">
-
-
-          <!--/stories-->
-          <div class="row">
-            <br>
-            <div class="col-md-2 col-sm-3 text-center">
-              <a class="story-img" href="#"><img src="//placehold.it/100" style="width:100px;height:100px" class="img-circle"></a>
-            </div>
-            <div class="col-md-10 col-sm-9">
-              <h3>Post Entry Title</h3>
-              <div class="row">
-                <div class="col-xs-9">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate. Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis dolor, in sagittis nisi. Sed ac
-                    orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan. Aliquam in felis sit amet augue.</p>
-                  <p class="lead">
-                    <button class="btn btn-default">Read More</button>
-                  </p>
-                  <p class="pull-right"><span class="label label-default">keyword</span> <span class="label label-default">tag</span> <span class="label label-default">post</span></p>
-                  <ul class="list-inline">
-                    <li><a href="#">2 Days Ago</a></li>
-                    <li><a href="#"><i class="fa fa-comment"></i> 4 Comments</a></li>
-                    <li><a href="#"><i class="fa fa-share"></i> 34 Shares</a></li>
-                  </ul>
-                </div>
-                <div class="col-xs-3"></div>
+    <div class="panel">
+      <div class="panel-body">
+        {% if posts %}
+          {% for post in posts %}
+            <div class="row">
+              <br>
+              <div class="col-md-2 col-sm-3 text-center">
+                <a class="story-img" href="#"><img src="//placehold.it/100" style="width:100px;height:100px" class="img-circle"></a>
               </div>
-              <br>
-              <br>
-            </div>
-          </div>
-          <hr>
-
-          <div class="row">
-            <br>
-            <div class="col-md-2 col-sm-3 text-center">
-              <a class="story-img" href="#"><img src="//placehold.it/100" style="width:100px;height:100px" class="img-circle"></a>
-            </div>
-            <div class="col-md-10 col-sm-9">
-              <h3>Story Title Here</h3>
-              <div class="row">
-                <div class="col-xs-9">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate. Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis dolor, in sagittis nisi. Sed ac
-                    orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan. Aliquam in felis sit amet augue.</p>
-                  <p class="lead">
-                    <button class="btn btn-default">Read More</button>
-                  </p>
-                  <p class="pull-right"><span class="label label-default">keyword</span> <span class="label label-default">tag</span> <span class="label label-default">post</span></p>
-                  <ul class="list-inline">
-                    <li><a href="#">3 Days Ago</a></li>
-                    <li><a href="#"><i class="glyphicon glyphicon-comment"></i> 1 Comments</a></li>
-                    <li><a href="#"><i class="glyphicon glyphicon-share"></i> 34 Shares</a></li>
-                  </ul>
+              <div class="col-md-10 col-sm-9">
+                <h3>{{post.title | safe}}</h3>
+                <div class="row">
+                  <div class="col-xs-9">
+                    <p>{{post.content | safe}}</p>
+                    <p class="lead">
+                      <button class="btn btn-default">Read More</button>
+                    </p>
+                    <p class="pull-right"><span class="label label-default">keyword</span> <span class="label label-default">tag</span> <span class="label label-default">post</span></p>
+                    <ul class="list-inline">
+                      <li><a href="#">2 Days Ago</a></li>
+                      <li><a href="#"><i class="fa fa-comment"></i> 4 Comments</a></li>
+                      <li><a href="#"><i class="fa fa-share"></i> 34 Shares</a></li>
+                    </ul>
+                  </div>
+                  <div class="col-xs-3"></div>
                 </div>
-                <div class="col-xs-3"></div>
+                <br>
+                <br>
               </div>
-              <br>
-              <br>
             </div>
-          </div>
-          <hr>
-
-          <div class="row">
-            <br>
-            <div class="col-md-2 col-sm-3 text-center">
-              <a class="story-img" href="#"><img src="//placehold.it/100" style="width:100px;height:100px" class="img-circle"></a>
-            </div>
-            <div class="col-md-10 col-sm-9">
-              <h3>Post Heading Here</h3>
-              <div class="row">
-                <div class="col-xs-9">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate. Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis dolor, in sagittis nisi. Sed ac
-                    orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan. Aliquam in felis sit amet augue.</p>
-                  <p class="lead">
-                    <button class="btn btn-default">Read More</button>
-                  </p>
-                  <p class="pull-right"><span class="label label-default">keyword</span> <span class="label label-default">tag</span> <span class="label label-default">post</span></p>
-                  <ul class="list-inline">
-                    <li><a href="#">5 Days Ago</a></li>
-                    <li><a href="#"><i class="glyphicon glyphicon-comment"></i> 0 Comments</a></li>
-                    <li><a href="#"><i class="glyphicon glyphicon-share"></i> 45 Shares</a></li>
-                  </ul>
-                </div>
-                <div class="col-xs-3"></div>
-              </div>
-              <br>
-              <br>
-            </div>
-          </div>
-          <hr>
-
-          <div class="row">
-            <br>
-            <div class="col-md-2 col-sm-3 text-center">
-              <a class="story-img" href="#"><img src="//placehold.it/100" style="width:100px;height:100px" class="img-circle"></a>
-            </div>
-            <div class="col-md-10 col-sm-9">
-              <h3>Another Entry Title</h3>
-              <div class="row">
-                <div class="col-xs-9">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet vulputate. Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet felis dolor, in sagittis nisi. Sed ac
-                    orci quis tortor imperdiet venenatis. Duis elementum auctor accumsan. Aliquam in felis sit amet augue.</p>
-                  <p class="lead">
-                    <button class="btn btn-default">Read More</button>
-                  </p>
-                  <p class="pull-right"><span class="label label-default">keyword</span> <span class="label label-default">tag</span> <span class="label label-default">post</span></p>
-                  <ul class="list-inline">
-                    <li><a href="#">1 Week Ago</a></li>
-                    <li><a href="#"><i class="glyphicon glyphicon-comment"></i> 4 Comments</a></li>
-                    <li><a href="#"><i class="glyphicon glyphicon-share"></i> 34 Shares</a></li>
-                  </ul>
-                </div>
-                <div class="col-xs-3"></div>
-              </div>
-              <br>
-              <br>
-            </div>
-          </div>
-          <!--/stories-->
-
-
-          <!-- <a href="/" class="btn btn-primary pull-right btnNext">More <i class="glyphicon glyphicon-chevron-right"></i></a> -->
-        </div>
+          {% endfor %}
+          {% else %}
+            <p>There are no posts in the website! :( Please <a href='/newpost'>click here to start writing one</a>!
+                Make sure you're <a href='/login'>Logged In</a>!</p>
+        {% endif %}
+        <!-- end row -->
       </div>
-
-
-
     </div>
-    <!--/col-12-->
+
+
+
   </div>
+  <!--/col-12-->
+</div>
 
 {% endblock %}

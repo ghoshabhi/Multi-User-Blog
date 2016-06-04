@@ -24,6 +24,9 @@ body {
   background-color: #f5f5f5;
 }
 
+.push-down{
+ min-height: calc(100% - 60px);
+}
 
 /* Custom page CSS
 -------------------------------------------------- */
@@ -48,3 +51,4 @@ code {
 /* Image CSS */
 .img-center {
   margin: 0 auto;
+}

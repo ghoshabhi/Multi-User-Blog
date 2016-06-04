@@ -26,13 +26,18 @@
   {% endif %}
 {% endblock navigation %}
 
+{% if empty_things %}
+  <div style="width:100%" class="active alert alert-warning">
+    <em>{{ empty_things }}</em>
+  </div>
+{% endif %}
 
 {% block content %}
   <div class="row">
     <form id="form1" method='post'>
       <div class="col-md-9">
         <h2 id="post-title" name="post-title" style="margin-bottom:10px; padding:5px" class="editable">
-          <span class="text-muted credit">Give your blog a Title</span>
+          <span>Click here to give a Title!</span>
         </h2>
         <textarea id="content" name="content">Start writing here...</textarea>
         <br>

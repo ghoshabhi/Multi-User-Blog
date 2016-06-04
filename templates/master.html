@@ -132,5 +132,21 @@
       });
 </script>
 
+<script type="text/javascript">
+  $('#login-submit').click(function() {
+  var content = tinymce.EditorManager.get('content1').getContent();
+  console.log(content);
+  new_content = JSON.stringify(content);
+  console.log(new_content);
+  if (( new_content !='<!DOCTYPE html>\n<html>\n<head>\n</head>\n<body>\n\n</body>\n</html>')) {
+        console.log('has content');
+        console.log(content);
+      }
+   else {
+        console.log('empty');
+      }
+});
+</script>
+
 </body>
 </html>

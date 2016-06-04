@@ -16,6 +16,9 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
 SECRET = "mysecretkey"
 error_list = []
 
+empty_content = '<!DOCTYPE html>\n<html>\n<head>\n</head>\n<body>\n\n</body>\n</html>'
+empty_title = "<div>&nbsp;</div>"
+
 def hash_str(s):
     return hmac.new(SECRET,s).hexdigest()
 
@@ -204,19 +207,34 @@ class NewPostHandler(BlogHandler):
             self.render('login.html',cookie_error = cookie_error)
     
     def post(self):
+        # user_email = check_for_valid_cookie(self)
+        # if user_email:
+        #     content = self.request.get('content')
+        #     title = self.request.get('post-title')
+        #     user = User.query(User.email == user_email).get()
+            
+        #     if title and content:
+        #         self.write('Thank You!<br>' + title + "<br>" + content)
+        #     else:
+        #         self.write('Empty Content!')
+
         user_email = check_for_valid_cookie(self)
         if user_email:
             content = self.request.get('content')
             title = self.request.get('post-title')
             user = User.query(User.email == user_email).get()
 
-            new_post = Post(
+            if title!=empty_title and content!=empty_content:
+                new_post = Post(
                     title = title,
                     content = content,
                     user = user.key
                     )
-            new_post_key = new_post.put()
-            self.redirect('/blog/%s' % str(new_post_key.id()))
+                new_post_key = new_post.put()
+                self.redirect('/blog/%s' % str(new_post_key.id()))
+            else:
+                empty_things = "Both Title and Content needed for the Blog!"
+                self.render('newpost.html',empty_things=empty_things)
         else:
             cookie_error = "Your session has expired please login again to continue!"
             self.render('login.html',cookie_error = cookie_error)
@@ -227,8 +245,6 @@ class PostPage(BlogHandler):
         user_email = check_for_valid_cookie(self)
         if user_email:
             user = User.query(User.email == user_email).get()
-            # post_key = ndb.Key(User,post_id)
-            # post = post_key.get()
             post = Post.get_by_id(int(post_id))
 
             if not post:

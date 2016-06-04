@@ -76,10 +76,10 @@ class BlogHandler(webapp2.RequestHandler):
 class HomeHandler(BlogHandler):
     def get(self,user=None):
         user_email = check_for_valid_cookie(self)
+        user = User.query(User.email == user_email).get()
+        posts = Post.query()
 
         if user_email:
-            user = User.query(User.email == user_email).get()
-            posts = Post.query()
             self.render('home.html',user=user,posts=posts)
         else:
             self.render('home.html',user=user,posts=posts)
@@ -261,8 +261,9 @@ class PostPage(BlogHandler):
 class AboutUsHandler(BlogHandler):
     def get(self):
         user_email = check_for_valid_cookie(self)
+        user = User.query(User.email == user_email).get()
+
         if user_email:
-            user = User.query(User.email == user_email).get()
             self.render('aboutus.html',user=user)
         else:
             self.render('aboutus.html',user=user)

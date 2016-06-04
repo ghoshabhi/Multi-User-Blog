@@ -4,7 +4,7 @@
   "HTML Tidy for Linux (vers 25 March 2009), see www.w3.org" />
   <meta http-equiv="content-type" content="text/html; charset=us-ascii" />
   <meta charset="utf-8" />
-​
+
   <title>You're Dream Blog is here!</title>
   <meta name="generator" content="Bootply" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
@@ -15,12 +15,12 @@
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   <link href="/static/styles.css" rel="stylesheet" type="text/css" />
-​
+
 </head>
-​
+
 <body>
   <!-- Wrap all page content here -->
-​
+
   <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
@@ -28,15 +28,15 @@
         ".navbar-collapse"></button> <a class="navbar-brand" href="/home">Your Own
         Blog</a>
       </div>
-​
+
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
           <li class="active"><a href="/home">Home</a></li>
-​
+
           <li><a href="/aboutus">About Us</a></li>
-​
+
           <li><a href="#contact">Contact Us</a></li>
-​
+
           <li style="list-style: none">
             {% block navigation %} 
             
@@ -46,13 +46,13 @@
       </div><!--/.nav-collapse -->
     </div>
   </div><!-- Begin page content -->
-​
+
   <div class="container  push-down">
     {% block content %} 
-​
+
     {% endblock %}
   </div>
-​
+
   <div id="footer">
     <div class="container">
       <div class="pull-right">
@@ -72,7 +72,7 @@
         toolbar: 'undo redo',
         menubar: false
       });
-​
+
       tinymce.init({
         selector: "textarea",
         height: 500,
@@ -85,10 +85,10 @@
         toolbar1: "newdocument fullpage save | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect",
         toolbar2: "cut copy paste | searchreplace | bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image media code | insertdatetime preview | forecolor backcolor",
         toolbar3: "table | hr removeformat | subscript superscript | charmap emoticons | print fullscreen | ltr rtl | spellchecker | visualchars visualblocks nonbreaking template pagebreak restoredraft",
-​
+
         menubar: false,
         toolbar_items_size: 'small',
-​
+
         style_formats: [{
           title: 'Bold text',
           inline: 'b'
@@ -119,7 +119,7 @@
           selector: 'tr',
           classes: 'tablerow1'
         }],
-​
+
         templates: [{
           title: 'Test template 1',
           content: 'Test 1'
@@ -132,23 +132,23 @@
           '//www.tinymce.com/css/codepen.min.css'
         ]
       });
-​
+
     $(document).ready(function(){
       console.log('ready!');
         $('.postTitle h2').on('click', function() {
         $('.postTitle h2').html('');
       });
-​
+
         $('.postTitle').on('focusout', function() {
           if ($('.postTitle h2').html() == '') {
             $('.postTitle h2').html('Click here to give a Title!');
           }
         });
     });
-​
-​
+
+
 </script>
-​
+
 <script type="text/javascript">
   $('#login-submit').click(function() {
     var content = tinymce.get('content1').getContent({format: 'text'});
@@ -161,6 +161,6 @@
       }
     });
 </script>
-​
+
 </body>
 </html>

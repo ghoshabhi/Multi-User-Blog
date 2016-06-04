@@ -15,6 +15,13 @@
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   <link href="/static/styles.css" rel="stylesheet" type="text/css" />
+  <style type="text/css">
+    .container{
+      min-height: -webkit-calc(100% - 60px);
+      min-height: -moz-calc(100% - 60px);
+      min-height: calc(100% - 60px);
+    }
+  </style>
 </head>
 
 <body>
@@ -38,6 +45,7 @@
 
           <li style="list-style: none">
             {% block navigation %} 
+            
             {% endblock navigation %}
           </li>
         </ul>

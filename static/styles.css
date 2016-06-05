@@ -32,6 +32,12 @@ body {
 -------------------------------------------------- */
 /* Not required for template or sticky footer method. */
 
+.one-edge-shadow {
+  -webkit-box-shadow: 0 8px 36px -6px black;
+  -moz-box-shadow: 0 8px 36px -6px black;
+   box-shadow: 0 8px 36px -6px black;
+}
+
 #wrap > .container {
   padding: 60px 15px 0;
 }

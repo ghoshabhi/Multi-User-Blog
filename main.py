@@ -77,7 +77,7 @@ class HomeHandler(BlogHandler):
     def get(self,user=None):
         user_email = check_for_valid_cookie(self)
         user = User.query(User.email == user_email).get()
-        posts = Post.query()
+        posts = Post.query().order(-Post.created)
 
         if user_email:
             self.render('home.html',user=user,posts=posts)
@@ -102,7 +102,14 @@ class HomeHandler(BlogHandler):
 
 class LoginHandler(BlogHandler):
     def get(self):
-        self.render("login.html")
+        user_email = check_for_valid_cookie(self)
+        user = User.query(User.email == user_email).get()
+
+        if user:
+            already_logged_in = "You're already logged into the system..."
+            self.render("login.html",already_logged_in=already_logged_in)
+        else:
+            self.render("login.html")
     def post(self):
         has_error = False
         u_name = self.request.get('username') 

@@ -14,4 +14,5 @@ indexes:
   properties:
   - name: content
   - name: created
+  - name: user
     direction: desc

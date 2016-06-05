@@ -61,6 +61,10 @@ def check_for_valid_cookie(self):
     else:
         return None
 
+def filterKey(key):
+    return key.id()
+    
+jinja_env.filters['filterKey'] = filterKey
 
 class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -75,30 +79,17 @@ class BlogHandler(webapp2.RequestHandler):
 
 class HomeHandler(BlogHandler):
     def get(self,user=None):
+        posts = []
         user_email = check_for_valid_cookie(self)
-        user = User.query(User.email == user_email).get()
+        loggedin_user = User.query(User.email == user_email).get()
         posts = Post.query().order(-Post.created)
-
+        all_users = User.query()
+        
         if user_email:
-            self.render('home.html',user=user,posts=posts)
+            self.render('home.html',user=loggedin_user,all_users=all_users,posts=posts)
         else:
-            self.render('home.html',user=user,posts=posts)
+            self.render('home.html',user=loggedin_user,all_users=all_users,posts=posts)
 
-
-        # if self.request.cookies.get('user_email'):
-        #     user_email_cookie = self.request.cookies.get('user_email')
-        #     if_valid_cookie = check_secure_val(user_email_cookie)
-        #     if if_valid_cookie:
-        #         user_email_cookie = self.request.cookies.get('user_email')
-        #         user_email = user_email_cookie.split("|")[0]
-        #         user = User.query(User.email == user_email).get()
-        #         self.render('home.html',user=user)
-        #     else:
-        #         self.response.headers.add_header('Set-Cookie','user_email=''')
-        #         cookie_error = "Your session has expired! Please log in again to continue!"
-        #         self.render('login.html',cookie_error=cookie_error)
-        # else:
-        #     self.render('home.html',user=user)
 
 class LoginHandler(BlogHandler):
     def get(self):
@@ -197,7 +188,22 @@ class RegistrationHandler(BlogHandler):
                                 user_name=u_name,
                                 password= hash_str(password))
                 new_user_key = new_user.put()
-                
+                # message = mail.EmailMessage(
+                #                 sender='hello@your-own-blog.appspotmail.com',
+                #                 subject="Thank You for Connecting with Us!")
+
+                # message.to = email
+                # message.body = """Dear %s:
+
+                #         Your your-own-blog account has been approved.  You can now visit
+                #         http://your-own-blog.appspot.com and sign in using your Google Account to
+                #         access new features.
+
+                #         Please let us know if you have any questions.
+
+                #         The your-own-blog Team
+                #         """ % (fullname)
+                # message.send()
                 self.response.headers.add_header('Set-Cookie','user_email=%s' % make_secure_val(str(new_user.email)))
                 self.render('login.html',new_user=new_user.fullname)
         else:
@@ -279,6 +285,31 @@ class AboutUsHandler(BlogHandler):
         else:
             self.render('aboutus.html',user=user)
 
+class TestHandler(BlogHandler):
+    def get(self):
+        posts = []
+        user_email = check_for_valid_cookie(self)
+        loggedin_user = User.query(User.email == user_email).get()
+        all_users = User.query()
+        posts = Post.query()
+        # for each_user in all_users:
+        #     each_post = Post.query(Post.user == each_user.key).fetch()
+        #     posts.append(each_post)
+
+        # for post in posts:
+        #     return self.write(post)
+
+        # for each_user_from_db in ndb.gql('select * from User'):
+        #     for post in ndb.gql('select * from Post where user=:1',each_user_from_db.key):
+        #         all_users = each_user_from_db
+        #         posts.append(post)
+
+        if user_email:
+            self.render('test.html',user = loggedin_user, all_users=all_users,posts=posts)
+        else:
+            self.render('test.html',user=loggedin_user,all_users=all_users,posts=posts)
+
+
 
 app = webapp2.WSGIApplication([
     ('/', HomeHandler),
@@ -288,5 +319,6 @@ app = webapp2.WSGIApplication([
     ('/logout', LogOutHandler),
     ('/aboutus',AboutUsHandler),
     ('/newpost',NewPostHandler),
-    ('/blog/([0-9]+)', PostPage)
+    ('/blog/([0-9]+)', PostPage),
+    ('/test',TestHandler),
     ], debug=True)

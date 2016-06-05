@@ -1,0 +1,51 @@
+{% extends "master.html" %} 
+
+{% block navigation %}
+ {% if user %}
+  <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b><em>{{user.fullname}}</em></b><b class="caret"></b></a>
+    <ul class="dropdown-menu">
+      <li><a href="/newpost">New Post</a></li>
+      <li><a href="#">All Posts</a></li>
+      <li><a href="#">Drafts</a></li>
+      <li class="divider"></li>
+      <li class="dropdown-header">Preferences</li>
+      <li><a href="#">Profile</a></li>
+      <li><a href="#">Report Problem</a></li>
+      <li><a href="/logout">Sign Out</a></li>
+    </ul>
+  </li>
+{% else %}
+  <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Welcome</b><b class="caret"></b></a>
+    <ul class="dropdown-menu">
+      <li><a href="/login">Login</a></li>
+      <li><a href="/register">Signup</a></li>
+    </ul>
+  </li>
+{% endif %} 
+{% endblock navigation %} 
+
+{% block content %}
+<div id="masthead">
+  <div class="row">
+    <div class="col-md-7">
+      <h1>Blog
+          <p class="lead"><i>Pen down your thoughts...</i></p>
+        </h1>
+    </div>
+    </div>
+
+<div>
+  {% if posts and all_users %}
+    {% for each_post in posts %}
+      {% for each_user in all_users %}
+        {% if each_post.user == each_user.key %}
+          User Name :<b>{{ each_user.fullname }}</b> |Title : <b>{{ each_post.title}}</b> | <b>User ID : {{ each_user.key | filterKey }}</b>
+          <br>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+</div>
+{% endblock %}

@@ -9,7 +9,6 @@
             <li><a href="#">All Posts</a></li>
             <li><a href="#">Drafts</a></li>
             <li class="divider"></li>
-            <li class="dropdown-header">Preferences</li>
             <li><a href="#">Profile</a></li>
             <li><a href="#">Report Problem</a></li>
             <li><a href="/logout">Sign Out</a></li>
@@ -88,7 +87,37 @@
           <div class="row">
             <div class="col-lg-6">
               <div class="text-center">
-                <a href="#" tabindex="5" class="forgot-password">Forgot Password?</a>
+                <a href="#" data-toggle="modal" data-target="#myModal" tabindex="5" class="forgot-password">Forgot Password?</a>
+
+                  <!-- Modal -->
+                  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                          <h4 class="modal-title" id="myModalLabel" style="font-family:Comic Sans MS,Verdana">Forgot Password ?</h4>
+                        </div>
+                        <div class="modal-body">
+                          <p style="font-family:Comic Sans MS">
+                            Hey there! Don't worry we got your back. Enter your email address below
+                              to get the link for password change!
+                          </p>
+                          <div class="row">
+                            <div style="font-family:Comic Sans MS" class="col-md-3 col-sm-4">
+                              Enter your Email :
+                            </div>
+                            <div class="col-md-7 col-sm-8">
+                              <input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-success pull-right">Request Password Change</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
               </div>
             </div>
             <div class="col-lg-6">

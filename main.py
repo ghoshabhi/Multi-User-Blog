@@ -124,10 +124,11 @@ class LoginHandler(BlogHandler):
                     self.redirect('/home')
             else:
                 error = 'Username and Password do not match!'
-                self.render("login.html",error=error)
+                self.render("login.html",username=u_name,error=error)
         else:
-            error = "Both username and password are needed! You did not enter one of them!"
-            self.render("login.html",error=error)
+            error = "Both username and password are needed! \
+                You did not enter either one or both fields!"
+            self.render("login.html", username=u_name,error=error)
 
 
 class LogOutHandler(BlogHandler):
@@ -180,7 +181,11 @@ class RegistrationHandler(BlogHandler):
                 has_error = True
 
             if has_error:
-                self.render('register.html',error_list=error_list)
+                self.render('register.html',fullname=fullname,
+                                            location=location,
+                                            email=email,
+                                            user_name=u_name,
+                                            error_list=error_list)
             else:
                 new_user = User(fullname=fullname,
                                 location=location,
@@ -208,7 +213,11 @@ class RegistrationHandler(BlogHandler):
                 self.render('login.html',new_user=new_user.fullname)
         else:
             error_list.append("You did not fill atleast one of the fields!")
-            self.render('register.html',error_list=error_list)
+            self.render('register.html', fullname=fullname,
+                                        location=location,
+                                        email=email,
+                                        user_name=u_name,
+                                        error_list=error_list)
 
 class NewPostHandler(BlogHandler):
     def get(self):
@@ -261,18 +270,15 @@ class NewPostHandler(BlogHandler):
 class PostPage(BlogHandler):
     def get(self, post_id):
         user_email = check_for_valid_cookie(self)
-        if user_email:
-            user = User.query(User.email == user_email).get()
-            post = Post.get_by_id(int(post_id))
+        user = User.query(User.email == user_email).get()
+        post = Post.get_by_id(int(post_id))
 
+        if user_email:
             if not post:
                 self.error(404)
                 return
 
-            self.render("blog.html", post = post,user=user)
-        else:
-            cookie_error = "Your session has expired please login again to continue!"
-            self.render('login.html',cookie_error = cookie_error)
+        self.render("blog.html", post = post,user=user)
 
 
 class AboutUsHandler(BlogHandler):

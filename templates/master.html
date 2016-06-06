@@ -11,16 +11,19 @@
   <link href="/static/bootstrap.min.css" rel="stylesheet" type="text/css" />
   <link href="/static/login.css" rel="stylesheet" type="text/css" />
   <link href="/static/social_icons.css" rel="stylesheet" type="text/css" />
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" type="text/css" href="">
   <!--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   <link href="/static/styles.css" rel="stylesheet" type="text/css" />
 
-  <style type="text/css">
-    body{
-      font-family: Comic Sans MS,Verdana;
-    }
-  </style>
+   <link rel="stylesheet" type="text/css"
+          href="https://fonts.googleapis.com/css?family=Open+Sans">
+    <style>
+      body {
+        font-family: 'Open Sans', sans-serif;
+      }
+    </style>
 
 </head>
 
@@ -30,10 +33,12 @@
   <div class="navbar navbar-default navbar-fixed-top one-edge-shadow">
     <div class="container">
       <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=
-        ".navbar-collapse"></button> 
+        <button type="button" id="showButton" class="navbar-toggle" data-toggle="collapse" 
+          data-target=".navbar-collapse">
+            <span class="fa fa-bars"></span>
+        </button> 
         <a class="navbar-brand" href="/home">
-          <b>Your Own Blog</b>
+          Your Own Blog
         </a>
       </div>
 
@@ -74,7 +79,9 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js" type="text/javascript"></script>
   <script src="https://use.fontawesome.com/ccf0d40bb4.js" type="text/javascript"></script>
   <script src="/static/bootstrap.min.js" type="text/javascript"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js" type="text/javascript"></script>
   <script src="//cdn.tinymce.com/4/tinymce.min.js" type="text/javascript"></script>
+
   <script type="text/javascript">
       tinymce.init({
         selector: 'h2.editable',
@@ -144,8 +151,7 @@
       });
 
     $(document).ready(function(){
-      console.log('ready!');
-        $('.postTitle h2').on('click', function() {
+      $('.postTitle h2').on('click', function() {
         $('.postTitle h2').html('');
       });
 
@@ -155,8 +161,6 @@
           }
         });
     });
-
-
 </script>
 
 <script type="text/javascript">

@@ -1,28 +1,28 @@
 {% extends "master.html" %} 
 
 {% block navigation %}
-  {% if user %}
-    <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b><em>{{user.fullname}}</em></b><b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a href="/newpost">New Post</a></li>
-            <li><a href="#">All Posts</a></li>
-            <li><a href="#">Drafts</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">Report Problem</a></li>
-            <li><a href="/logout">Sign Out</a></li>
-          </ul>
-      </li>
-  {% else %}
-    <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Welcome</b><b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><b><a href="/login">Login</a></b></li>
-            <li><b><a href="/register">Signup</a></b></li>
-          </ul>
-         </li>
-  {% endif %}
+ {% if user %}
+  <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><em>{{user.fullname}}</em><b class="caret"></b></a>
+    <ul class="dropdown-menu">
+      <li><a href="/newpost">New Post</a></li>
+      <li><a href="#">All Posts</a></li>
+      <li><a href="#">Drafts</a></li>
+      <li class="divider"></li>
+      <li><a href="#">Profile</a></li>
+      <li><a href="#">Report Problem</a></li>
+      <li><a href="/logout">Sign Out</a></li>
+    </ul>
+  </li>
+{% else %}
+  <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Welcome</b><b class="caret"></b></a>
+    <ul class="dropdown-menu">
+      <li><a href="/login">Login</a></li>
+      <li><a href="/register">Signup</a></li>
+    </ul>
+  </li>
+{% endif %} 
 {% endblock navigation %}
 
 {% block content %}
@@ -57,6 +57,11 @@
   <em>{{ already_logged_in }}</em>
 </div>
 {% endif %}
+
+<ol class="breadcrumb" style="margin-bottom: 5px;">
+  <li><a href="/home">Home</a></li>
+  <li class="active">Login</li>
+</ol>
 
   <div class="row">
 
@@ -112,8 +117,8 @@
                           </div>
                         </div>
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-md btn-danger pull-left" data-dismiss="modal">Close</button>
-                          <button type="submit" class="btn btn-md btn-success pull-right">Request Password Change</button>
+                          <button type="button" class="btn btn-danger btn-md btn-sm pull-left" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-success btn-md btn-sm pull-right">Request Password Change</button>
                         </div>
                       </div>
                     </div>

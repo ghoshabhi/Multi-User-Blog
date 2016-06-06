@@ -2154,7 +2154,7 @@ input[type=submit].btn-block, input[type=reset].btn-block, input[type=button].bt
     height: 1px;
     margin: 9px 0;
     overflow: hidden;
-    background-color: #e5e5e5;
+    background-color: white;
 }
 .dropdown-menu>li>a {
     display: block;
@@ -2757,7 +2757,7 @@ textarea.input-group-sm>.form-control, textarea.input-group-sm>.input-group-addo
     padding: 9px 10px;
     margin-top: 8px;
     margin-bottom: 8px;
-    background-color: #FF751A;
+    background-color: white; /* Change here to change color of hamburger icon */
     background-image: none;
     border: 1px solid transparent;
     border-radius: 4px;
@@ -2922,11 +2922,11 @@ textarea.input-group-sm>.form-control, textarea.input-group-sm>.input-group-addo
     margin-right: 0;
 }
 }.navbar-default {
-    background-color: #ff751a; /*change here*/
+    background-color: #1976d2; /*change here*/
     /*border-color: #e7e7e7;*/
 }
 .navbar-default .navbar-brand {
-    color: #777;
+    color: white; /* Change here to change for `Your Own Blog` item */
 }
 .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
     color: white; /* Home Button Color */
@@ -2936,23 +2936,23 @@ textarea.input-group-sm>.form-control, textarea.input-group-sm>.input-group-addo
     color: #777;
 }
 .navbar-default .navbar-nav>li>a {
-    /*color: #777;*/
-    color:#333;
+    color: white; /*Change here to change color of nav-bar li items*/
+    /*color:#333;*/
 }
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
     color: white;
     background-color: transparent;
 }
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
-    /*color: #333;*/ /* change this to change color of `Home` button */
-    background-color: #ff751a;
+    color: white; /* change this to change color of `Home` button */
+    background-color: #1976d2;
 }
 .navbar-default .navbar-nav>.disabled>a, .navbar-default .navbar-nav>.disabled>a:hover, .navbar-default .navbar-nav>.disabled>a:focus {
-    color: #ff751a;
+    color: ##1976d2;
     background-color: transparent;
 }
 .navbar-default .navbar-toggle {
-    border-color: #ddd;
+    border-color: white; 
 }
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
     background-color: white;
@@ -2961,18 +2961,18 @@ textarea.input-group-sm>.form-control, textarea.input-group-sm>.input-group-addo
     background-color: #888;
 }
 .navbar-default .navbar-collapse, .navbar-default .navbar-form {
-    border-color: #e7e7e7;
+    border-color: #1976d2; /* Change here the color of margin between menu and nav-bar*/
 }
 .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
-    background-color: #e6f9ff;
-    color: #555;
+    background-color: transparent;
+    color: white;
 }
 @media (max-width:767px) {
     .navbar-default .navbar-nav .open .dropdown-menu>li>a {
-    color: #777;
+    color: white;
 }
 .navbar-default .navbar-nav .open .dropdown-menu>li>a:hover, .navbar-default .navbar-nav .open .dropdown-menu>li>a:focus {
-    color: #333;
+    color: white;
     background-color: transparent;
 }
 .navbar-default .navbar-nav .open .dropdown-menu>.active>a, .navbar-default .navbar-nav .open .dropdown-menu>.active>a:hover, .navbar-default .navbar-nav .open .dropdown-menu>.active>a:focus {
@@ -3066,7 +3066,7 @@ textarea.input-group-sm>.form-control, textarea.input-group-sm>.input-group-addo
     padding: 8px 15px;
     margin-bottom: 20px;
     list-style: none;
-    background-color: #f5f5f5;
+    /*background-color: #f5f5f5;*/
     border-radius: 4px;
 }
 .breadcrumb>li {
@@ -3647,6 +3647,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
 }
 .panel-body {
     padding: 15px;
+    margin: 0 auto;
 }
 .panel-heading {
     padding: 10px 15px;

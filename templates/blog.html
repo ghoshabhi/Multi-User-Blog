@@ -27,10 +27,16 @@
 
 
 {% block content %}
-  {% if post %}
+{% if post %}
+
+<ol class="breadcrumb" style="margin-bottom: 5px;">
+  <li><a href="/blog/{{ post.key | filterKey }}">{{post.title}}</a></li>
+  <li class="/blog/{{  }}">About Us</li>
+</ol>
+
     <h1>{{post.title | safe}}</h1>
     <br><br>
-    <div style="text-align: justify;text-justify: inter-word;">
+    <div style="margin:30px;text-align: justify;text-justify: inter-word;">
       {{post.content | safe}}
     </div>
   {% endif %}

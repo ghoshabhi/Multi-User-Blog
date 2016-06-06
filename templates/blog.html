@@ -30,14 +30,15 @@
 {% if post %}
 
 <ol class="breadcrumb" style="margin-bottom: 5px;">
+  <li><a href='/home'>Home</a></li>
+  <li><a href='/allposts'>blog</a></li>
   <li><a href="/blog/{{ post.key | filterKey }}">{{post.title}}</a></li>
-  <li class="/blog/{{  }}">About Us</li>
 </ol>
+<div style="margin:30px;text-align: justify;text-justify: inter-word;">
+  <h1>{{post.title | safe}}</h1>
+  <br>
+  {{post.content | safe}}
+</div>
 
-    <h1>{{post.title | safe}}</h1>
-    <br><br>
-    <div style="margin:30px;text-align: justify;text-justify: inter-word;">
-      {{post.content | safe}}
-    </div>
   {% endif %}
 {% endblock %}

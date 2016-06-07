@@ -11,6 +11,7 @@ from models import *
 from google.appengine.ext import ndb
 from google.appengine.ext.webapp import blobstore_handlers
 from google.appengine.ext import blobstore
+from google.appengine.api import images
 
 template_dir = os.path.join(os.path.dirname(__file__),'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
@@ -294,13 +295,22 @@ class ProfileHandler(BlogHandler):
         user_cookie = User.query(User.email == user_email).get()
         user_public = User.get_by_id(int(user_id))
 
+        if user_cookie:
+            user_photo = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
+            if user_photo:
+                user_photo_url = images.get_serving_url(user_photo.photo_blob_key)
+            else:
+                user_photo_url = ''
+        else:
+            user_photo_url = ''
 
         if(self.request.get('pass_update')!= 'False' and 
             self.request.get('pass_update')!= None):
             pass_update = 'success'
-            if user_cookie.email:
+            if user_cookie:
                 public_profile = False
                 self.render('profile.html',user=user_cookie,
+                    user_photo_url = user_photo_url,
                     user_public=False,
                     pass_update = pass_update,
                     public_profile= public_profile)
@@ -309,10 +319,11 @@ class ProfileHandler(BlogHandler):
                 self.render('login.html',cookie_error=cookie_error)
         else:
             pass_update = 'fail'
-            if user_cookie.email:
+            if user_cookie:
                 public_profile = False
                 self.render('profile.html',user=user_cookie,
                     user_public=False,
+                    user_photo_url = user_photo_url,
                     pass_update = pass_update,
                     public_profile= public_profile)
             else:
@@ -324,6 +335,7 @@ class ProfileHandler(BlogHandler):
             if user_cookie.email != user_public.email:
                 public_profile = True
                 self.render('profile.html',user=user_cookie,
+                            user_photo_url = user_photo_url,
                             user_public=user_public,
                             public_profile= public_profile,
                             pass_update = '',
@@ -333,6 +345,7 @@ class ProfileHandler(BlogHandler):
                 if user_cookie.email:
                     public_profile = False
                     self.render('profile.html',user=user_cookie,
+                            user_photo_url = user_photo_url,
                              user_public=user_public, 
                              public_profile= public_profile,
                              pass_update = '',
@@ -343,6 +356,7 @@ class ProfileHandler(BlogHandler):
         else:
             public_profile = True
             self.render('profile.html',user=user_cookie,
+                    user_photo_url = user_photo_url,
                     user_public=user_public,
                     public_profile= public_profile,
                     pass_update = '',
@@ -402,6 +416,34 @@ class ChangePassHandler(BlogHandler):
             self.render('login.html',cookie_error=cookie_error)
 
 
+class PhotoUploadHandler(BlogHandler, blobstore_handlers.BlobstoreUploadHandler):
+    def post(self):
+        user_email = check_for_valid_cookie(self)
+        user_cookie = User.query(User.email == user_email).get()
+        user_photo = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
+
+        if user_cookie:
+            if user_photo:
+                img = self.request.get('img')
+                img = images.resize(img, 32, 32)
+                user_photo.photo_blob = img
+                user_photo.put()
+                time.sleep(0.1)
+                self.redirect('/profile/%s?up=%s'% str(user_cookie.key.id()),str(user_photo.key.id()))
+                # upload = self.get_uploads()[0]
+                # user_photo = UserPhoto(
+                #     user=user_cookie.key,
+                #     photo_blob_key=upload.key())
+                # user_photo.put()
+                # time.sleep(0.1)
+                # self.redirect('/profile/%s'% str(user_cookie.key.id()))
+                # self.redirect('/view_photo/%s' % upload.key())
+            else:
+                self.write('User photo obj not found')
+        else:
+            cookie_error = 'You need to log in first to edit profile!'
+            self.render('login.html',cookie_error=cookie_error)
+
 class AboutUsHandler(BlogHandler):
     def get(self):
         user_email = check_for_valid_cookie(self)
@@ -450,5 +492,6 @@ app = webapp2.WSGIApplication([
     ('/profile/([0-9]+)',ProfileHandler),
     ('/personalinfo',EditPersonalInfoHandler),
     ('/changepass',ChangePassHandler),
+    ('/changepicture',PhotoUploadHandler),
     ('/test',TestHandler)
     ], debug=True)

@@ -103,16 +103,16 @@
     <hr>
   <div class="row">
       <!-- left column -->
-      <form action="/changepicture">
+      <form action="/changepicture" method="post" enctype="multipart/form-data">
       <div class="col-md-3">
         <div class="text-center">
-          {% if user.photo %}
-            <img src="user.photo | fitlerPhoto" class="img-responsive img-rounded" alt="avatar">
+          {% if user_photo_url %}
+            <img src="user_photo_url" class="img-responsive img-rounded" alt="avatar">
             <h6>Upload a different photo...</h6>
             
-            <input type="file" class="form-control">
+            <input type="file" name="img" class="form-control">
             <br>
-            <input type="submit" class="btn btn-primary" value="Change Picture">
+            <input type="submit" name="img" class="btn btn-primary" value="Change Picture">
           {% else %}
             <img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
             <h6>Upload a different photo...</h6>

@@ -9,7 +9,7 @@
       <li><a href="#">All Posts</a></li>
       <li><a href="#">Drafts</a></li>
       <li class="divider"></li>
-      <li><a href="#">Profile</a></li>
+      <li><a href="/profile/{{ user.key | filterKey}}">Profile</a></li>
       <li><a href="#">Report Problem</a></li>
       <li><a href="/logout">Sign Out</a></li>
     </ul>
@@ -34,7 +34,7 @@
 </ol>
 
   <div class="container">
-    <h1>{{user_public.fullname}},<small>{{user_public.location}}</small></h1>
+    <h1>{{user_public.fullname}}</h1>
     <hr>
     <div class="row">
       <!-- left column -->
@@ -80,9 +80,9 @@
             <label class="col-lg-3 control-label">About:</label>
             <div class="col-lg-8 col-md-9 col-sm-10">
               {% if user_public.about %}
-              <textarea class="form-control" name="about" type="text">{{user_public.about}}"></textarea>
+              <textarea disabled class="form-control" name="about" type="text">{{user_public.about}}"></textarea>
               {% else %}
-              <textarea class="form-control" name="about" type="text">This user tends to be secretive about himself</textarea>
+              <textarea disabled class="form-control" name="about" type="text">This user tends to be secretive about himself</textarea>
               {% endif %}
             </div>
           </div>
@@ -95,11 +95,11 @@
 
 <ol class="breadcrumb" style="margin-bottom: 5px;">
   <li><a href="/home">Home</a>
-  <li class="active">{{user.fullname}}</li>
+  <li class="active">{{user.fullname}} - Edit Profile</li>
 </ol>
 
 <div class="container">
-    <h1>{{user.fullname}},<small>{{user.location}}</small></h1>
+    <h1>{{user.fullname}}</h1>
     <hr>
   <div class="row">
       <!-- left column -->

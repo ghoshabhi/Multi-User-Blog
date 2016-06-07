@@ -5,9 +5,12 @@ import re
 import hashlib
 import hmac
 import json
+import time
 
 from models import *
 from google.appengine.ext import ndb
+from google.appengine.ext.webapp import blobstore_handlers
+from google.appengine.ext import blobstore
 
 template_dir = os.path.join(os.path.dirname(__file__),'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
@@ -63,8 +66,12 @@ def check_for_valid_cookie(self):
 
 def filterKey(key):
     return key.id()
+
+def filterPhoto(photoKey):
+    pass
     
 jinja_env.filters['filterKey'] = filterKey
+jinja_env.filters['filterPhoto'] = filterPhoto
 
 class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -281,15 +288,72 @@ class PostPageHandler(BlogHandler):
         self.render("blog.html", post = post,user=user)
 
 
-class ProfilePageHandler(BlogHandler):
-    def get(self):
+class ProfileHandler(BlogHandler):
+    def get(self,user_id):
         user_email = check_for_valid_cookie(self)
-        user = User.query(User.email == user_email).get()
+        user_cookie = User.query(User.email == user_email).get()
+        user_public = User.get_by_id(int(user_id))
 
-        if user_email:
-            self.render('profile.html',user=user)
+        # if(self.request.get('updated')):
+        #     details_updated = "Details were updated successfully!"
+        #     if user_cookie.email:
+        #         public_profile = False
+        #         self.render('profile.html',user=user_cookie,
+        #             user_public=user_public,
+        #             details_updated = details_updated,
+        #             public_profile= public_profile)
+        #     else:
+        #         cookie_error = 'You need to log in first to edit profile!'
+        #         self.render('login.html',cookie_error=cookie_error)
+        #     return
+
+        if user_cookie:
+            if user_cookie.email != user_public.email:
+                public_profile = True
+                self.render('profile.html',user=user_cookie,
+                             user_public=user_public, public_profile= public_profile)
+
+            else:
+                if user_cookie.email:
+                    public_profile = False
+                    self.render('profile.html',user=user_cookie,
+                             user_public=user_public, public_profile= public_profile)
+                else:
+                    cookie_error = 'You need to log in first to edit profile!'
+                    self.render('login.html',cookie_error=cookie_error)
         else:
-            self.render('profile.html',user=user)
+            public_profile = True
+            self.render('profile.html',user=user_cookie,
+                    user_public=user_public, public_profile= public_profile)
+
+
+class EditPersonalInfoHandler(BlogHandler):
+    def post(self):
+        fullname = self.request.get('fullname')
+        email = self.request.get('email')
+        about = self.request.get('about')
+        username = self.request.get('username')
+        location = self.request.get('location')
+
+        user_email = check_for_valid_cookie(self)
+        user_cookie = User.query(User.email == user_email).get()
+        
+        if user_cookie:
+            user_cookie.fullname = fullname
+            user_cookie.email = email
+            user_cookie.about = about
+            user_cookie.user_name = username
+            user_cookie.location = location
+
+            user_cookie.put()
+            time.sleep(0.1)
+            self.redirect('/profile/%s?updated=True'% str(user_cookie.key.id()))
+            # details_updated = "Details were updated successfully!"
+            # self.render('profile.html',user=user_cookie,user_public=False, 
+            #     public_profile= False,details_updated=details_updated)
+        else:
+            cookie_error = 'You need to log in first to edit profile!'
+            self.render('login.html',cookie_error=cookie_error)
 
 
 class AboutUsHandler(BlogHandler):
@@ -337,6 +401,7 @@ app = webapp2.WSGIApplication([
     ('/aboutus',AboutUsHandler),
     ('/newpost',NewPostHandler),
     ('/blog/([0-9]+)', PostPageHandler),
-    ('/profile',ProfilePageHandler),
+    ('/profile/([0-9]+)',ProfileHandler),
+    ('/personalinfo',EditPersonalInfoHandler),
     ('/test',TestHandler)
     ], debug=True)

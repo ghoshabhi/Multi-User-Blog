@@ -1,11 +1,14 @@
 from google.appengine.ext import ndb
+from google.appengine.ext.webapp import blobstore_handlers
+from google.appengine.ext import blobstore
 
 class User(ndb.Model):
     fullname = ndb.StringProperty(required=True)
     user_name = ndb.StringProperty(required=True)
+    about = ndb.StringProperty()
     email = ndb.StringProperty(required=True)
     password = ndb.TextProperty(indexed=True,required=True)
-    photo = ndb.StringProperty()
+    photo = ndb.BlobKeyProperty()
     location = ndb.StringProperty()
 
 

@@ -9,7 +9,7 @@
       <li><a href="#">All Posts</a></li>
       <li><a href="#">Drafts</a></li>
       <li class="divider"></li>
-      <li><a href="/profile">Profile</a></li>
+      <li><a href="/profile/{{ user.key | filterKey}}">Profile</a></li>
       <li><a href="#">Report Problem</a></li>
       <li><a href="/logout">Sign Out</a></li>
     </ul>
@@ -66,7 +66,7 @@
               <br>
               <div class="row">
                 <div class="col-md-4 col-sm-5" style="margin:0">
-                  <a class="story-img" href="/user/{{ each_user.key | filterKey }}">
+                  <a class="story-img" href="/profile/{{ each_user.key | filterKey }}">
                     <img src="//placehold.it/100" style="width:100px;height:100px" class="img-circle">
                     {{ each_user.fullname }}
                   </a>
@@ -86,7 +86,6 @@
                       <li><a href="#">{{ each_post.created.strftime("%b %d, '%y") }}</a></li>
                       <li><a class="btn btn-md btn-sm btn-success"><span class="fa fa-thumbs-up"></span>&nbsp;Like</a>
                       <li><a href="#"><i class="fa fa-comment-o"></i> 4 Comments</a></li>
-                      <li><a href="#"><i class="fa fa-share"></i> 34 Shares</a></li>
                     </ul>
                   </div>
                   <div class="col-xs-3"></div>

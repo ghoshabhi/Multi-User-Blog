@@ -92,7 +92,9 @@
       });
 
       tinymce.init({
-        selector: "textarea",
+        // selector: "textarea",
+        mode : "exact", 
+        elements: "content",
         height: 500,
         plugins: [
           "advlist autolink autosave save link image lists charmap print preview hr anchor pagebreak spellchecker",
@@ -166,13 +168,13 @@
 
 <script type="text/javascript">
   $('#login-submit').click(function() {
-    var content = tinymce.get('content1').getContent({format: 'text'});
+    var content = tinymce.get('content').getContent({format: 'text'});
       if($.trim(content) == '')
       { 
         alert('editor is empty ...');
       }
       else{
-        alert(tinymce.get('content1').getContent());
+        alert(tinymce.get('content').getContent());
       }
     });
 </script>

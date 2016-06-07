@@ -27,20 +27,86 @@
 
 {% block content %}
 
+{% if public_profile %}
+<ol class="breadcrumb" style="margin-bottom: 5px;">
+  <li><a href="/home">Home</a>
+  <li class="active">{{user_public.fullname}}</li>
+</ol>
+
+  <div class="container">
+    <h1>{{user_public.fullname}},<small>{{user_public.location}}</small></h1>
+    <hr>
+    <div class="row">
+      <!-- left column -->
+      <div class="col-md-3">
+        <div class="text-center">
+          {% if user_public.photo %}
+            <img src="user_public.photo | fitlerPhoto" class="img-responsive img-rounded" alt="avatar">
+          {% else %}
+            <img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- edit form column -->
+      <div class="col-md-9 personal-info">
+        <h3>Personal info:</h3>
+        <div class="form-horizontal">
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Full Name:</label>
+            <div class="col-lg-8">
+              <label class="form-control" type="text">{{user_public.fullname}}</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Location:</label>
+            <div class="col-lg-8">
+              <label class="form-control" type="text">{{user_public.location}}</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Email:</label>
+            <div class="col-lg-8">
+              <label class="form-control" type="email">{{user_public.email}}</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">Username:</label>
+            <div class="col-md-8">
+              <label class="form-control" type="text">{{user_public.user_name}}</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">About:</label>
+            <div class="col-lg-8 col-md-9 col-sm-10">
+              {% if user_public.about %}
+              <textarea class="form-control" name="about" type="text">{{user_public.about}}"></textarea>
+              {% else %}
+              <textarea class="form-control" name="about" type="text">This user tends to be secretive about himself</textarea>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+{% else %}
+
 <ol class="breadcrumb" style="margin-bottom: 5px;">
   <li><a href="/home">Home</a>
   <li class="active">{{user.fullname}}</li>
 </ol>
 
 <div class="container">
-    <h1>Edit Profile</h1>
-  	<hr>
-	<div class="row">
+    <h1>{{user.fullname}},<small>{{user.location}}</small></h1>
+    <hr>
+  <div class="row">
       <!-- left column -->
       <div class="col-md-3">
         <div class="text-center">
           {% if user.photo %}
-            <img src="//placehold.it/400x200" class="img-responsive img-rounded" alt="avatar">
+            <img src="user.photo | fitlerPhoto" class="img-responsive img-rounded" alt="avatar">
             <h6>Upload a different photo...</h6>
             
             <input type="file" class="form-control">
@@ -55,36 +121,49 @@
       
       <!-- edit form column -->
       <div class="col-md-9 personal-info">
+      
+       {% if details_updated %}
         <div class="alert alert-success alert-dismissable" style="display:none">
           <a class="panel-close close" data-dismiss="alert">×</a> 
           <i class="fa fa-coffee"></i>
           This is an <strong>.alert</strong>. Use this to show important messages to the user.
         </div>
+      {% endif %}
 
-        <h3>Personal info</h3>
-        <form class="form-horizontal" action='/aboutus'>
+        <h3>Personal info:</h3>
+        <form class="form-horizontal" method='post' action='/personalinfo'>
           <div class="form-group">
             <label class="col-lg-3 control-label">Full Name:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" value="{{user.fullname}}">
+              <input class="form-control" name="fullname" type="text" value="{{user.fullname}}">
             </div>
           </div>
-          <!-- <div class="form-group">
-            <label class="col-lg-3 control-label">Company:</label>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Location:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" value="">
+              <input class="form-control" name="location" type="text" value="{{user.location}}">
             </div>
-          </div> -->
+          </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Email:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" value="{{user.email}}">
+              <input class="form-control" name="email" type="email" value="{{user.email}}">
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 control-label">Username:</label>
             <div class="col-md-8">
-              <input class="form-control" type="text" value="{{user.user_name}}">
+              <input class="form-control" name="username" type="text" value="{{user.user_name}}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">About:</label>
+            <div class="col-lg-8">
+              {% if user.about %}
+                <textarea class="form-control" name="about" type="text">{{ user.about}}</textarea> 
+              {% else %}
+                <textarea class="form-control" name="about" type="text" placeholder="Describe yourself in short..."></textarea>
+              {% endif %}
             </div>
           </div>
           <div class="form-group">
@@ -109,7 +188,7 @@
         </div> -->
         <h3>Change Password ?</h3>
         
-        <form class="form-horizontal" action="/test">
+        <form class="form-horizontal" action="/changepass">
           <div class="form-group">
             <label class="col-md-3 control-label">Password:</label>
             <div class="col-md-8">
@@ -125,7 +204,7 @@
           <div class="form-group">
             <label class="col-md-3 control-label"></label>
             <div class="col-md-8">
-              <input type="button" class="btn btn-primary" value="Save Changes">
+              <input type="submit" class="btn btn-primary" value="Save Changes">
               <span></span>
               <input type="reset" class="btn btn-default" value="Cancel">
             </div>
@@ -136,5 +215,6 @@
   </div>
 </div>
 
+{% endif %}
 
 {% endblock %}

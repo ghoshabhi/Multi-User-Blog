@@ -18,3 +18,12 @@ class Post(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add = True)
     last_modified = ndb.DateTimeProperty(auto_now = True)
     user = ndb.KeyProperty(kind=User)
+
+class UserProfilePicture(ndb.Model):
+    user = ndb.KeyProperty(kind=User)
+    picture_blob_key = ndb.BlobKeyProperty()
+
+class Comments(ndb.Model):
+    user = ndb.KeyProperty(kind=User)
+    post = ndb.KeyProperty(kind=Post)
+    comment = ndb.StringProperty()

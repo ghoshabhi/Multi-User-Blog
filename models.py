@@ -7,7 +7,6 @@ class User(ndb.Model):
     user_name = ndb.StringProperty(required=True)
     about = ndb.StringProperty()
     email = ndb.StringProperty(required=True)
-    photo = ndb.BlobProperty()
     password = ndb.TextProperty(indexed=True,required=True)
     location = ndb.StringProperty()
 
@@ -19,9 +18,9 @@ class Post(ndb.Model):
     last_modified = ndb.DateTimeProperty(auto_now = True)
     user = ndb.KeyProperty(kind=User)
 
-# class UserPhoto(ndb.Model):
-#     user = ndb.KeyProperty(kind=User)
-#     photo_blob = ndb.BlobProperty()
+class UserPhoto(ndb.Model):
+    user = ndb.KeyProperty(kind=User)
+    photo_blob = ndb.BlobProperty()
 
 class Comments(ndb.Model):
     user = ndb.KeyProperty(kind=User)

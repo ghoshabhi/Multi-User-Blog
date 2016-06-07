@@ -9,7 +9,7 @@
       <li><a href="#">All Posts</a></li>
       <li><a href="#">Drafts</a></li>
       <li class="divider"></li>
-      <li><a href="#">Profile</a></li>
+      <li><a href="/profile">Profile</a></li>
       <li><a href="#">Report Problem</a></li>
       <li><a href="/logout">Sign Out</a></li>
     </ul>
@@ -84,7 +84,8 @@
                     <p class="pull-right"><span class="label label-default">keyword</span> <span class="label label-default">tag</span> <span class="label label-default">post</span></p>
                     <ul class="list-inline">
                       <li><a href="#">{{ each_post.created.strftime("%b %d, '%y") }}</a></li>
-                      <li><a href="#"><i class="fa fa-comment"></i> 4 Comments</a></li>
+                      <li><a class="btn btn-md btn-sm btn-success"><span class="fa fa-thumbs-up"></span>&nbsp;Like</a>
+                      <li><a href="#"><i class="fa fa-comment-o"></i> 4 Comments</a></li>
                       <li><a href="#"><i class="fa fa-share"></i> 34 Shares</a></li>
                     </ul>
                   </div>

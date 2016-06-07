@@ -267,7 +267,7 @@ class NewPostHandler(BlogHandler):
         #     cookie_error = "Your session has expired please login again to continue!"
         #     self.render('login.html',cookie_error = cookie_error)
 
-class PostPage(BlogHandler):
+class PostPageHandler(BlogHandler):
     def get(self, post_id):
         user_email = check_for_valid_cookie(self)
         user = User.query(User.email == user_email).get()
@@ -279,6 +279,17 @@ class PostPage(BlogHandler):
                 return
 
         self.render("blog.html", post = post,user=user)
+
+
+class ProfilePageHandler(BlogHandler):
+    def get(self):
+        user_email = check_for_valid_cookie(self)
+        user = User.query(User.email == user_email).get()
+
+        if user_email:
+            self.render('profile.html',user=user)
+        else:
+            self.render('profile.html',user=user)
 
 
 class AboutUsHandler(BlogHandler):
@@ -325,6 +336,7 @@ app = webapp2.WSGIApplication([
     ('/logout', LogOutHandler),
     ('/aboutus',AboutUsHandler),
     ('/newpost',NewPostHandler),
-    ('/blog/([0-9]+)', PostPage),
-    ('/test',TestHandler),
+    ('/blog/([0-9]+)', PostPageHandler),
+    ('/profile',ProfilePageHandler),
+    ('/test',TestHandler)
     ], debug=True)

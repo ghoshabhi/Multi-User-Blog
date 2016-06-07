@@ -103,6 +103,7 @@
     <hr>
   <div class="row">
       <!-- left column -->
+      <form action="/changepicture">
       <div class="col-md-3">
         <div class="text-center">
           {% if user.photo %}
@@ -110,15 +111,19 @@
             <h6>Upload a different photo...</h6>
             
             <input type="file" class="form-control">
+            <br>
+            <input type="submit" class="btn btn-primary" value="Change Picture">
           {% else %}
             <img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
             <h6>Upload a different photo...</h6>
             
             <input type="file" class="form-control">
+            <br>
+            <input type="submit" class="btn btn-primary" value="Change Picture">
           {% endif %}
         </div>
       </div>
-      
+      </form>
       <!-- edit form column -->
       <div class="col-md-9 personal-info">
       
@@ -181,24 +186,38 @@
       <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-9 personal-info">
-        <!-- <div class="alert alert-info alert-dismissable">
-          <a class="panel-close close" data-dismiss="alert">×</a> 
-          <i class="fa fa-coffee"></i>
-          This is an <strong>.alert</strong>. Use this to show important messages to the user.
-        </div> -->
+
+        {% if pass_update == 'success' and pass_update!= '' %}
+          <div class="alert alert-success alert-dismissable">
+            <a class="panel-close close" data-dismiss="alert">×</a> 
+            <i class="fa fa-check" aria-hidden="true"></i>
+            The password was changed successfully!
+          </div>
+        {% elif pass_update == 'fail' %}
+          <div class="alert alert-danger alert-dismissable">
+            <a class="panel-close close" data-dismiss="alert">×</a> 
+            <i class="fa fa-times" aria-hidden="true"></i>
+            Either the passwords do not match or you did not match the minimum requirements to set the password!
+              <li>The password should be atleast 3 characters long</li>
+              <li>The password can't be more than 20 characters!</li>
+             Please try agian {{user.fullname}}
+          </div>
+        {% else %}
+
+        {% endif %}
         <h3>Change Password ?</h3>
         
-        <form class="form-horizontal" action="/changepass">
+        <form class="form-horizontal" method="post" action="/changepass">
           <div class="form-group">
-            <label class="col-md-3 control-label">Password:</label>
+            <label class="col-md-3 control-label">New Password:</label>
             <div class="col-md-8">
-              <input class="form-control" id="pass" type="password">
+              <input class="form-control" name="password" id="pass" type="password">
             </div>
           </div>
           <div class="form-group">
-            <label class="col-md-3 control-label">Confirm password:</label>
+            <label class="col-md-3 control-label">Confirm New password:</label>
             <div class="col-md-8">
-              <input class="form-control" type="password">
+              <input class="form-control" name="confirm_pass" type="password">
             </div>
           </div>
           <div class="form-group">

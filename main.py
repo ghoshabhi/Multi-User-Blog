@@ -294,37 +294,59 @@ class ProfileHandler(BlogHandler):
         user_cookie = User.query(User.email == user_email).get()
         user_public = User.get_by_id(int(user_id))
 
-        # if(self.request.get('updated')):
-        #     details_updated = "Details were updated successfully!"
-        #     if user_cookie.email:
-        #         public_profile = False
-        #         self.render('profile.html',user=user_cookie,
-        #             user_public=user_public,
-        #             details_updated = details_updated,
-        #             public_profile= public_profile)
-        #     else:
-        #         cookie_error = 'You need to log in first to edit profile!'
-        #         self.render('login.html',cookie_error=cookie_error)
-        #     return
+
+        if(self.request.get('pass_update')!= 'False' and 
+            self.request.get('pass_update')!= None):
+            pass_update = 'success'
+            if user_cookie.email:
+                public_profile = False
+                self.render('profile.html',user=user_cookie,
+                    user_public=False,
+                    pass_update = pass_update,
+                    public_profile= public_profile)
+            else:
+                cookie_error = 'You need to log in first to edit profile!'
+                self.render('login.html',cookie_error=cookie_error)
+        else:
+            pass_update = 'fail'
+            if user_cookie.email:
+                public_profile = False
+                self.render('profile.html',user=user_cookie,
+                    user_public=False,
+                    pass_update = pass_update,
+                    public_profile= public_profile)
+            else:
+                cookie_error = 'You need to log in first to edit profile!'
+                self.render('login.html',cookie_error=cookie_error)
+        return
 
         if user_cookie:
             if user_cookie.email != user_public.email:
                 public_profile = True
                 self.render('profile.html',user=user_cookie,
-                             user_public=user_public, public_profile= public_profile)
+                            user_public=user_public,
+                            public_profile= public_profile,
+                            pass_update = '',
+                            invalid_pass = '')
 
             else:
                 if user_cookie.email:
                     public_profile = False
                     self.render('profile.html',user=user_cookie,
-                             user_public=user_public, public_profile= public_profile)
+                             user_public=user_public, 
+                             public_profile= public_profile,
+                             pass_update = '',
+                             invalid_pass = '')
                 else:
                     cookie_error = 'You need to log in first to edit profile!'
                     self.render('login.html',cookie_error=cookie_error)
         else:
             public_profile = True
             self.render('profile.html',user=user_cookie,
-                    user_public=user_public, public_profile= public_profile)
+                    user_public=user_public,
+                    public_profile= public_profile,
+                    pass_update = '',
+                    invalid_pass = '')
 
 
 class EditPersonalInfoHandler(BlogHandler):
@@ -351,6 +373,30 @@ class EditPersonalInfoHandler(BlogHandler):
             # details_updated = "Details were updated successfully!"
             # self.render('profile.html',user=user_cookie,user_public=False, 
             #     public_profile= False,details_updated=details_updated)
+        else:
+            cookie_error = 'You need to log in first to edit profile!'
+            self.render('login.html',cookie_error=cookie_error)
+
+
+class ChangePassHandler(BlogHandler):
+    def post(self):
+        password = self.request.get('password')
+        confirm_pass = self.request.get('confirm_pass')
+
+        user_email = check_for_valid_cookie(self)
+        user_cookie = User.query(User.email == user_email).get()
+
+        if user_cookie:
+            if password == confirm_pass:
+                if valid_password(password):
+                    user_cookie.password = hash_str(password)
+                    user_cookie.put()
+                    time.sleep(0.1)
+                    self.redirect('/profile/%s?pass_update=True'% str(user_cookie.key.id()))
+                else:
+                    self.redirect('/profile/%s?pass_update=False'% str(user_cookie.key.id()))
+            else:
+                self.redirect('/profile/%s?pass_update=False'% str(user_cookie.key.id()))
         else:
             cookie_error = 'You need to log in first to edit profile!'
             self.render('login.html',cookie_error=cookie_error)
@@ -403,5 +449,6 @@ app = webapp2.WSGIApplication([
     ('/blog/([0-9]+)', PostPageHandler),
     ('/profile/([0-9]+)',ProfileHandler),
     ('/personalinfo',EditPersonalInfoHandler),
+    ('/changepass',ChangePassHandler),
     ('/test',TestHandler)
     ], debug=True)

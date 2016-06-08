@@ -12,9 +12,9 @@ def UpdateSchema(cursor=None, num_updated=0):
 
     to_put = []
     for p in query.fetch(limit=BATCH_SIZE):
-        if hasattr(p, 'photo'):
-            del p.photo
-            ndb.put(p)
+        if hasattr(p, 'location'):
+            del p._properties['location']
+            p.put()
 
     if to_put:
         ndb.put(to_put)

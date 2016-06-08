@@ -1,5 +1,4 @@
 from google.appengine.ext import ndb
-from google.appengine.ext.webapp import blobstore_handlers
 from google.appengine.ext import blobstore
 
 class User(ndb.Model):
@@ -21,6 +20,10 @@ class Post(ndb.Model):
 class UserPhoto(ndb.Model):
     user = ndb.KeyProperty(kind=User)
     photo_blob = ndb.BlobProperty()
+
+class Likes(ndb.Model):
+    post = ndb.KeyProperty(kind=Post)
+    like_count = ndb.IntegerProperty()
 
 class Comments(ndb.Model):
     user = ndb.KeyProperty(kind=User)

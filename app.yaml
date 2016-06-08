@@ -11,6 +11,8 @@ handlers:
 
 - url: /update_schema
   script: update_schema_handler.app  # path to webapp2 application definition.
+  login: admin
+  secure: always
 
 - url: /static
   static_dir: static

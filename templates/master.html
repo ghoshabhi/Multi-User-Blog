@@ -173,13 +173,13 @@
       VoteUp(key);
     });
   
-  function VoteUp(postkey){
+  function VoteUp(postID){
     console.log('Function starts');
     $.ajax({
       type: "post",
       url: "/voteup",
       dataType: 'json',
-      data: JSON.stringify({ "postkey": postkey}),
+      data: { "postID": postID},
       error: alert('couldnt fetch the URL'),
       success: function(data){
         alert( "Like successfull!!! Count is : " + data['like_obj']['like_count'] );

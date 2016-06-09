@@ -166,6 +166,13 @@
     });
 </script>
 <script type="text/javascript">
+  $('.like-button').on('click', function(e){
+     e.preventDefault()
+     var key = $(this).data('key');
+     console.log(key);
+      VoteUp(key);
+    });
+  
   function VoteUp(postkey){
     console.log('Function starts');
     $.ajax({

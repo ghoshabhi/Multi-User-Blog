@@ -88,7 +88,7 @@
                         {% endif %} -->
                         <ul class="list-inline">
                           <li><a href="#">{{ each_post.created.strftime("%b %d, '%y") }}</a></li>
-                          <li><a class="btn btn-md btn-sm btn-success like-button">
+                          <li><a data-key="{{each_post.key | filterKey}}" href="#" class="btn btn-md btn-sm btn-success like-button">
                                 <span class="fa fa-thumbs-up"></span>&nbsp;Like
                               </a>
                           <li><a href="/blog/{{each_post.key |filterKey }}"><i class="fa fa-comment-o"></i> 4 Comments</a></li>

@@ -315,8 +315,8 @@ class LikeHandler(BlogHandler):
         self.write(like_obj.like_count)
         like_obj.like_count += 1
         like_obj.put()
-        # self.write(like_obj.like_count)
-        self.write(json.dumps(({'like_obj': like_obj.to_dict()})))
+        self.write(like_obj.like_count)
+        self.write(json.dumps(({'like_count': like_obj.like_count})))
 
 
 class ProfileHandler(BlogHandler):

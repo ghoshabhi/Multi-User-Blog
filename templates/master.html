@@ -182,8 +182,8 @@
       data: { "postID": postID},
       error: alert('couldnt fetch the URL'),
       success: function(data){
-        alert( "Like successfull!!! Count is : " + data['like_obj']['like_count'] );
-        $('.likeCount').text(data['like_obj']['like_count']);
+        alert( "Like successfull!!! Count is : " + data['like_count'] );
+        $('.likeCount').text(data['like_count']);
       }
     });
   };

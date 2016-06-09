@@ -12,8 +12,8 @@ def UpdateSchema(cursor=None, num_updated=0):
 
     to_put = []
     for p in query.fetch(limit=BATCH_SIZE):
-        if hasattr(p, 'location'):
-            del p._properties['location']
+        if hasattr(p, 'photo'):
+            del p._properties['photo']
             p.put()
 
     if to_put:

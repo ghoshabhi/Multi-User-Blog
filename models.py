@@ -17,13 +17,17 @@ class Post(ndb.Model):
     last_modified = ndb.DateTimeProperty(auto_now = True)
     user = ndb.KeyProperty(kind=User)
 
+
 class UserPhoto(ndb.Model):
     user = ndb.KeyProperty(kind=User)
     photo_blob = ndb.BlobProperty()
 
+
 class Likes(ndb.Model):
     post = ndb.KeyProperty(kind=Post)
-    like_count = ndb.IntegerProperty()
+    user_id = ndb.PickleProperty()
+    like_count = ndb.IntegerProperty(default=0)
+
 
 class Comments(ndb.Model):
     user = ndb.KeyProperty(kind=User)

@@ -69,11 +69,15 @@ def check_for_valid_cookie(self):
 def filterKey(key):
     return key.id()
 
-def filterPhoto(photoKey):
-    pass
-    
+def showCount(post_key):
+    like_obj = Likes.query(Likes.post == post_key).get()
+    if like_obj:
+        return like_obj.like_count
+    else:
+        return "0"
+
 jinja_env.filters['filterKey'] = filterKey
-jinja_env.filters['filterPhoto'] = filterPhoto
+jinja_env.filters['showCount'] = showCount
 
 class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -91,13 +95,21 @@ class HomeHandler(BlogHandler):
         posts = []
         user_email = check_for_valid_cookie(self)
         loggedin_user = User.query(User.email == user_email).get()
+        
         posts = Post.query().order(-Post.created)
         all_users = User.query()
-        
+        likes = Likes.query()
+                    
         if user_email:
-            self.render('home.html',user=loggedin_user,all_users=all_users,posts=posts)
+            self.render('home.html',user=loggedin_user,
+                                    all_users=all_users,
+                                    posts=posts,
+                                    likes=likes)
         else:
-            self.render('home.html',user=loggedin_user,all_users=all_users,posts=posts)
+            self.render('home.html',user=loggedin_user,
+                                    all_users=all_users,
+                                    posts=posts,
+                                    likes=likes)
 
 
 class LoginHandler(BlogHandler):
@@ -253,6 +265,10 @@ class NewPostHandler(BlogHandler):
                     user = user.key
                     )
                 new_post_key = new_post.put()
+                time.sleep(0.3)
+                like_obj = Likes(post=new_post_key,like_count=0)
+                like_key = like_obj.put()
+                time.sleep(0.1)
                 self.redirect('/blog/%s' % str(new_post_key.id()))
             else:
                 empty_post = "Both Title and Content needed for the Blog!"
@@ -290,8 +306,21 @@ class PostPageHandler(BlogHandler):
         self.render("blog.html", post = post,user=user)
 
 
+class LikeHandler(BlogHandler):
+    def post(self):
+        data = json.loads(self.request.body)
+        like_obj = Likes.query(Likes.post == data['postkey']).get()
+        self.write(like_obj.like_count)
+        like_obj.like_count += 1
+        like_obj.put()
+        # self.write(like_obj.like_count)
+        self.write(json.dumps(({'like_obj': like_obj.to_dict()})))
+
+
 class ProfileHandler(BlogHandler):
     def get(self,user_id):
+        upload_url = blobstore.create_upload_url('/upload')
+
         user_email = check_for_valid_cookie(self)
         user_cookie = User.query(User.email == user_email).get()
         user_public = User.get_by_id(int(user_id))
@@ -299,14 +328,15 @@ class ProfileHandler(BlogHandler):
         if user_cookie:
             user_photo = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
             if user_photo:
-                user_photo_url = images.get_serving_url(user_photo.photo_blob_key)
+                user_photo_url = images.get_serving_url(user_photo.photo_blob)
             else:
                 user_photo_url = ''
         else:
             user_photo_url = ''
 
         if(self.request.get('pass_update')!= 'False' and 
-            self.request.get('pass_update')!= None):
+            self.request.get('pass_update')!= '' and
+            self.request.get('pass_update')!= None ):
             pass_update = 'success'
             if user_cookie:
                 public_profile = False
@@ -314,7 +344,8 @@ class ProfileHandler(BlogHandler):
                     user_photo_url = user_photo_url,
                     user_public=False,
                     pass_update = pass_update,
-                    public_profile= public_profile)
+                    public_profile= public_profile,
+                    upload_url=upload_url)
             else:
                 cookie_error = 'You need to log in first to edit profile!'
                 self.render('login.html',cookie_error=cookie_error)
@@ -326,7 +357,8 @@ class ProfileHandler(BlogHandler):
                     user_public=False,
                     user_photo_url = user_photo_url,
                     pass_update = pass_update,
-                    public_profile= public_profile)
+                    public_profile= public_profile,
+                    upload_url=upload_url)
             else:
                 cookie_error = 'You need to log in first to edit profile!'
                 self.render('login.html',cookie_error=cookie_error)
@@ -340,7 +372,8 @@ class ProfileHandler(BlogHandler):
                             user_public=user_public,
                             public_profile= public_profile,
                             pass_update = '',
-                            invalid_pass = '')
+                            invalid_pass = '',
+                            upload_url=upload_url)
 
             else:
                 if user_cookie.email:
@@ -350,7 +383,8 @@ class ProfileHandler(BlogHandler):
                              user_public=user_public, 
                              public_profile= public_profile,
                              pass_update = '',
-                             invalid_pass = '')
+                             invalid_pass = '',
+                             upload_url=upload_url)
                 else:
                     cookie_error = 'You need to log in first to edit profile!'
                     self.render('login.html',cookie_error=cookie_error)
@@ -361,7 +395,8 @@ class ProfileHandler(BlogHandler):
                     user_public=user_public,
                     public_profile= public_profile,
                     pass_update = '',
-                    invalid_pass = '')
+                    invalid_pass = '',
+                    upload_url=upload_url)
 
 
 class EditPersonalInfoHandler(BlogHandler):
@@ -424,23 +459,22 @@ class PhotoUploadHandler(BlogHandler, blobstore_handlers.BlobstoreUploadHandler)
         user_photo = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
 
         if user_cookie:
-            if user_photo:
-                img = self.request.get('img')
-                img = images.resize(img, 32, 32)
-                user_photo.photo_blob = img
-                user_photo.put()
-                time.sleep(0.1)
-                self.redirect('/profile/%s?up=%s'% str(user_cookie.key.id()),str(user_photo.key.id()))
-                # upload = self.get_uploads()[0]
-                # user_photo = UserPhoto(
-                #     user=user_cookie.key,
-                #     photo_blob_key=upload.key())
-                # user_photo.put()
-                # time.sleep(0.1)
-                # self.redirect('/profile/%s'% str(user_cookie.key.id()))
-                # self.redirect('/view_photo/%s' % upload.key())
-            else:
-                self.write('User photo obj not found')
+            img = self.request.get('img')
+            img = images.resize(img, 32, 32)
+            user_photo = UserPhoto(user=user_cookie.key,
+                                   photo_blob = img)
+            user_photo.put()
+            time.sleep(0.1)
+            self.redirect('/profile/%s?up=%s'% (str(user_cookie.key.id()),str(user_photo.key.id())))
+            
+            # upload = self.get_uploads()[0]
+            # user_photo = UserPhoto(
+            #     user=user_cookie.key,
+            #     photo_blob_key=upload.key())
+            # user_photo.put()
+            # time.sleep(0.1)
+            # self.redirect('/profile/%s'% str(user_cookie.key.id()))
+            # self.redirect('/view_photo/%s' % upload.key())
         else:
             cookie_error = 'You need to log in first to edit profile!'
             self.render('login.html',cookie_error=cookie_error)
@@ -457,7 +491,6 @@ class AboutUsHandler(BlogHandler):
 
 class TestHandler(BlogHandler):
     def get(self):
-        posts = []
         user_email = check_for_valid_cookie(self)
         loggedin_user = User.query(User.email == user_email).get()
         all_users = User.query()
@@ -479,6 +512,26 @@ class TestHandler(BlogHandler):
         else:
             self.render('test.html',user=loggedin_user,all_users=all_users,posts=posts)
 
+    def post(self):
+        user_email = check_for_valid_cookie(self)
+        loggedin_user = User.query(User.email == user_email).get()
+        all_users = User.query()
+        posts = Post.query()
+
+        post_id = self.request.get('post_id')
+        like_count = self.request.get('like_count')
+
+        post = Post.get_by_id(int(post_id))
+
+        if post:
+            new_like_object = Likes(post = post.key, like_count = int(like_count))
+            key = new_like_object.put()
+            time.sleep(0.1)
+            new_like = key.get()
+            post_key = new_like.post
+            post = post_key.get()
+            self.write("Like Count: " + str(new_like.like_count) + "Post Title:" + post.Title)
+
 
 
 app = webapp2.WSGIApplication([
@@ -493,6 +546,7 @@ app = webapp2.WSGIApplication([
     ('/profile/([0-9]+)',ProfileHandler),
     ('/personalinfo',EditPersonalInfoHandler),
     ('/changepass',ChangePassHandler),
-    ('/changepicture',PhotoUploadHandler),
+    ('/upload',PhotoUploadHandler),
+    ('/voteup',LikeHandler),
     ('/test',TestHandler)
     ], debug=True)

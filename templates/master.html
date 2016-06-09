@@ -165,23 +165,21 @@
         });
     });
 </script>
-
 <script type="text/javascript">
-  $('#login-submit').click(function() {
-    var content = tinymce.get('content').getContent({format: 'text'});
-      if($.trim(content) == '')
-      { 
-        alert('editor is empty ...');
-      }
-      else{
-        alert(tinymce.get('content').getContent());
+  function VoteUp(postkey){
+    console.log('Function starts');
+    $.ajax({
+      type: "post",
+      url: "/voteup",
+      dataType: 'json',
+      data: JSON.stringify({ "postkey": postkey}),
+      error: alert('couldnt fetch the URL'),
+      success: function(data){
+        alert( "Like successfull!!! Count is : " + data['like_obj']['like_count'] );
+        $('.likeCount').text(data['like_obj']['like_count']);
       }
     });
-</script>
-<script type="text/javascript">
-  {% block javascript %}
-
-  {% endblock %}
+  };
 </script>
 </body>
 </html>

@@ -103,8 +103,8 @@
     <hr>
   <div class="row">
       <!-- left column -->
-      <form action="/changepicture" method="post" enctype="multipart/form-data">
-      <div class="col-md-3">
+    <div class="col-md-3">
+      <form action="{{upload_url}}" method="post" enctype="multipart/form-data">
         <div class="text-center">
           {% if user_photo_url %}
             <img src="user_photo_url" class="img-responsive img-rounded" alt="avatar">

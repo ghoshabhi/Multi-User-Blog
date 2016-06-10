@@ -50,6 +50,8 @@
 
           <li><a href="#contact"><b>Contact Us</b></a></li>
 
+          <li><a href="/allposts"><b>All Posts</b></a></li>
+
           <li style="list-style: none">
             {% block navigation %} 
             
@@ -169,24 +171,18 @@
   $('.like-button').on('click', function(e){
      e.preventDefault()
      var key = $(this).data('key');
-     console.log(key);
-      VoteUp(key);
+     console.log('Function starts');
+      $.ajax({
+        type: "post",
+        url: "/voteup",
+        dataType: 'json',
+        data: { "postID": key},
+        success: function(data){
+          $(this).closest('span').text(data['like_count']+' likes');
+          $('.like-button').addClass('disabled');
+        }
+      });
     });
-  
-  function VoteUp(postID){
-    console.log('Function starts');
-    $.ajax({
-      type: "post",
-      url: "/voteup",
-      dataType: 'json',
-      data: { "postID": postID},
-      error: alert('couldnt fetch the URL'),
-      success: function(data){
-        alert( "Like successfull!!! Count is : " + data['like_count'] );
-        $('.likeCount').text(data['like_count']);
-      }
-    });
-  };
 </script>
 </body>
 </html>

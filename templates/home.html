@@ -48,87 +48,53 @@
       </div>
     </div> -->
   </div>
-
-
 </div>
+
 
 <div class="row">
-  <!-- Post Body -->
   <div class="col-md-10">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="panel">
-          <div class="panel-body">
-            {% if posts and all_users and likes %}
-                {% for each_post in posts %}
-                  {% for each_user in all_users %}
-                    {% if each_user.key == each_post.user %}
-                  <br>
-                  <div class="row">
-                    <div class="col-md-4 col-sm-5" style="margin:0">
-                      <a class="story-img" href="/profile/{{ each_user.key | filterKey }}">
-                        <img src="//placehold.it/100" style="width:100px;height:100px" class="img-circle">
-                        {{ each_user.fullname }}
-                      </a>
-                    </div>
-                  </div>
-                  <div class="row">
-                  <div class="col-md-10 col-sm-9">
-                    <a href='/blog/{{ each_post.key | filterKey }}'><h3>{{each_post.title | safe}}</h3></a>
-                    <div class="row">
-                      <div>
-                        <p style="text-align:justify;text-justify: inter-word;">{{each_post.content | safe}}</p>
-                        <!-- <p class="lead">
-                          <button class="btn btn-default">Read More</button>
-                        </p> -->
-                        <!-- {% if each_post.like_count %}
-                            <p class="pull-right">Likes : <span class="label label-success">{{each_post.like_count}}</span></p>
-                        {% else %}
-                            <p class="pull-right">Likes : <span class="label label-success">0</span></p>
-                        {% endif %} -->
-                        <ul class="list-inline">
-                          <li><a href="#">{{ each_post.created.strftime("%b %d, '%y") }}</a></li>
-                          <li><a data-key="{{each_post.key | filterKey}}" href="#" class="btn btn-md btn-sm btn-success like-button">
-                                <span class="fa fa-thumbs-up"></span>&nbsp;Like
-                              </a>
-                          <li><a href="/blog/{{each_post.key |filterKey }}"><i class="fa fa-comment-o"></i> 4 Comments</a></li>
-                        </ul>
-                      </div>
-                      <div class="col-xs-3"></div>
-                    </div>
-                    <br>
-                    <br>
-                  </div>
-                </div>
-                    {% endif %}
-                  {% endfor %}
-            </div>
-        </div>
-      </div>
-      <!--/col-12-->
-    </div>
-  </div>
-  <!-- End Post Body -->
-
-  <!-- Like Comment Body -->
-  <div class="col-md-2">
     <div class="panel">
       <div class="panel-body">
-        <div class="row">
-          <div class="col-md-4">
-            <p>Likes </p><span class="likeCount label label-pill label-info">{{ each_post.key | showCount }}</span></b>
+        {% if list_dict %}
+          {% for l in list_dict %}
+              <br>
+              <div class="row">
+                <div class="col-md-4 col-sm-5" style="margin:0">
+                  <a class="story-img" href="/profile/{{ l['a_id'] }}">
+                    <img src="//placehold.it/100" style="width:100px;height:100px" class="img-circle"> {{ l['a_name'] }}
+                  </a>
+                </div>
+              </div>
+              <!-- <div class="row"> -->
+                <div>
+                  <a href="/blog/{{ l['p_id'] }}"><h3>{{l['p_title'] | safe}}</h3></a>
+                  <!-- <div class="row"> -->
+                  <div>
+                    <p style="text-align:justify;text-justify: inter-word;">{{ l['p_content'] | safe}}</p>
+                    
+                    <ul class="list-inline">
+                      <li><a href="#">{{ l['p_created'].strftime("%b %d, '%y") }}</a></li>
+                      <li><span class="likeCount label label-pill label-info">{{ l['like_count'] }} likes</span></li>
+                      <li>
+                        <a data-key="{{ l['p_id'] }}" href="#" class="btn btn-md btn-sm btn-success like-button">
+                          <span class="fa fa-thumbs-up"></span>&nbsp;Like
+                        </a>
+                      </li>
+                      <li><a href="/blog/{{ l['p_id'] }}"> 4 Comments</a></li>
+                    </ul>
+                  </div>                  
+                </div>
+                <br>
+                <br>
           </div>
-          <div class="col-md-8">
-            <a href='/blog/{{each_post.key |filterKey }}'>Click to Comment!</a></p>
-          </div>
+        </div>
       </div>
     </div>
-  </div>
-  <!-- End Like Comment Body -->
-</div>
   {% endfor %}
     {% else %}
         <p>There are no posts in the website! :( Please <a href='/newpost'>click here to start writing one</a>!
             Make sure you're <a href='/login'>Logged In</a> first!</p>
     {% endif %}
+
+
 {% endblock %}

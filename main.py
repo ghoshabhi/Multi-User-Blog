@@ -99,17 +99,41 @@ class HomeHandler(BlogHandler):
         posts = Post.query().order(-Post.created)
         all_users = User.query()
         likes = Likes.query()
-                    
+        
+        list_dict = []
+
+        for p in posts:
+            p_dict = {}
+            for u in all_users:
+                if p.user == u.key:
+                    p_dict['p_id'] = p.key.id()
+                    p_dict['p_title'] = p.title
+                    p_dict['p_content'] = p.content
+                    p_dict['p_created'] = p.created
+                    p_dict['a_name'] = u.fullname
+                    p_dict['a_id'] = u.key.id()
+            for l in likes:
+                if l.post == p.key:
+                    p_dict['like_count'] = l.like_count
+                    list_dict.append(p_dict)
+
         if user_email:
             self.render('home.html',user=loggedin_user,
-                                    all_users=all_users,
-                                    posts=posts,
-                                    likes=likes)
+                                    list_dict = list_dict)
         else:
             self.render('home.html',user=loggedin_user,
-                                    all_users=all_users,
-                                    posts=posts,
-                                    likes=likes)
+                                    list_dict = list_dict)
+
+        # if user_email:
+        #     self.render('home.html',user=loggedin_user,
+        #                             all_users=all_users,
+        #                             posts=posts,
+        #                             likes=likes)
+        # else:
+        #     self.render('home.html',user=loggedin_user,
+        #                             all_users=all_users,
+        #                             posts=posts,
+        #                             likes=likes)
 
 
 class LoginHandler(BlogHandler):
@@ -312,93 +336,45 @@ class LikeHandler(BlogHandler):
         postID = self.request.get('postID')
         post_obj = Post.get_by_id(int(postID))
         like_obj = Likes.query(Likes.post == post_obj.key).get()
-        self.write(like_obj.like_count)
-        like_obj.like_count += 1
-        like_obj.put()
-        self.write(like_obj.like_count)
-        self.write(json.dumps(({'like_count': like_obj.like_count})))
+        if like_obj:
+            like_obj.like_count += 1
+            like_obj.put()
+            self.write(json.dumps(({'like_count': like_obj.like_count})))
+        else:
+            like_obj = Likes(post = post_obj.key,like_count=1)
+            like_obj.put()
+            time.sleep(0.2)
+            self.write(json.dumps(({'like_count' : like_obj.like_count})))
+
 
 
 class ProfileHandler(BlogHandler):
     def get(self,user_id):
-        upload_url = blobstore.create_upload_url('/upload')
-
         user_email = check_for_valid_cookie(self)
         user_cookie = User.query(User.email == user_email).get()
         user_public = User.get_by_id(int(user_id))
 
         if user_cookie:
-            user_photo = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
-            if user_photo:
-                user_photo_url = images.get_serving_url(user_photo.photo_blob)
-            else:
-                user_photo_url = ''
-        else:
-            user_photo_url = ''
-
-        if(self.request.get('pass_update')!= 'False' and 
-            self.request.get('pass_update')!= '' and
-            self.request.get('pass_update')!= None ):
-            pass_update = 'success'
-            if user_cookie:
-                public_profile = False
-                self.render('profile.html',user=user_cookie,
-                    user_photo_url = user_photo_url,
-                    user_public=False,
-                    pass_update = pass_update,
-                    public_profile= public_profile,
-                    upload_url=upload_url)
-            else:
-                cookie_error = 'You need to log in first to edit profile!'
-                self.render('login.html',cookie_error=cookie_error)
-        else:
-            pass_update = 'fail'
-            if user_cookie:
-                public_profile = False
-                self.render('profile.html',user=user_cookie,
-                    user_public=False,
-                    user_photo_url = user_photo_url,
-                    pass_update = pass_update,
-                    public_profile= public_profile,
-                    upload_url=upload_url)
-            else:
-                cookie_error = 'You need to log in first to edit profile!'
-                self.render('login.html',cookie_error=cookie_error)
-        return
-
-        if user_cookie:
             if user_cookie.email != user_public.email:
                 public_profile = True
                 self.render('profile.html',user=user_cookie,
-                            user_photo_url = user_photo_url,
                             user_public=user_public,
-                            public_profile= public_profile,
-                            pass_update = '',
-                            invalid_pass = '',
-                            upload_url=upload_url)
+                            public_profile= public_profile)
 
             else:
                 if user_cookie.email:
                     public_profile = False
                     self.render('profile.html',user=user_cookie,
-                            user_photo_url = user_photo_url,
                              user_public=user_public, 
-                             public_profile= public_profile,
-                             pass_update = '',
-                             invalid_pass = '',
-                             upload_url=upload_url)
+                             public_profile= public_profile)
                 else:
                     cookie_error = 'You need to log in first to edit profile!'
                     self.render('login.html',cookie_error=cookie_error)
         else:
             public_profile = True
             self.render('profile.html',user=user_cookie,
-                    user_photo_url = user_photo_url,
                     user_public=user_public,
-                    public_profile= public_profile,
-                    pass_update = '',
-                    invalid_pass = '',
-                    upload_url=upload_url)
+                    public_profile= public_profile)
 
 
 class EditPersonalInfoHandler(BlogHandler):

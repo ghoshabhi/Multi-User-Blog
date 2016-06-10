@@ -56,17 +56,22 @@
     {% if list_dict %}
       {% for l in list_dict %}
     <div class="panel">
-          <div class="panel-body">
+          <div class="panel-body" style="border-top: 5px solid #1BC1A1;">
               <div class="row">
                 <div class="col-md-4 col-sm-5" style="margin:0">
                   <a class="story-img" href="/profile/{{ l['a_id'] }}">
-                    <img src="//placehold.it/100" style="width:100px;height:100px" class="img-circle"> {{ l['a_name'] }}
+                    <img src="//placehold.it/100" style="width:100px;height:100px" class="img-circle">
+                      <span style="color:#1BC1A1">{{ l['a_name'] }}</span>
                   </a>
                 </div>
+                <div class="col-md-4 col-sm-5 pull-right"><b style="color:#1BC1A1;font-size:18px;font-family:'Josefin Slab','Open Sans',sans-serif">
+                  {{ l['p_created'].strftime("%b %d, '%y") }}</b>
+                </div> 
               </div>
               <div class="row">
                 <div class="col-md-9" style="text-align:justify;text-justify:inter-word">
-                  <a href="/blog/{{ l['p_id'] }}"><h3>{{l['p_title'] | safe}}</h3></a>
+                  <a class='anchor-link' href="/blog/{{ l['p_id'] }}"><h3 style="color:#1BC1A1">{{l['p_title'] | safe}}</h3></a>
+                  <span style="display:none" id="#foo">/blog/{{ l['p_id'] }}</span>
                   <!-- <div class="row"> -->
                   <div>
                     <p style="text-align:justify;text-justify: inter-word;">{{ l['p_content'] | safe}}</p>
@@ -78,6 +83,10 @@
                         <a data-key="{{ l['p_id'] }}" href="#" class="btn btn-md btn-sm btn-success like-button">
                           <span class="fa fa-thumbs-up"></span>&nbsp;Like
                         </a>
+                      </li>
+                      <li><button class="btn" data-clipboard-target="#foo">
+                            <img src="/static/clippy.svg" alt="Copy link!" height="20px" widht="25px">
+                          </button>
                       </li>
                       <li><a href="/blog/{{ l['p_id'] }}"> 4 Comments</a></li>
                     </ul>

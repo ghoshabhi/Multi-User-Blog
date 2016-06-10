@@ -3643,7 +3643,7 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
     border: 1px solid transparent;
     border-radius: 4px;
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    box-shadow: 0 18px 18px rgba(0, 0, 0, .5); /* Change here to increase/decrease box shadow! */
 }
 .panel-body {
     padding: 15px;

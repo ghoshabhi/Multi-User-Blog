@@ -17,14 +17,24 @@
     <![endif]-->
   <link href="/static/styles.css" rel="stylesheet" type="text/css" />
 
-   <link rel="stylesheet" type="text/css"
-          href="https://fonts.googleapis.com/css?family=Open+Sans">
-    <style>
-      body {
-        font-family: 'Open Sans', sans-serif;
-      }
-    </style>
+  <link rel="stylesheet" href="https://use.typekit.net/c/c5c753/1w;athelas,2,NSP:W:i4,NSR:W:i7,NSN:W:n4,NSQ:W:n7;nimbus-sans-condensed,2,SKw:W:n4,SKx:W:n7;source-code-pro,2,glz:W:n4/l" media="all">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Josefin+Slab">
+  
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans">
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+    }
+  </style>
+  <style type="text/css">
+    .anchor-link{
+      color:blue;
+    }
 
+    .anchor-link:hover{
+      color :#1BC1A1;
+    }
+  </style>
 </head>
 
 <body>
@@ -73,8 +83,10 @@
     <div class="container">
       <div class="pull-right">
         <p class="text-muted credit">Made with <span class="fa fa-heart" style="color:rgb(255, 51, 51)"></span> by <a href=
-        "https://github.com/ghoshabhi">Abhishek</a> and 
-        <a href='https://github.com/gristoi'>Ian</a></p>
+        "https://github.com/ghoshabhi">Abhishek</a>, 
+        <a href='https://github.com/gristoi'>Ian</a> and 
+        <a href="https://github.com/AbigailMathews">Abigail</a>
+        </p>
       </div>
     </div>
   </div><!-- script references -->
@@ -83,6 +95,7 @@
   <script src="https://use.fontawesome.com/ccf0d40bb4.js" type="text/javascript"></script>
   <script src="/static/bootstrap.min.js" type="text/javascript"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.10/clipboard.min.js"></script>
   <script src="//cdn.tinymce.com/4/tinymce.min.js" type="text/javascript"></script>
 
   <script type="text/javascript">
@@ -170,6 +183,7 @@
 <script type="text/javascript">
   $('.like-button').on('click', function(e){
      e.preventDefault()
+     var instance = $(this);
      var key = $(this).data('key');
      console.log('Function starts');
       $.ajax({
@@ -178,8 +192,9 @@
         dataType: 'json',
         data: { "postID": key},
         success: function(data){
-          $(this).closest('span').text(data['like_count']+' likes');
-          $('.like-button').addClass('disabled');
+          instance.parent().prev().find('span').html(data['like_count']+' likes');
+          // $(this).closest('span').text(data['like_count']+' likes');
+          instance.addClass('disabled');
         }
       });
     });

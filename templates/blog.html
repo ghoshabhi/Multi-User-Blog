@@ -35,8 +35,10 @@
   <li class="active">{{post.title}}</a></li>
 </ol>
 
-<h1>{{post.title | safe}}</h1>
-<div style="margin:30px;text-align: justify;text-justify: inter-word;">
+<div class="col-md-8">
+  <h1 style="color:#1BC1A1;font-weight:900;font-size:58px;font-family:'Josefin Slab','Open Sans', sans-serif">{{post.title | safe}}</h1>
+</div>
+<div class="col-md-8" style="text-align: justify;text-justify: inter-word;">
   <br>
   {{post.content | safe}}
 </div>

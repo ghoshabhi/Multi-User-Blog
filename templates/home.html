@@ -51,13 +51,12 @@
 </div>
 
 
-<div class="row">
-  <div class="col-md-10">
+<!-- <div class="row">
+  <div class="col-md-10"> -->
+    {% if list_dict %}
+      {% for l in list_dict %}
     <div class="panel">
-      <div class="panel-body">
-        {% if list_dict %}
-          {% for l in list_dict %}
-              <br>
+          <div class="panel-body">
               <div class="row">
                 <div class="col-md-4 col-sm-5" style="margin:0">
                   <a class="story-img" href="/profile/{{ l['a_id'] }}">
@@ -65,8 +64,8 @@
                   </a>
                 </div>
               </div>
-              <!-- <div class="row"> -->
-                <div>
+              <div class="row">
+                <div class="col-md-9" style="text-align:justify;text-justify:inter-word">
                   <a href="/blog/{{ l['p_id'] }}"><h3>{{l['p_title'] | safe}}</h3></a>
                   <!-- <div class="row"> -->
                   <div>
@@ -82,19 +81,22 @@
                       </li>
                       <li><a href="/blog/{{ l['p_id'] }}"> 4 Comments</a></li>
                     </ul>
-                  </div>                  
+                  </div>
                 </div>
+                <div class="col-md-3"></div>
                 <br>
                 <br>
           </div>
         </div>
       </div>
-    </div>
-  {% endfor %}
+      {% endfor %}
     {% else %}
         <p>There are no posts in the website! :( Please <a href='/newpost'>click here to start writing one</a>!
             Make sure you're <a href='/login'>Logged In</a> first!</p>
     {% endif %}
-
+    </div>
+<!--   </div>
+  </div>
+ -->  
 
 {% endblock %}

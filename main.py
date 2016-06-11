@@ -124,17 +124,6 @@ class HomeHandler(BlogHandler):
             self.render('home.html',user=loggedin_user,
                                     list_dict = list_dict)
 
-        # if user_email:
-        #     self.render('home.html',user=loggedin_user,
-        #                             all_users=all_users,
-        #                             posts=posts,
-        #                             likes=likes)
-        # else:
-        #     self.render('home.html',user=loggedin_user,
-        #                             all_users=all_users,
-        #                             posts=posts,
-        #                             likes=likes)
-
 
 class LoginHandler(BlogHandler):
     def get(self):

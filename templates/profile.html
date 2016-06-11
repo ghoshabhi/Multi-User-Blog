@@ -55,34 +55,34 @@
           <div class="form-group">
             <label class="col-lg-3 control-label">Full Name:</label>
             <div class="col-lg-8">
-              <label class="form-control" type="text">{{user_public.fullname}}</label>
+              <label type="text">{{user_public.fullname}}</label>
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Location:</label>
             <div class="col-lg-8">
-              <label class="form-control" type="text">{{user_public.location}}</label>
+              <label type="text">{{user_public.location}}</label>
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Email:</label>
             <div class="col-lg-8">
-              <label class="form-control" type="email">{{user_public.email}}</label>
+              <label type="email">{{user_public.email}}</label>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 control-label">Username:</label>
             <div class="col-md-8">
-              <label class="form-control" type="text">{{user_public.user_name}}</label>
+              <label type="text">{{user_public.user_name}}</label>
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">About:</label>
             <div class="col-lg-8 col-md-9 col-sm-10">
               {% if user_public.about %}
-              <textarea disabled class="form-control" name="about" type="text">{{user_public.about}}"></textarea>
+              <label style = "whitespace:wrap;" name="about">{{user_public.about}}"></label>
               {% else %}
-              <textarea disabled class="form-control" name="about" type="text">This user tends to be secretive about himself</textarea>
+              <label style = "word-wrap: break-word;" class="form-control" name="about">This user tends to be secretive about himself</label>
               {% endif %}
             </div>
           </div>

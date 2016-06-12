@@ -53,7 +53,7 @@
         <h3>Personal info:</h3>
         <div class="form-horizontal">
           <div class="form-group">
-            <label class="col-lg-3 control-label">Full Name:</label>
+            <label class="col-lg-3 control-label">Name:</label>
             <div class="col-lg-8">
               <label type="text">{{user_public.fullname}}</label>
             </div>
@@ -80,9 +80,9 @@
             <label class="col-lg-3 control-label">About:</label>
             <div class="col-lg-8 col-md-9 col-sm-10">
               {% if user_public.about %}
-              <label style = "whitespace:wrap;" name="about">{{user_public.about}}"></label>
+              <label style = "margin-top:13px;whitespace:wrap;" name="about">{{user_public.about}}</label>
               {% else %}
-              <label style = "word-wrap: break-word;" class="form-control" name="about">This user tends to be secretive about himself</label>
+              <label style = "whitespace:wrap;">This user tends to be secretive about himself</label>
               {% endif %}
             </div>
           </div>

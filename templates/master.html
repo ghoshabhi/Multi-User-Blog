@@ -25,6 +25,10 @@
     body {
       font-family: 'Open Sans', sans-serif;
     }
+
+    /*.commentContainer{
+      border-bottom:3px solid #e5e5e5;
+    }*/
   </style>
   <style type="text/css">
     .anchor-link{
@@ -181,6 +185,9 @@
     });
 </script>
 <script type="text/javascript">
+  
+</script>
+<script type="text/javascript">
   $('.like-button').on('click', function(e){
      e.preventDefault()
      var instance = $(this);
@@ -193,8 +200,10 @@
         data: { "postID": key},
         success: function(data){
           instance.parent().prev().find('span').html(data['like_count']+' likes');
-          // $(this).closest('span').text(data['like_count']+' likes');
           instance.addClass('disabled');
+        },
+        error: function(data){
+          alert('You have to be logged in to like a post!');
         }
       });
     });

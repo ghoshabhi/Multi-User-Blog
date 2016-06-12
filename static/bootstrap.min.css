@@ -235,7 +235,7 @@ a {
     text-decoration: none;
 }
 a:hover, a:focus {
-    color: #2a6496;
+    color: #1BC1A1; /* chnange for anchor tag style */
     text-decoration: underline;
 }
 a:focus {

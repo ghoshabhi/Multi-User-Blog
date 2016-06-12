@@ -32,4 +32,4 @@ class Likes(ndb.Model):
 class Comments(ndb.Model):
     user = ndb.KeyProperty(kind=User)
     post = ndb.KeyProperty(kind=Post)
-    comment = ndb.StringProperty()
+    comment = ndb.StringProperty(required=True)

@@ -312,12 +312,28 @@ class PostPageHandler(BlogHandler):
         post = Post.get_by_id(int(post_id))
         comments = Comments.query(Comments.post == post.key).order(-Comments.comment_date)
 
-        if user_email:
+        all_users = User.query()
+            list_dict = []
+
+        for c in comments:
+            c_dict = {}
+            if c.post == post.key:
+                c_dict['c_id'] = c.key.id()
+                c_dict['c_comment'] = c.comment
+                c_dict['c_date'] = c.comment_date
+                user = User.query(User.key == c.user).get()
+                c_dict['c_u_name'] = user.fullname
+                c_dict['c_u_id'] = user.key.id()
+                list_dict.append(c_dict)
+
+        if user:
             if not post:
                 self.error(404)
                 return
+            self.render("blog.html", post = post,user=user,comments=list_dict)
+        else:
+            self.render("blog.html", post = post,user=None,comments=list_dict)
 
-        self.render("blog.html", post = post,user=user,comments=comments)
 
 
 class LikeHandler(BlogHandler):

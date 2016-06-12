@@ -35,6 +35,21 @@
   <li><a class="active">Test</a></li>
 </ol>
 <div class="container">
+  <div>
+    {% if comments %}
+    {% for comment in comments %}
+      Comment : {{comment.comment}}
+      <br>
+      Comment User : {{comment.user}}
+      <br>
+      Comment Post : {{comment.post}}
+      <br>
+      Comment Date : {{comment.comment_date}}
+    {% endfor %}
+  {% else %}
+    <br><br>No Comments!
+  {% endif %}
+  </div>
 <div>
   {% if posts and all_users %}
     {% for each_post in posts %}
@@ -72,6 +87,9 @@
 </form>
 </div>
 
+<div class="container">
+  
+</div>
 <!-- <div id="masthead">
   <div class="row">
     <div class="col-md-7">

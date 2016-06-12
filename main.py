@@ -310,13 +310,14 @@ class PostPageHandler(BlogHandler):
         user_email = check_for_valid_cookie(self)
         user = User.query(User.email == user_email).get()
         post = Post.get_by_id(int(post_id))
+        comments = Comments.query(Comments.post == post.key).order(-Comments.comment_date)
 
         if user_email:
             if not post:
                 self.error(404)
                 return
 
-        self.render("blog.html", post = post,user=user)
+        self.render("blog.html", post = post,user=user,comments=comments)
 
 
 class LikeHandler(BlogHandler):
@@ -337,6 +338,27 @@ class LikeHandler(BlogHandler):
                 self.write(json.dumps(({'like_count' : like_obj.like_count})))
         else:
             return
+
+
+class CommentHandler(BlogHandler):
+    def post(self,post_id):
+        comment = self.request.get('comment')
+        post = Post.get_by_id(int(post_id))
+        user_email = check_for_valid_cookie(self)
+        if user_email:
+            if comment:
+                user = User.query(User.email == user_email).get()
+                comment_obj = Comments(user=user.key,
+                                       post=post.key,
+                                       comment=comment)
+                comment_obj.put()
+                self.redirect('/blog/%s'% post_id)
+            else:
+                empty_comment = "You can't post an empty content!"
+                self.redirect('/blog/%s?empty_comment=True'%post.key.id())
+        else:
+            cookie_error = 'You have to be logged in comment!'
+            self.render('login.html',cookie_error=cookie_error)
 
 
 
@@ -465,6 +487,8 @@ class TestHandler(BlogHandler):
         loggedin_user = User.query(User.email == user_email).get()
         all_users = User.query()
         posts = Post.query()
+        comments = Comments.query().order(-Comments.comment_date)
+
         # for each_user in all_users:
         #     each_post = Post.query(Post.user == each_user.key).fetch()
         #     posts.append(each_post)
@@ -478,9 +502,9 @@ class TestHandler(BlogHandler):
         #         posts.append(post)
 
         if user_email:
-            self.render('test.html',user = loggedin_user, all_users=all_users,posts=posts)
+            self.render('test.html',user = loggedin_user, all_users=all_users,posts=posts,comments=comments)
         else:
-            self.render('test.html',user=loggedin_user,all_users=all_users,posts=posts)
+            self.render('test.html',user=loggedin_user,all_users=all_users,posts=posts,comments=comments)
 
     def post(self):
         user_email = check_for_valid_cookie(self)
@@ -518,5 +542,6 @@ app = webapp2.WSGIApplication([
     ('/changepass',ChangePassHandler),
     ('/upload',PhotoUploadHandler),
     ('/voteup',LikeHandler),
+    ('/comment/([0-9]+)', CommentHandler),
     ('/test',TestHandler)
     ], debug=True)

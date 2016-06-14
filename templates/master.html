@@ -218,25 +218,25 @@
 
     $('.modal-footer input[type=submit]').on('click',function(e){
         console.log('submit modal registered!');
-        e.preventDefault();
         var comment_str = $('.modal-body textarea').text();
         console.log(comment_str);
         console.log(commentID);
         console.log(postID);
+        
         $.ajax({
         type:'post',
         url: '/editcomment',
         dataType: 'json',
         data: {'postID':postID,'commentID':commentID,'comment_str':comment_str},
-        success: function(data){
-          // $('div.editComment-success').text('Comment edited successfully!');
-          $('div.editComment-success').text(data['comment_str']);
+        success: function(){
+          $('div.editComment-success').text('Comment edited successfully!');
+          //$('div.editComment-success').text(data['comment_str']);
           $('div.editComment-success').css('display','block');
           $('#myModal').modal('hide');
         },
-        error: function(data){
-          $('div.editComment-fail').text(data['comment_str']);
-          // $('div.editComment-fail').text('Could not edit the comment! Please try again!');
+        error: function(){
+          //$('div.editComment-fail').text(data['comment_str']);
+          $('div.editComment-fail').text('Could not edit the comment! Please try again!');
           $('div.editComment-fail').css('display','block');
           $('#myModal').modal('hide');
         }

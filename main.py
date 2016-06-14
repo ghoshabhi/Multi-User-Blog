@@ -401,11 +401,15 @@ class EditCommentHandler(BlogHandler):
             comment_str = self.request.get('comment_str')
             if post_id and comment_id and comment_str:
                 commentObj = Comments.get_by_id(int(comment_id))
-                commentObj.comment = comment_str
-                commentObj.put()
-                time.sleep(0.2)
-                commentObj = Comments.get_by_id(int(comment_id))
-                self.write(json.dumps(({'comment_str' : commentObj.comment})))
+                if commentObj:
+                    commentObj.comment = comment_str
+                    commentObj.put()
+                    time.sleep(0.2)
+                    commentObj = Comments.get_by_id(int(comment_id))
+                    # self.write(json.dumps(({'comment_str' : commentObj.comment})))
+                    self.redirect('/blog/%s'%post_id)
+                else:
+                    self.error(404)
             else:
                 self.error(404)
                 return
@@ -595,7 +599,6 @@ app = webapp2.WSGIApplication([
     ('/voteup',LikeHandler),
     ('/comment/([0-9]+)', CommentHandler),
     ('/comment/([0-9]+)/delete/([0-9]+)', DeleteCommentHandler),
-    ('/comment/([0-9]+)/edit/([0-9]+)', EditCommentHandler),
     ('/editcomment',EditCommentHandler),
     ('/test',TestHandler)
     ], debug=True)

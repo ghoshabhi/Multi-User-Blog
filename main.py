@@ -406,8 +406,8 @@ class EditCommentHandler(BlogHandler):
                     commentObj.put()
                     time.sleep(0.2)
                     commentObj = Comments.get_by_id(int(comment_id))
-                    # self.write(json.dumps(({'comment_str' : commentObj.comment})))
-                    self.redirect('/blog/%s'%post_id)
+                    self.write(json.dumps(({'comment_str' : commentObj.comment})))
+                    # self.redirect('/blog/%s'%post_id)
                 else:
                     self.error(404)
             else:
@@ -449,9 +449,7 @@ class ProfileHandler(BlogHandler):
 class EditPersonalInfoHandler(BlogHandler):
     def post(self):
         fullname = self.request.get('fullname')
-        email = self.request.get('email')
         about = self.request.get('about')
-        username = self.request.get('username')
         location = self.request.get('location')
 
         user_email = check_for_valid_cookie(self)
@@ -459,9 +457,7 @@ class EditPersonalInfoHandler(BlogHandler):
         
         if user_cookie:
             user_cookie.fullname = fullname
-            user_cookie.email = email
             user_cookie.about = about
-            user_cookie.user_name = username
             user_cookie.location = location
 
             user_cookie.put()

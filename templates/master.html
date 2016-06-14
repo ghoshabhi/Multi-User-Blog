@@ -218,7 +218,7 @@
 
     $('.modal-footer input[type=submit]').on('click',function(e){
         console.log('submit modal registered!');
-        var comment_str = $('.modal-body textarea').text();
+        var comment_str = $('#myModal textarea').val();
         console.log(comment_str);
         console.log(commentID);
         console.log(postID);
@@ -233,6 +233,7 @@
           //$('div.editComment-success').text(data['comment_str']);
           $('div.editComment-success').css('display','block');
           $('#myModal').modal('hide');
+          location.reload()
         },
         error: function(){
           //$('div.editComment-fail').text(data['comment_str']);

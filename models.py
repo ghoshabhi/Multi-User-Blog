@@ -20,7 +20,7 @@ class Post(ndb.Model):
 
 class UserPhoto(ndb.Model):
     user = ndb.KeyProperty(kind=User)
-    photo_blob = ndb.BlobProperty()
+    photo_blob_key = ndb.BlobKeyProperty()
 
 
 class Likes(ndb.Model):

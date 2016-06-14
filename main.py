@@ -422,6 +422,7 @@ class ProfileHandler(BlogHandler):
         user_email = check_for_valid_cookie(self)
         user_cookie = User.query(User.email == user_email).get()
         user_public = User.get_by_id(int(user_id))
+        upload_url = blobstore.create_upload_url('/upload')
 
         if user_cookie:
             if user_cookie.email != user_public.email:
@@ -433,9 +434,11 @@ class ProfileHandler(BlogHandler):
             else:
                 if user_cookie.email:
                     public_profile = False
+
                     self.render('profile.html',user=user_cookie,
                              user_public=user_public, 
-                             public_profile= public_profile)
+                             public_profile= public_profile,
+                             upload_url=upload_url)
                 else:
                     cookie_error = 'You need to log in first to edit profile!'
                     self.render('login.html',cookie_error=cookie_error)
@@ -495,32 +498,54 @@ class ChangePassHandler(BlogHandler):
             self.render('login.html',cookie_error=cookie_error)
 
 
-class PhotoUploadHandler(BlogHandler, blobstore_handlers.BlobstoreUploadHandler):
+
+class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
         user_email = check_for_valid_cookie(self)
         user_cookie = User.query(User.email == user_email).get()
-        user_photo = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
 
-        if user_cookie:
-            img = self.request.get('img')
-            img = images.resize(img, 32, 32)
-            user_photo = UserPhoto(user=user_cookie.key,
-                                   photo_blob = img)
+        try:
+            upload = self.get_uploads()[0]
+            user_photo = UserPhoto(
+                user= user_cookie.key,
+                photo_blob_key=upload.key()
+            )
             user_photo.put()
-            time.sleep(0.1)
-            self.redirect('/profile/%s?up=%s'% (str(user_cookie.key.id()),str(user_photo.key.id())))
-            
-            # upload = self.get_uploads()[0]
-            # user_photo = UserPhoto(
-            #     user=user_cookie.key,
-            #     photo_blob_key=upload.key())
-            # user_photo.put()
-            # time.sleep(0.1)
-            # self.redirect('/profile/%s'% str(user_cookie.key.id()))
+            time.sleep(0.2)
+            self.write(upload.key)
             # self.redirect('/view_photo/%s' % upload.key())
-        else:
-            cookie_error = 'You need to log in first to edit profile!'
-            self.render('login.html',cookie_error=cookie_error)
+        except:
+            self.error(500)
+
+
+
+# class PhotoUploadHandler(BlogHandler, blobstore_handlers.BlobstoreUploadHandler):
+#     def post(self):
+#         user_email = check_for_valid_cookie(self)
+#         user_cookie = User.query(User.email == user_email).get()
+#         user_photo = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
+
+#         if user_cookie:
+#             img = self.request.get('img')
+#             img = images.resize(img, 32, 32)
+#             user_photo = UserPhoto(user=user_cookie.key,
+#                                    photo_blob = img)
+#             #serving_url = image.get_serving_url()
+#             user_photo.put()
+#             time.sleep(0.1)
+#             self.redirect('/profile/%s?up=%s'% (str(user_cookie.key.id()),str(user_photo.key.id())))
+            
+#             # upload = self.get_uploads()[0]
+#             # user_photo = UserPhoto(
+#             #     user=user_cookie.key,
+#             #     photo_blob_key=upload.key())
+#             # user_photo.put()
+#             # time.sleep(0.1)
+#             # self.redirect('/profile/%s'% str(user_cookie.key.id()))
+#             # self.redirect('/view_photo/%s' % upload.key())
+#         else:
+#             cookie_error = 'You need to log in first to edit profile!'
+#             self.render('login.html',cookie_error=cookie_error)
 
 class AboutUsHandler(BlogHandler):
     def get(self):

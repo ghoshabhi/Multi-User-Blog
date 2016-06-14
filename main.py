@@ -308,12 +308,11 @@ class NewPostHandler(BlogHandler):
 class PostPageHandler(BlogHandler):
     def get(self, post_id):
         user_email = check_for_valid_cookie(self)
-        user = User.query(User.email == user_email).get()
+        cookie_user = User.query(User.email == user_email).get()
         post = Post.get_by_id(int(post_id))
         comments = Comments.query(Comments.post == post.key).order(-Comments.comment_date)
 
-        all_users = User.query()
-            list_dict = []
+        list_dict = []
 
         for c in comments:
             c_dict = {}
@@ -323,18 +322,16 @@ class PostPageHandler(BlogHandler):
                 c_dict['c_date'] = c.comment_date
                 user = User.query(User.key == c.user).get()
                 c_dict['c_u_name'] = user.fullname
+                c_dict['c_u_key'] = user.key
                 c_dict['c_u_id'] = user.key.id()
                 list_dict.append(c_dict)
-
-        if user:
+        if user_email:
             if not post:
                 self.error(404)
                 return
-            self.render("blog.html", post = post,user=user,comments=list_dict)
+            self.render("blog.html", post = post,user=cookie_user,comments=list_dict)
         else:
             self.render("blog.html", post = post,user=None,comments=list_dict)
-
-
 
 class LikeHandler(BlogHandler):
     def post(self):
@@ -353,10 +350,14 @@ class LikeHandler(BlogHandler):
                 time.sleep(0.2)
                 self.write(json.dumps(({'like_count' : like_obj.like_count})))
         else:
-            return
+            return None
 
 
 class CommentHandler(BlogHandler):
+    def get(self,comment_id):
+        commentObj = Comments.get_by_id(int(comment_id))
+        self.write(json.dumps(({'comment': commentObj.comment})))
+
     def post(self,post_id):
         comment = self.request.get('comment')
         post = Post.get_by_id(int(post_id))
@@ -368,15 +369,49 @@ class CommentHandler(BlogHandler):
                                        post=post.key,
                                        comment=comment)
                 comment_obj.put()
+                time.sleep(0.2)
                 self.redirect('/blog/%s'% post_id)
             else:
                 empty_comment = "You can't post an empty content!"
                 self.redirect('/blog/%s?empty_comment=True'%post.key.id())
         else:
-            cookie_error = 'You have to be logged in comment!'
+            cookie_error = 'You have to be logged in to comment!'
             self.render('login.html',cookie_error=cookie_error)
 
 
+class DeleteCommentHandler(BlogHandler):
+    def get(self,post_id,comment_id):
+        user_email = check_for_valid_cookie(self)
+        if user_email:
+            comment = Comments.get_by_id(int(comment_id))
+            comment.key.delete()
+            time.sleep(0.2)
+            self.redirect('/blog/%s'% str(post_id))
+        else:
+            cookie_error = 'You have to be logged in to delete a comment!'
+            self.render('login.html',cookie_error=cookie_error)
+
+
+class EditCommentHandler(BlogHandler):
+    def post(self):
+        user_email = check_for_valid_cookie(self)
+        if user_email:
+            post_id = self.request.get('postID')
+            comment_id = self.request.get('commentID')
+            comment_str = self.request.get('comment_str')
+            if post_id and comment_id and comment_str:
+                commentObj = Comments.get_by_id(int(comment_id))
+                commentObj.comment = comment_str
+                commentObj.put()
+                time.sleep(0.2)
+                commentObj = Comments.get_by_id(int(comment_id))
+                self.write(json.dumps(({'comment_str' : commentObj.comment})))
+            else:
+                self.error(404)
+                return
+        else:
+            cookie_error = 'You have to be logged in to edit a comment!'
+            self.render('login.html',cookie_error=cookie_error)
 
 class ProfileHandler(BlogHandler):
     def get(self,user_id):
@@ -559,5 +594,8 @@ app = webapp2.WSGIApplication([
     ('/upload',PhotoUploadHandler),
     ('/voteup',LikeHandler),
     ('/comment/([0-9]+)', CommentHandler),
+    ('/comment/([0-9]+)/delete/([0-9]+)', DeleteCommentHandler),
+    ('/comment/([0-9]+)/edit/([0-9]+)', EditCommentHandler),
+    ('/editcomment',EditCommentHandler),
     ('/test',TestHandler)
     ], debug=True)

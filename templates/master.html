@@ -185,19 +185,76 @@
     });
 </script>
 <script type="text/javascript">
-  
+  $(document).on('click',':not(form)[data-confirm]',function(e){
+    if(!confirm($(this).data('confirm'))){
+      e.stopImmediatePropagation();
+      e.preventDefault();
+    }
+  });
 </script>
+
+<script type="text/javascript">
+  $('.editComment').on('click',function(e){
+    e.preventDefault();
+    postID = $(this).data('postId');
+    commentID = $(this).data('commentId');
+    //var url = '/comment/' + postID + '/edit/' + commentID;
+    var getURL = '/comment/'+ commentID;
+    $.ajax({
+      type:'get',
+      url: getURL,
+      dataType: 'json',
+      data: {},
+      success: function(data){
+        $('#myModal').modal('show');
+        $('.modal-header h4.modal-title').text('Edit your comment here');
+        $('.modal-body textarea').text(data['comment']);
+        $('.modal-body textarea').focus();
+      },
+      error: function(data){
+        alert('Sorry couldn\'t fetch the comment! Please try again!');
+      }
+    });
+
+    $('.modal-footer input[type=submit]').on('click',function(e){
+        console.log('submit modal registered!');
+        e.preventDefault();
+        var comment_str = $('.modal-body textarea').text();
+        console.log(comment_str);
+        console.log(commentID);
+        console.log(postID);
+        $.ajax({
+        type:'post',
+        url: '/editcomment',
+        dataType: 'json',
+        data: {'postID':postID,'commentID':commentID,'comment_str':comment_str},
+        success: function(data){
+          // $('div.editComment-success').text('Comment edited successfully!');
+          $('div.editComment-success').text(data['comment_str']);
+          $('div.editComment-success').css('display','block');
+          $('#myModal').modal('hide');
+        },
+        error: function(data){
+          $('div.editComment-fail').text(data['comment_str']);
+          // $('div.editComment-fail').text('Could not edit the comment! Please try again!');
+          $('div.editComment-fail').css('display','block');
+          $('#myModal').modal('hide');
+        }
+      });
+    });
+  });
+</script>
+
 <script type="text/javascript">
   $('.like-button').on('click', function(e){
      e.preventDefault()
      var instance = $(this);
      var key = $(this).data('key');
-     console.log('Function starts');
       $.ajax({
         type: "post",
         url: "/voteup",
         dataType: 'json',
-        data: { "postID": key},
+        data: {"postID": key},
         success: function(data){
           instance.parent().prev().find('span').html(data['like_count']+' likes');
           instance.addClass('disabled');

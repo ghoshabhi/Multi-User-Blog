@@ -324,12 +324,12 @@ class EditBlogHandler(BlogHandler):
             cookie_error = "You need to log in before you edit the post!"
             self.render('login.html',cookie_error = cookie_error)
 
-    def post(self):
+    def post(self,post_id):
         user_email = check_for_valid_cookie(self)
         cookie_user = User.query(User.email == user_email).get()
         
         if cookie_user:
-            post = Post.query(Post.user == cookie_user.key)
+            post = Post.get_by_id(int(post_id))
             if post:
                 postTitle = self.request.get('post-title')
                 postContent = self.request.get('content')

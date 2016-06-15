@@ -88,6 +88,9 @@
                           </button>
                       </li>
                       <li><a href="/blog/{{ l['p_id'] }}#comments"> 4 Comments</a></li>
+                      {% if user.key == l['a_key'] %}
+                        <li><a href="/editblog/{{ l['p_id'] }}"><span class="fa fa-edit"></span> Edit</a></li>
+                      {% endif %}
                     </ul>
                   </div>
                 </div>
@@ -105,6 +108,6 @@
     </div>
 <!--   </div>
   </div>
- -->  
+ -->
 
 {% endblock %}

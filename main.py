@@ -111,6 +111,7 @@ class HomeHandler(BlogHandler):
                     p_dict['p_content'] = p.content
                     p_dict['p_created'] = p.created
                     p_dict['a_name'] = u.fullname
+                    p_dict['a_key'] = u.key
                     p_dict['a_id'] = u.key.id()
             for l in likes:
                 if l.post == p.key:
@@ -305,6 +306,51 @@ class NewPostHandler(BlogHandler):
         #     cookie_error = "Your session has expired please login again to continue!"
         #     self.render('login.html',cookie_error = cookie_error)
 
+
+class EditBlogHandler(BlogHandler):
+    def get(self,post_id):
+        user_email = check_for_valid_cookie(self)
+        cookie_user = User.query(User.email == user_email).get()
+        post = Post.get_by_id(int(post_id))
+
+        if cookie_user:
+            if post:
+                self.render('editpost.html',user=cookie_user,
+                    post=post)
+            else:
+                self.error(404)
+                return
+        else:
+            cookie_error = "You need to log in before you edit the post!"
+            self.render('login.html',cookie_error = cookie_error)
+
+    def post(self):
+        user_email = check_for_valid_cookie(self)
+        cookie_user = User.query(User.email == user_email).get()
+        
+        if cookie_user:
+            post = Post.query(Post.user == cookie_user.key)
+            if post:
+                postTitle = self.request.get('post-title')
+                postContent = self.request.get('content')
+                if postTitle and postContent:
+                    post.title = postTitle
+                    post.content = postContent
+                    post.put()
+                    time.sleep(0.2)
+                    self.redirect('/blog/%s'%post.key.id())
+                else:
+                    empty_title_content = True
+                    self.render('editpost.html',user=cookie_user,
+                        post=post,empty_title_content=empty_title_content)
+            else:
+                self.error(404)
+                return
+        else:
+            cookie_error = "You need to log in before you edit the post!"
+            self.render('login.html',cookie_error = cookie_error)
+
+
 class PostPageHandler(BlogHandler):
     def get(self, post_id):
         user_email = check_for_valid_cookie(self)
@@ -470,7 +516,7 @@ class EditPersonalInfoHandler(BlogHandler):
             # self.render('profile.html',user=user_cookie,user_public=False, 
             #     public_profile= False,details_updated=details_updated)
         else:
-            cookie_error = 'You need to log in first to edit profile!'
+            cookie_error = 'You need to log in first to edit your profile!'
             self.render('login.html',cookie_error=cookie_error)
 
 
@@ -516,8 +562,6 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             # self.redirect('/view_photo/%s' % upload.key())
         except:
             self.error(500)
-
-
 
 # class PhotoUploadHandler(BlogHandler, blobstore_handlers.BlobstoreUploadHandler):
 #     def post(self):
@@ -621,5 +665,6 @@ app = webapp2.WSGIApplication([
     ('/comment/([0-9]+)', CommentHandler),
     ('/comment/([0-9]+)/delete/([0-9]+)', DeleteCommentHandler),
     ('/editcomment',EditCommentHandler),
+    ('/editblog/([0-9]+)', EditBlogHandler),
     ('/test',TestHandler)
     ], debug=True)

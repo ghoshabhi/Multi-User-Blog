@@ -7,8 +7,7 @@ import hmac
 import json
 import time
 
-
-from models import *
+from models import User,Post,UserPhoto,Likes,Comments
 from google.appengine.ext import ndb
 from google.appengine.ext.webapp import blobstore_handlers
 from google.appengine.ext import blobstore
@@ -99,7 +98,7 @@ class HomeHandler(BlogHandler):
         posts = Post.query().order(-Post.created)
         all_users = User.query()
         likes = Likes.query()
-        
+
         list_dict = []
 
         for p in posts:
@@ -116,7 +115,9 @@ class HomeHandler(BlogHandler):
             for l in likes:
                 if l.post == p.key:
                     p_dict['like_count'] = l.like_count
-                    list_dict.append(p_dict)
+            comment_count = Comments.query(Comments.post == p.key).count()
+            p_dict['c_count'] = comment_count
+            list_dict.append(p_dict)
 
         if user_email:
             self.render('home.html',user=loggedin_user,
@@ -349,6 +350,41 @@ class EditBlogHandler(BlogHandler):
         else:
             cookie_error = "You need to log in before you edit the post!"
             self.render('login.html',cookie_error = cookie_error)
+
+
+class DeleteBlogHandler(BlogHandler):
+    def get(self,post_id):
+        user_email = check_for_valid_cookie(self)
+        cookie_user = User.query(User.email == user_email).get()
+        post = Post.get_by_id(int(post_id))
+
+        if cookie_user:
+            if post:
+                self.render('deletepost.html',user=cookie_user,post=post)
+            else:
+                self.error(404)
+                return
+        else:
+            cookie_error = "You need to log in before you delete the post!"
+            self.render('login.html',cookie_error = cookie_error)
+
+    def post(self,post_id):
+        user_email = check_for_valid_cookie(self)
+        cookie_user = User.query(User.email == user_email).get()
+        
+        if cookie_user:
+            post = Post.get_by_id(int(post_id))
+            if post:
+                post.key.delete()
+                time.sleep(0.2)
+                self.redirect('/')
+            else:
+                self.error(404)
+                return
+        else:
+            cookie_error = "You need to log in before you delete the post!"
+            self.render('login.html',cookie_error = cookie_error)
+
 
 
 class PostPageHandler(BlogHandler):
@@ -674,6 +710,7 @@ app = webapp2.WSGIApplication([
     ('/comment/([0-9]+)/delete/([0-9]+)', DeleteCommentHandler),
     ('/editcomment',EditCommentHandler),
     ('/editblog/([0-9]+)', EditBlogHandler),
+    ('/deleteblog/([0-9]+)', DeleteBlogHandler),
     ('/allposts', AllPostsHandler),
     ('/test',TestHandler)
     ], debug=True)

@@ -51,11 +51,21 @@
       <textarea id="content" name="content">Start writing here...</textarea>
       <br>
     </div>
+    <div class="col-md-3">
+      <input type="checkbox" tabindex="3" class="" name="draft" id="draft">
+      <label for="draft" style="color:#1BC1A1"> Save as Draft</label>
+    </div>
     <div class='col-md-9'>
-      <input type="submit" name="login-submit" id="post-submit" tabindex="4" class="btn btn-md btn-success" value="Submit Post">
-      <input type="submit" name="login-submit" id="save-draft" tabindex="4" class="btn btn-md btn-warning" value="Save Draft">
-      <input type="submit" name="login-submit" id="cancel-post" tabindex="4" class="btn btn-md btn-danger" value="Cancel">
-
+      <div class="row">
+        <div class="col-md-4">
+          <button type="submit" name="login-submit" id="post-submit" tabindex="4" class="btn btn-md btn-success">
+            <i class="fa fa-check"></i> Submit Post
+          </button>
+        </div>
+        <div class="col-md-4">
+          <a href='/home' id="cancel-post" tabindex="4" class="btn btn-md btn-danger">Cancel</a>
+        </div>
+      </div>
     <br><br><br><br><br>
     </div>
   </form>

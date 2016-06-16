@@ -647,6 +647,14 @@ class TestHandler(BlogHandler):
             self.write("Like Count: " + str(new_like.like_count) + "Post Title:" + post.Title)
 
 
+class AllPostsHandler(BlogHandler):
+    def get(self):
+        user_email = check_for_valid_cookie(self)
+        cookie_user = User.query(User.email == user_email).get()
+        posts = Post.query().order(-Post.created)
+
+        self.render('allposts.html',user=cookie_user, posts=posts)
+
 
 app = webapp2.WSGIApplication([
     ('/', HomeHandler),
@@ -666,5 +674,6 @@ app = webapp2.WSGIApplication([
     ('/comment/([0-9]+)/delete/([0-9]+)', DeleteCommentHandler),
     ('/editcomment',EditCommentHandler),
     ('/editblog/([0-9]+)', EditBlogHandler),
+    ('/allposts', AllPostsHandler),
     ('/test',TestHandler)
     ], debug=True)

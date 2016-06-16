@@ -27,42 +27,27 @@
 
 
 {% block content %}
-{% if empty_title_content %}
+{% if empty_post %}
   <div style="width:100%" class="active alert alert-danger">
-    <em>The title and/or blog content cannot be left empty!</em>
+    <em>{{ empty_post }}</em>
   </div>
 {% endif %}
 
 <ol class="breadcrumb" style="margin-bottom: 5px;">
   <li><a href="/home">Home</a></li>
-  <li><a href="/profile/{{user.key | filterKey }}">{{user.fullname}}</a></li>
-  <li class="active">Edit Post / {{ post.title }}</li>
+  <li class="active">All Posts</li>
 </ol>
 
 <div class="container">
-  <div class="row">
-  <form id="form" method='post'>
-    <div class="col-md-9">
-      <h3>Start editing your post here .... </h3>
-      <input id="post-title" type="text" name="post-title" placeholder="Title can't be empty!"
-          style="margin-bottom:10px; padding:5px" class="form-control" value="{{post.title}}">
-    </div>
-    <div class="col-md-9">
-      <textarea id="content" name="content">{{post.content}}</textarea>
-      <br>
-    </div>
-    <div class='col-md-9'>
-      <button type="submit" class="btn btn-md btn-success">
-        <i class="fa fa-check"></i> Confirm Edit
-      </button>
-      <a href='/home' id="cancel-post" tabindex="4" class="pull-right btn btn-md btn-danger">
-        <i class="fa fa-times"></i> Cancel
-      </a>
-
-    <br><br><br><br><br>
-    </div>
-  </form>
-</div>
+  <ul>
+    {% for post in posts %}
+    <li><h4><a href="/blog/{{post.key|filterKey}}" target="_blank">
+              {{post.title}} - {{post.created.strftime("%b %d, '%y")}} - {{ post.created.strftime("%I:%M %p")}}
+            <a/>
+        </h4>
+    </li>
+    {% endfor %}
+  </ul>
 </div>
 {% endblock %}
 

@@ -419,18 +419,23 @@ class LikeHandler(BlogHandler):
     def post(self):
         user_email = check_for_valid_cookie(self)
         if user_email:
+            cookie_user = User.query(User.email == user_email).get()
             postID = self.request.get('postID')
             post_obj = Post.get_by_id(int(postID))
             like_obj = Likes.query(Likes.post == post_obj.key).get()
-            if like_obj:
-                like_obj.like_count += 1
-                like_obj.put()
-                self.write(json.dumps(({'like_count': like_obj.like_count})))
+
+            if post_obj.user == cookie_user.key:
+                self.write(json.dumps(({'like_count' : 'You cannot like your own post!'})))
             else:
-                like_obj = Likes(post = post_obj.key,like_count=1)
-                like_obj.put()
-                time.sleep(0.2)
-                self.write(json.dumps(({'like_count' : like_obj.like_count})))
+                if like_obj:
+                    like_obj.like_count += 1
+                    like_obj.put()
+                    self.write(json.dumps(({'like_count': like_obj.like_count})))
+                else:
+                    like_obj = Likes(post = post_obj.key,like_count=1)
+                    like_obj.put()
+                    time.sleep(0.2)
+                    self.write(json.dumps(({'like_count' : like_obj.like_count})))
         else:
             return None
 

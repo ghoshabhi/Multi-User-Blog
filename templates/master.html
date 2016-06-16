@@ -267,11 +267,16 @@
         dataType: 'json',
         data: {"postID": key},
         success: function(data){
-          instance.parent().prev().find('span').html(data['like_count']+' likes');
-          instance.addClass('disabled');
+          if(data['like_count'] == 'You cannot like your own post!'){
+            alert(data['like_count']);
+          }
+          else{
+            instance.parent().prev().find('span').html(data['like_count']+' likes');
+            instance.addClass('disabled');
+          }
         },
         error: function(data){
-          alert('You have to be logged in to like a post!');
+           alert('You have to be logged in to like a post!');
         }
       });
     });

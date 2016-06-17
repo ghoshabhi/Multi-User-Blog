@@ -142,7 +142,7 @@ class LoginHandler(BlogHandler):
         password = self.request.get('password')
         
         if u_name and password:
-            user = User.query(ndb.OR(User.user_name==u_name , User.email==u_name) and User.password== hash_str(password)).get()
+            user = User.query(ndb.AND(ndb.OR(User.user_name==u_name , User.email==u_name),User.password== hash_str(password))).get()
             if user:
                 if self.request.cookies.get('user_email'):
                     user_email_cookie = self.request.cookies.get('user_email')

@@ -18,7 +18,6 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                             autoescape = True)
 
 SECRET = "mysecretkey"
-error_list = []
 
 empty_content = '<!DOCTYPE html>\n<html>\n<head>\n</head>\n<body>\n\n</body>\n</html>'
 empty_title = "<div>&nbsp;</div>"
@@ -180,6 +179,7 @@ class RegistrationHandler(BlogHandler):
         self.render("register.html")
     def post(self):
         has_error = False
+        error_list = []
 
         fullname = self.request.get('fullname')
         location = self.request.get('location')

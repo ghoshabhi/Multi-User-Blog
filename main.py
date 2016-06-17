@@ -425,10 +425,16 @@ class LikeHandler(BlogHandler):
             like_obj = Likes.query(Likes.post == post_obj.key).get()
 
             if post_obj.user == cookie_user.key:
-                self.write(json.dumps(({'like_count' : 'You cannot like your own post!'})))
+                self.write(json.dumps(({'like_count': -1})))
             else:
                 if like_obj:
                     like_obj.like_count += 1
+                    liked_by = like_obj.user_id
+                    for u_id in liked_by:
+                        if u_id == cookie_user.key.id():
+                            self.write(json.dumps(({'like_count': -2})))
+                            return
+                    liked_by.append(cookie_user.key.id())
                     like_obj.put()
                     self.write(json.dumps(({'like_count': like_obj.like_count})))
                 else:

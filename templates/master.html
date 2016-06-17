@@ -267,10 +267,17 @@
         dataType: 'json',
         data: {"postID": key},
         success: function(data){
-          if(data['like_count'] == 'You cannot like your own post!'){
-            alert(data['like_count']);
+          console.log('success ajax');
+          if(data['like_count'] == -1){
+            console.log('if confition success');
+            alert('You cannot like your own posts!');
+          }
+          else if(data['like_count'] == -2){
+            console.log('else if condition success');
+            alert('You have already liked this post!')
           }
           else{
+            console.log('else confition success');
             instance.parent().prev().find('span').html(data['like_count']+' likes');
             instance.addClass('disabled');
           }

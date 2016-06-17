@@ -25,7 +25,7 @@ class UserPhoto(ndb.Model):
 
 class Likes(ndb.Model):
     post = ndb.KeyProperty(kind=Post)
-    user_id = ndb.PickleProperty()
+    user_id = ndb.IntegerProperty(repeated=True)
     like_count = ndb.IntegerProperty(default=0)
 
 

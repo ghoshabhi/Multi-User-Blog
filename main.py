@@ -6,6 +6,7 @@ import hashlib
 import hmac
 import json
 import time
+import logging
 
 from models import User,Post,UserPhoto,Likes,Comments
 from google.appengine.ext import ndb
@@ -229,6 +230,11 @@ class RegistrationHandler(BlogHandler):
                                 user_name=u_name,
                                 password= hash_str(password))
                 new_user_key = new_user.put()
+
+                new_user_photo_obj = UserPhoto(user= new_user_key)
+                new_user_photo_obj.put()
+
+                time.sleep(0.2)
                 # message = mail.EmailMessage(
                 #                 sender='hello@your-own-blog.appspotmail.com',
                 #                 subject="Thank You for Connecting with Us!")
@@ -520,26 +526,84 @@ class ProfileHandler(BlogHandler):
         if user_cookie:
             if user_cookie.email != user_public.email:
                 public_profile = True
+                
+                user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key)
+                if user_photo_obj and user_photo_obj.photo_blob_key:
+                    pic_serving_url = images.get_serving_url(user_photo_obj.photo_blob_key, size=90, crop=True)
+                else:
+                    pic_serving_url = '//placehold.it/100'
+
                 self.render('profile.html',user=user_cookie,
                             user_public=user_public,
-                            public_profile= public_profile)
-
+                            public_profile= public_profile,
+                            pic_serving_url = pic_serving_url)
             else:
                 if user_cookie.email:
                     public_profile = False
 
+                    user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
+                    if user_photo_obj and user_photo_obj.photo_blob_key:
+                        pic_serving_url = images.get_serving_url(user_photo_obj.photo_blob_key, size=90, crop=True)
+                    else:
+                        pic_serving_url = '//placehold.it/100'
+
                     self.render('profile.html',user=user_cookie,
                              user_public=user_public, 
                              public_profile= public_profile,
-                             upload_url=upload_url)
+                             upload_url=upload_url,
+                             pic_serving_url = pic_serving_url)
                 else:
                     cookie_error = 'You need to log in first to edit profile!'
                     self.render('login.html',cookie_error=cookie_error)
         else:
             public_profile = True
+            user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key)
+            if user_photo_obj and user_photo_obj.photo_blob_key:
+                pic_serving_url = images.get_serving_url(user_photo_obj.photo_blob_key, size=90, crop=True)
+            else:
+                pic_serving_url = '//placehold.it/100'
+
             self.render('profile.html',user=user_cookie,
-                    user_public=user_public,
-                    public_profile= public_profile)
+                        user_public=user_public,
+                        public_profile= public_profile,
+                        pic_serving_url = pic_serving_url)
+
+
+class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
+    def post(self):
+        logging.debug('Enters PhotoUploadHandler')
+        user_email = check_for_valid_cookie(self)
+        user_cookie = User.query(User.email == user_email).get()
+
+        if user_cookie:
+            user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
+            if user_photo_obj:
+                try:
+                    upload = self.get_uploads('img')
+                    blobInfo = upload[0]
+                    user_photo_obj.photo_blob_key = blobInfo.key
+                    user_photo_obj.put()
+                    time.sleep(0.2)
+                    self.redirect('/profile/%s'% user_cookie.key.id())
+                except:
+                    self.error(500)
+            else:
+                try:
+                    upload = self.get_uploads('img')
+                    blobInfo = upload[0]
+                    user_photo = UserPhoto(
+                        user= user_cookie.key,
+                        photo_blob_key=blobInfo.key()
+                    )
+                    user_photo.put()
+                    time.sleep(0.2)
+                    self.redirect('/profile/%s'%user_cookie.key.id())
+                except:
+                    logging.error('Error uploading')
+                    self.error(500)
+        else:
+            cookie_error = 'You need to log in first to edit profile!'
+            self.render('login.html',cookie_error=cookie_error)
 
 
 class EditPersonalInfoHandler(BlogHandler):
@@ -590,25 +654,6 @@ class ChangePassHandler(BlogHandler):
             cookie_error = 'You need to log in first to edit profile!'
             self.render('login.html',cookie_error=cookie_error)
 
-
-
-class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
-    def post(self):
-        user_email = check_for_valid_cookie(self)
-        user_cookie = User.query(User.email == user_email).get()
-
-        try:
-            upload = self.get_uploads()[0]
-            user_photo = UserPhoto(
-                user= user_cookie.key,
-                photo_blob_key=upload.key()
-            )
-            user_photo.put()
-            time.sleep(0.2)
-            self.write(upload.key)
-            # self.redirect('/view_photo/%s' % upload.key())
-        except:
-            self.error(500)
 
 # class PhotoUploadHandler(BlogHandler, blobstore_handlers.BlobstoreUploadHandler):
 #     def post(self):

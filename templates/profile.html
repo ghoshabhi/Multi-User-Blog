@@ -40,11 +40,7 @@
       <!-- left column -->
       <div class="col-md-3">
         <div class="text-center">
-          {% if user_public.photo %}
-            <img src="user_public.photo | fitlerPhoto" class="img-responsive img-rounded" alt="avatar">
-          {% else %}
-            <img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
-          {% endif %}
+          <img src="{{pic_serving_url}}" class="avatar img-circle" alt="avatar">
         </div>
       </div>
 
@@ -104,17 +100,17 @@
   <div class="row">
       <!-- left column -->
     <div class="col-md-3">
-      <form action="{{upload_url}}" method="post" enctype="multipart/form-data" boundary='---XXX---'>
+      <form action="{{upload_url}}" method="post" enctype="multipart/form-data">
         <div class="text-center">
           {% if user_photo_url %}
-            <img src="user_photo_url" class="img-responsive img-rounded" alt="avatar">
+            <img src="{{pic_serving_url}}" class="img-responsive img-rounded" alt="avatar">
             <h6>Upload a different photo...</h6>
             
             <input type="file" name="img" class="form-control">
             <br>
             <input type="submit" name="img" class="btn btn-primary" value="Change Picture">
           {% else %}
-            <img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
+            <img src="{{pic_serving_url}}" class="avatar img-circle" alt="avatar">
             <h6>Upload a different photo...</h6>
             
             <input type="file" class="form-control">

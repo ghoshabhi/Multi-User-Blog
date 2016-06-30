@@ -20,9 +20,6 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
 
 SECRET = "mysecretkey"
 
-empty_content = '<!DOCTYPE html>\n<html>\n<head>\n</head>\n<body>\n\n</body>\n</html>'
-empty_title = "<div>&nbsp;</div>"
-
 def hash_str(s):
     return hmac.new(SECRET,s).hexdigest()
 
@@ -95,7 +92,7 @@ class HomeHandler(BlogHandler):
         user_email = check_for_valid_cookie(self)
         loggedin_user = User.query(User.email == user_email).get()
         
-        posts = Post.query().order(-Post.created)
+        posts = Post.query(Post.is_draft == False).order(-Post.created)
         all_users = User.query()
         likes = Likes.query()
 
@@ -276,24 +273,35 @@ class NewPostHandler(BlogHandler):
         if user_email:
             content = self.request.get('content')
             title = self.request.get('post-title')
+            is_draft = self.request.get('draft')
             user = User.query(User.email == user_email).get()
+            
+            if is_draft == 'on':
+                is_draft = True
+            else:
+                is_draft =  False
 
             if title!='Click here to give a Title!' and \
              content!='<p>Start writing here...</p>':
                 new_post = Post(
                     title = title,
                     content = content,
-                    user = user.key
+                    user = user.key,
+                    is_draft = is_draft
                     )
                 new_post_key = new_post.put()
                 time.sleep(0.3)
                 like_obj = Likes(post=new_post_key,like_count=0)
                 like_key = like_obj.put()
                 time.sleep(0.1)
-                self.redirect('/blog/%s' % str(new_post_key.id()))
+
+                if is_draft:
+                    self.redirect('/blog/%s' % str(new_post_key.id()))
+                else:
+                    self.redirect('/blog/%s' % str(new_post_key.id()))
             else:
                 empty_post = "Both Title and Content needed for the Blog!"
-                self.render('newpost.html',user = user,empty_post = empty_post)
+                self.render('newpost.html',user = user, title=title, content=content,empty_post = empty_post)
         else:
             cookie_error = "Your session has expired please login again to continue!"
             self.render('login.html',cookie_error = cookie_error)
@@ -527,9 +535,12 @@ class ProfileHandler(BlogHandler):
             if user_cookie.email != user_public.email:
                 public_profile = True
                 
-                user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key)
-                if user_photo_obj and user_photo_obj.photo_blob_key:
-                    pic_serving_url = images.get_serving_url(user_photo_obj.photo_blob_key, size=90, crop=True)
+                user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
+                if user_photo_obj:
+                    if user_photo_obj.photo_blob_key:
+                        pic_serving_url = images.get_serving_url(user_photo_obj.photo_blob_key, size=90, crop=True)
+                    else:
+                        pic_serving_url = '//placehold.it/100'
                 else:
                     pic_serving_url = '//placehold.it/100'
 
@@ -542,8 +553,11 @@ class ProfileHandler(BlogHandler):
                     public_profile = False
 
                     user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
-                    if user_photo_obj and user_photo_obj.photo_blob_key:
-                        pic_serving_url = images.get_serving_url(user_photo_obj.photo_blob_key, size=90, crop=True)
+                    if user_photo_obj:
+                        if user_photo_obj.photo_blob_key:
+                            pic_serving_url = images.get_serving_url(user_photo_obj.photo_blob_key, size=90, crop=True)
+                        else:
+                            pic_serving_url = '//placehold.it/100'
                     else:
                         pic_serving_url = '//placehold.it/100'
 
@@ -557,9 +571,13 @@ class ProfileHandler(BlogHandler):
                     self.render('login.html',cookie_error=cookie_error)
         else:
             public_profile = True
-            user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key)
-            if user_photo_obj and user_photo_obj.photo_blob_key:
-                pic_serving_url = images.get_serving_url(user_photo_obj.photo_blob_key, size=90, crop=True)
+            #user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
+            user_photo_obj = None
+            if user_photo_obj:
+                if user_photo_obj.photo_blob_key:
+                    pic_serving_url = images.get_serving_url(user_photo_obj.photo_blob_key, size=90, crop=True)
+                else:
+                    pic_serving_url = '//placehold.it/100'
             else:
                 pic_serving_url = '//placehold.it/100'
 
@@ -743,10 +761,101 @@ class AllPostsHandler(BlogHandler):
     def get(self):
         user_email = check_for_valid_cookie(self)
         cookie_user = User.query(User.email == user_email).get()
-        posts = Post.query().order(-Post.created)
+        posts = Post.query(Post.is_draft== False).order(-Post.created)
 
         self.render('allposts.html',user=cookie_user, posts=posts)
 
+class DraftPostsHandler(BlogHandler):
+    def get(self,user_id):
+        user_email = check_for_valid_cookie(self)
+        cookie_user = User.query(User.email == user_email).get()
+        posts = Post.query(Post.is_draft == True).order(-Post.created)
+
+        if cookie_user:
+            self.render('draftposts.html',user=cookie_user, posts=posts)
+        else:
+            cookie_error = 'You need to be logged in to view your drafts!'
+            self.render('login.html',cookie_error=cookie_error)
+
+
+class ViewDraftHandler(BlogHandler):
+    def get(self,post_id):
+        post = Post.get_by_id(post_id)
+        user_email = check_for_valid_cookie(self)
+        cookie_user = User.query(User.email == user_email).get()
+
+        if cookie_user:
+            if post:
+                self.render('viewdraftpost.html',user = cookie_user,
+                    post = post)
+            else:
+                self.error(404)
+                return
+        else:
+            cookie_error = 'You need to be logged in to view your drafts!'
+            self.render('login.html',cookie_error=cookie_error)
+
+
+class EditDraftHandler(BlogHandler):
+    def get(self,post_id):
+        user_email = check_for_valid_cookie(self)
+        cookie_user = User.query(User.email == user_email).get()
+        post = Post.get_by_id(int(post_id))
+
+        if cookie_user:
+            if post:
+                self.render('editdraft.html',user=cookie_user,
+                    post=post)
+            else:
+                self.error(404)
+                return
+        else:
+            cookie_error = "You need to log in before you edit the post!"
+            self.render('login.html',cookie_error = cookie_error)
+
+    def post(self,post_id):
+        user_email = check_for_valid_cookie(self)
+        cookie_user = User.query(User.email == user_email).get()
+        
+        if cookie_user:
+            post = Post.get_by_id(int(post_id))
+            if post:
+                postTitle = self.request.get('post-title')
+                postContent = self.request.get('content')
+                is_draft = self.request.get('draft')
+
+                if is_draft == 'on':
+                    is_draft = True
+                    if postTitle and postContent:
+                        post.title = postTitle
+                        post.content = postContent
+                        post.is_draft = is_draft
+                        post.put()
+                        time.sleep(0.2)
+                        self.redirect('/home')
+                        #self.redirect('/draft/%s'%post.key.id())
+                    else:
+                        empty_title_content = True
+                        self.render('editdraft.html',user=cookie_user,
+                            post=post,empty_title_content=empty_title_content)
+                else:
+                    is_draft = False
+                    post.title = postTitle
+                    post.content = postContent
+                    post.is_draft = is_draft
+                    post.put()
+                    time.sleep(0.2)
+                    self.redirect('/blog/%s'%post.key.id())
+            else:
+                self.error(404)
+                return
+        else:
+            cookie_error = "You need to log in before you edit your draft!"
+            self.render('login.html',cookie_error = cookie_error)
+
+class DeleteDraftHandler(BlogHandler):
+    def get(self,post_id):
+        self.write('Delete Blog :' + post_id)
 
 app = webapp2.WSGIApplication([
     ('/', HomeHandler),
@@ -768,5 +877,9 @@ app = webapp2.WSGIApplication([
     ('/editblog/([0-9]+)', EditBlogHandler),
     ('/deleteblog/([0-9]+)', DeleteBlogHandler),
     ('/allposts', AllPostsHandler),
+    ('/user/([0-9]+)/drafts', DraftPostsHandler),
+    ('/draft/([0-9]+)/edit', EditDraftHandler),
+    ('/draft/([0-9]+)/delete', DeleteDraftHandler),
+    ('/draft/([0-9]+)/view', ViewDraftHandler),
     ('/test',TestHandler)
     ], debug=True)

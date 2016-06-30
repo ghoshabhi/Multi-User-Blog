@@ -15,6 +15,7 @@ class Post(ndb.Model):
     content = ndb.TextProperty(required=True)
     created = ndb.DateTimeProperty(auto_now_add = True)
     last_modified = ndb.DateTimeProperty(auto_now = True)
+    is_draft = ndb.BooleanProperty(default=False)
     user = ndb.KeyProperty(kind=User)
 
 

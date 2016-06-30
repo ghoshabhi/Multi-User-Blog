@@ -22,3 +22,9 @@ indexes:
   - name: created
   - name: user
     direction: desc
+
+- kind: Post
+  properties:
+  - name: is_draft
+  - name: created
+    direction: desc

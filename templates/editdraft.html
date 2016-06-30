@@ -27,45 +27,43 @@
 
 
 {% block content %}
-{% if empty_post %}
+{% if empty_title_content %}
   <div style="width:100%" class="active alert alert-danger">
-    <em>{{ empty_post }}</em>
+    <em>The title and/or blog content cannot be left empty!</em>
   </div>
 {% endif %}
 
 <ol class="breadcrumb" style="margin-bottom: 5px;">
   <li><a href="/home">Home</a></li>
   <li><a href="/profile/{{user.key | filterKey }}">{{user.fullname}}</a></li>
-  <li class="active">New Post</li>
+  <li class="active">Edit Draft / {{ post.title }}</li>
 </ol>
 
 <div class="container">
   <div class="row">
-  <form id="form1" method='post'>
-    <div class="col-md-9 postTitle">
-      <h2 id="post-title" name="post-title" style="margin-bottom:10px; padding:5px" class="editable">
-          Click here to give a Title!
-      </h2>
+  <form id="form" method='post'>
+    <div class="col-md-9">
+      <h3>Start editing your draft here .... </h3>
+      <input id="post-title" type="text" name="post-title" placeholder="Title can't be empty!"
+          style="margin-bottom:10px; padding:5px" class="form-control" value="{{post.title}}">
     </div>
     <div class="col-md-9">
-      <textarea id="content" name="content">Start writing here...</textarea>
+      <textarea id="content" name="content">{{post.content}}</textarea>
+      <br>
+      <br>
+      <label for="draft" style="color:#1BC1A1"> Still a Draft ?</label>
+      <input type="checkbox" tabindex="3" class="" name="draft" id="draft">
       <br>
     </div>
-    <div class="col-md-3">
-      <input type="checkbox" tabindex="3" class="" name="draft" id="draft">
-      <label for="draft" style="color:#1BC1A1"> Save as Draft</label>
-    </div>
+
     <div class='col-md-9'>
-      <div class="row">
-        <div class="col-md-4">
-          <button type="submit" name="login-submit" id="post-submit" tabindex="4" class="btn btn-md btn-success">
-            <i class="fa fa-check"></i> Submit Post
-          </button>
-        </div>
-        <div class="col-md-4">
-          <a href='/home' id="cancel-post" tabindex="4" class="btn btn-md btn-danger">Cancel</a>
-        </div>
-      </div>
+      <button type="submit" class="btn btn-md btn-success">
+        <i class="fa fa-check"></i> Confirm Edit
+      </button>
+      <a href='/user/{{ user.key | filterKey}}/drafts' id="cancel-post" tabindex="4" class="pull-right btn btn-md btn-danger">
+        <i class="fa fa-times"></i> Cancel
+      </a>
+
     <br><br><br><br><br>
     </div>
   </form>

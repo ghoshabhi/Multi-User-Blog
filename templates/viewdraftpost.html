@@ -28,26 +28,33 @@
 
 {% block content %}
 
+<div style="width:100%;display:none" class="editComment-success active alert alert-success">
+  
+</div>
+
+<div style="width:100%;display:none" class="editComment-fail active alert alert-danger">
+  
+</div>
+{% if post %}
+
 <ol class="breadcrumb" style="margin-bottom: 5px;">
-  <li><a href="/home">Home</a></li>
-  <li><a href="/profile/{{user.key | filterKey }}">{{user.fullname}}</a></li>
-  <li class="active">Delete Post / {{post.title}}</li>
+  <li><a href='/home'>Home</a></li>
+  <li><a href='/allposts'>Drafts</a></li>
+  <li class="active">{{post.title}}</a></li>
 </ol>
 
-<div class="container" style="text-align:center;">
-  <form id="form1" method="post">
-    <h1>
-      Are you sure you want to delete the following post ?
+<div class="row">
+  <div class="col-md-8">
+    <h1 style="color:#1BC1A1;font-weight:900;font-size:58px;font-family:'Josefin Slab','Open Sans', sans-serif">
+      {{post.title | safe}}
     </h1>
-    <h1 name="{{post.key | filterKey}}" style="color:#1BC1A1;font-weight:900;font-size:38px;font-family:'Josefin Slab','Open Sans', sans-serif">
-        <i><a href="/blog/{{post.key | filterKey}}">{{post.title | safe}}</a></i>
-    </h1>
-    <button type="submit" class="btn btn-md btn-danger">
-      <i class="fa fa-trash-o"></i> Delete Post
-    </button>
-    <a href="/home" class="btn btn-md btn-warning"><i class="fa fa-times"></i> Cancel</a>
-    <br><br>
-  </form>
-</div>
-{% endblock %}
+  </div>
 
+  <div class="col-md-8 postContentBody" style="text-align: justify;text-justify: inter-word;">
+    <br>
+    {{post.content | safe}}
+  </div>
+</div>
+  <br><br>
+<hr>
+{% endblock %}

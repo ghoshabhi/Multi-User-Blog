@@ -6,8 +6,8 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><em>{{user.fullname}}</em><b class="caret"></b></a>
     <ul class="dropdown-menu">
       <li><a href="/newpost">New Post</a></li>
-      <li><a href="#">All Posts</a></li>
-      <li><a href="#">Drafts</a></li>
+      <li><a href="/allposts">All Posts</a></li>
+      <li><a href="/user/{{user.key | filterKey}}/drafts">Drafts</a></li>
       <li class="divider"></li>
       <li><a href="/profile/{{ user.key | filterKey}}">Profile</a></li>
       <li><a href="#">Report Problem</a></li>

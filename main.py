@@ -769,9 +769,9 @@ class DraftPostsHandler(BlogHandler):
     def get(self,user_id):
         user_email = check_for_valid_cookie(self)
         cookie_user = User.query(User.email == user_email).get()
-        posts = Post.query(Post.is_draft == True).order(-Post.created)
-
+        
         if cookie_user:
+            posts = Post.query(ndb.AND(Post.is_draft == True,Post.user == cookie_user.key)).order(-Post.created)
             self.render('draftposts.html',user=cookie_user, posts=posts)
         else:
             cookie_error = 'You need to be logged in to view your drafts!'
@@ -832,8 +832,8 @@ class EditDraftHandler(BlogHandler):
                         post.is_draft = is_draft
                         post.put()
                         time.sleep(0.2)
-                        self.redirect('/home')
-                        #self.redirect('/draft/%s'%post.key.id())
+                        #self.redirect('/home')
+                        self.redirect('/draft/%s'%post.key.id())
                     else:
                         empty_title_content = True
                         self.render('editdraft.html',user=cookie_user,
@@ -880,6 +880,6 @@ app = webapp2.WSGIApplication([
     ('/user/([0-9]+)/drafts', DraftPostsHandler),
     ('/draft/([0-9]+)/edit', EditDraftHandler),
     ('/draft/([0-9]+)/delete', DeleteDraftHandler),
-    ('/draft/([0-9]+)/view', ViewDraftHandler),
+    ('/draft/([0-9]+)', ViewDraftHandler),
     ('/test',TestHandler)
     ], debug=True)

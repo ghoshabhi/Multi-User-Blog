@@ -296,7 +296,7 @@ class NewPostHandler(BlogHandler):
                 time.sleep(0.1)
 
                 if is_draft:
-                    self.redirect('/blog/%s' % str(new_post_key.id()))
+                    self.redirect('/user/%s/drafts' % str(user.key.id()))
                 else:
                     self.redirect('/blog/%s' % str(new_post_key.id()))
             else:
@@ -780,7 +780,7 @@ class DraftPostsHandler(BlogHandler):
 
 class ViewDraftHandler(BlogHandler):
     def get(self,post_id):
-        post = Post.get_by_id(post_id)
+        post = Post.get_by_id(int(post_id))
         user_email = check_for_valid_cookie(self)
         cookie_user = User.query(User.email == user_email).get()
 
@@ -833,7 +833,7 @@ class EditDraftHandler(BlogHandler):
                         post.put()
                         time.sleep(0.2)
                         #self.redirect('/home')
-                        self.redirect('/draft/%s'%post.key.id())
+                        self.redirect('/draft/%s'% post.key.id())
                     else:
                         empty_title_content = True
                         self.render('editdraft.html',user=cookie_user,

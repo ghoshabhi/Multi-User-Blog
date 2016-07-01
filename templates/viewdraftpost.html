@@ -39,11 +39,14 @@
 
 <ol class="breadcrumb" style="margin-bottom: 5px;">
   <li><a href='/home'>Home</a></li>
+  <li><a href='/user/{{user.key | filterKey }}'>{{user.fullname}}</a></li>
   <li><a href='/allposts'>Drafts</a></li>
   <li class="active">{{post.title}}</a></li>
 </ol>
 
 <div class="row">
+  <h2 style="margin:5px">This is how your final post would look like <span class="fa fa-eye"></span></h2>
+  <hr>
   <div class="col-md-8">
     <h1 style="color:#1BC1A1;font-weight:900;font-size:58px;font-family:'Josefin Slab','Open Sans', sans-serif">
       {{post.title | safe}}
@@ -55,6 +58,15 @@
     {{post.content | safe}}
   </div>
 </div>
-  <br><br>
+<br>
+<br>
 <hr>
+<div class="row">
+  <div class="col-md-8">
+    <a href="/user/{{user.key | filterKey}}/drafts" class="btn btn-warning" style="margin:3px"><i class="fa fa-arrow-left"></i> Go Back</a>
+    <a href="/user/{{user.key | filterKey}}/drafts" class="btn btn-success" style="margin:3px"><i class="fa fa-check"></i> Post in Public</a>
+  </div>
+</div>
+
+{% endif %}
 {% endblock %}

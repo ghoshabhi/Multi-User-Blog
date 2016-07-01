@@ -40,21 +40,52 @@
 </ol>
 
 <div class="container">
-  <ul>
-    {% for post in posts %}
-      <li>
-          {% if post.title %}
-            <a href="/draft/{{post.key | filterKey}}">{{post.title}} - {{post.created.strftime("%b %d, '%y")}} - {{ post.created.strftime("%I:%M %p")}}</a>
-          {% else %}
-            <b><i>Empty Title</i></b> - {{post.created.strftime("%b %d, '%y")}} - {{ post.created.strftime("%I:%M %p")}}
-          {% endif %}
-          &nbsp;|&nbsp;
-          <a class="btn btn-success" href="/draft/{{ post.key | filterKey }}/edit" style="margin:4px">Edit Draft</a>
-          &nbsp;|&nbsp;
-          <a href="/draft/{{ post.key | filterKey }}/delete" class="btn btn-danger">Delete Draft</a>
-      </li>
-    {% endfor %}
-  </ul>
+  <div class="table-responsive">
+  <table class="table table-condensed table-hover">
+    <thead class="thead-default">
+      <tr>
+        <th>#</th>
+        <th>Post Title</th>
+        <th>Updated</th>
+        <th>Time</th>
+        <th>Edit</th>
+        <th>Delete</th>
+        <th>Make Public?</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in posts %}
+        <tr>
+          <td>
+            {{loop.index}}
+          </td>
+          <td>
+            {% if post.title %}
+              <a href="/draft/{{post.key | filterKey}}">{{post.title}}</a>
+            {% else %}
+              <b><i>Empty Title</i></b>
+            {% endif %}
+          </td>
+          <td>
+            {{post.last_modified.strftime("%b %d, '%y")}}
+          </td>
+          <td>
+            {{ post.last_modified.strftime("%I:%M %p")}}
+          </td>
+          <td>
+            <a  href="/draft/{{ post.key | filterKey }}/edit" style="margin:4px"><span class="fa fa-edit"></span></a>
+          </td>
+          <td>
+            <a href="/draft/{{ post.key | filterKey }}/delete"><span class="fa fa-trash-o"></span></a>
+          </td>
+          <td>
+            <a href="/draft/{{post.key | filterKey}}/post" class="btn btn-sm btn-success"><i class="fa fa-check"></i> Post in Public</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
 </div>
 {% endblock %}
 

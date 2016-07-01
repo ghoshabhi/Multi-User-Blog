@@ -44,9 +44,9 @@
     {% for post in posts %}
       <li>
           {% if post.title %}
-            <a href="/draft/{{post.key | filterKey}}/view">{{post.title}} - {{post.created.strftime("%b %d, '%y")}} - {{ post.created.strftime("%I:%M %p")}}</a>
+            <a href="/draft/{{post.key | filterKey}}">{{post.title}} - {{post.created.strftime("%b %d, '%y")}} - {{ post.created.strftime("%I:%M %p")}}</a>
           {% else %}
-            <i>Empty Title</i> - {{post.created.strftime("%b %d, '%y")}} - {{ post.created.strftime("%I:%M %p")}}
+            <b><i>Empty Title</i></b> - {{post.created.strftime("%b %d, '%y")}} - {{ post.created.strftime("%I:%M %p")}}
           {% endif %}
           &nbsp;|&nbsp;
           <a class="btn btn-success" href="/draft/{{ post.key | filterKey }}/edit" style="margin:4px">Edit Draft</a>

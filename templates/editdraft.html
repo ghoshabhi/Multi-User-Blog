@@ -36,7 +36,7 @@
 <ol class="breadcrumb" style="margin-bottom: 5px;">
   <li><a href="/home">Home</a></li>
   <li><a href="/profile/{{user.key | filterKey }}">{{user.fullname}}</a></li>
-  <li class="active">Edit Draft / {{ post.title }}</li>
+  <li class="active">Draft / {{ post.title }}</li>
 </ol>
 
 <div class="container">
@@ -57,10 +57,10 @@
     </div>
 
     <div class='col-md-9'>
-      <button type="submit" class="btn btn-md btn-success">
+      <button type="submit" class="btn btn-md btn-success" style="margin:2px">
         <i class="fa fa-check"></i> Confirm Edit
       </button>
-      <a href='/user/{{ user.key | filterKey}}/drafts' id="cancel-post" tabindex="4" class="pull-right btn btn-md btn-danger">
+      <a href='/user/{{ user.key | filterKey}}/drafts' id="cancel-post" tabindex="4" style="margin:2px" class="pull-right btn btn-md btn-danger">
         <i class="fa fa-times"></i> Cancel
       </a>
 

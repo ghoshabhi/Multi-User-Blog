@@ -6,7 +6,7 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><em>{{user.fullname}}</em><b class="caret"></b></a>
     <ul class="dropdown-menu">
       <li><a href="/newpost">New Post</a></li>
-      <li><a href="/allposts">All Posts</a></li>
+      <li><a href="/user/{{user.key | filterKey}}/myposts">My Posts</a></li>
       <li><a href="/user/{{user.key | filterKey}}/drafts">Drafts</a></li>
       <li class="divider"></li>
       <li><a href="/profile/{{ user.key | filterKey}}">Profile</a></li>
@@ -63,8 +63,8 @@
 <hr>
 <div class="row">
   <div class="col-md-8">
-    <a href="/user/{{user.key | filterKey}}/drafts" class="btn btn-warning" style="margin:15px"><i class="fa fa-arrow-left"></i> Go Back</a>
-    <a href="/draft/{{post.key | filterKey}}/post" class="btn btn-success" style="margin:15px"><i class="fa fa-check"></i> Post in Public</a>
+    <a href="/user/{{user.key | filterKey}}/drafts" class="btn btn-warning" style="margin:15px"><i class="fa fa-arrow-left"></i> All Drafts</a>
+    <a href="/draft/{{post.key | filterKey}}/post" class="btn btn-success" style="margin:15px" data-confirm-post='Are you sure you want to post this draft in public ?'><i class="fa fa-check"></i> Post in Public</a>
     <a href="/draft/{{post.key | filterKey}}/delete" class="btn btn-danger" style="margin:15px"><i class="fa fa-trash"></i> Delete Draft</a>
   </div>
 </div>

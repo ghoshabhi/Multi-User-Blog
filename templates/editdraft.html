@@ -6,7 +6,7 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><em>{{user.fullname}}</em><b class="caret"></b></a>
     <ul class="dropdown-menu">
       <li><a href="/newpost">New Post</a></li>
-      <li><a href="/allposts">All Posts</a></li>
+      <li><a href="/user/{{user.key | filterKey}}/myposts">My Posts</a></li>
       <li><a href="/user/{{user.key | filterKey}}/drafts">Drafts</a></li>
       <li class="divider"></li>
       <li><a href="/profile/{{ user.key | filterKey}}">Profile</a></li>
@@ -58,7 +58,7 @@
 
     <div class='col-md-9'>
       <button type="submit" class="btn btn-md btn-success" style="margin:2px">
-        <i class="fa fa-check"></i> Confirm Edit
+        <i class="fa fa-check"></i> Post/Save Draft
       </button>
       <a href='/user/{{ user.key | filterKey}}/drafts' id="cancel-post" tabindex="4" style="margin:2px" class="pull-right btn btn-md btn-danger">
         <i class="fa fa-times"></i> Cancel

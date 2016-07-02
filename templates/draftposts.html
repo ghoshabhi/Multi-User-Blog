@@ -6,7 +6,7 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><em>{{user.fullname}}</em><b class="caret"></b></a>
     <ul class="dropdown-menu">
       <li><a href="/newpost">New Post</a></li>
-      <li><a href="/allposts">All Posts</a></li>
+      <li><a href="/user/{{user.key | filterKey}}/myposts">My Posts</a></li>
       <li><a href="/user/{{user.key | filterKey}}/drafts">Drafts</a></li>
       <li class="divider"></li>
       <li><a href="/profile/{{ user.key | filterKey}}">Profile</a></li>
@@ -27,9 +27,10 @@
 
 
 {% block content %}
-{% if empty_post %}
-  <div style="width:100%" class="active alert alert-danger">
-    <em>{{ empty_post }}</em>
+
+{% if delete_draft %}
+  <div style="width:100%" class="active alert alert-success">
+    <em>Draft Deleted Successfully!</em>
   </div>
 {% endif %}
 

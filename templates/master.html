@@ -201,6 +201,13 @@
       e.preventDefault();
     }
   });
+
+  $(document).on('click',':not(form)[data-confirm-post]',function(e){
+    if(!confirm($(this).data('confirmPost'))){
+      e.stopImmediatePropagation();
+      e.preventDefault();
+    }
+  });
 </script>
 
 <script type="text/javascript">

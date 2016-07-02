@@ -6,7 +6,7 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><em>{{user.fullname}}</em><b class="caret"></b></a>
     <ul class="dropdown-menu">
       <li><a href="/newpost">New Post</a></li>
-      <li><a href="/allposts">All Posts</a></li>
+      <li><a href="/user/{{user.key | filterKey}}/myposts">My Posts</a></li>
       <li><a href="/user/{{user.key | filterKey}}/drafts">Drafts</a></li>
       <li class="divider"></li>
       <li><a href="/profile/{{ user.key | filterKey}}">Profile</a></li>
@@ -51,7 +51,7 @@
       <textarea id="content" name="content">Start writing here...</textarea>
       <br>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-9">
       <input type="checkbox" tabindex="3" class="" name="draft" id="draft">
       <label for="draft" style="color:#1BC1A1"> Save as Draft</label>
     </div>
@@ -63,7 +63,8 @@
           </button>
         </div>
         <div class="col-md-4">
-          <a href='/home' id="cancel-post" tabindex="4" class="btn btn-md btn-danger">Cancel</a>
+          <a href='/home' id="cancel-post" tabindex="4" class="btn btn-md btn-danger">
+            <i class="fa fa-times"></i> Cancel</a>
         </div>
       </div>
     <br><br><br><br><br>

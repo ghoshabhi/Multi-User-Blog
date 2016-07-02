@@ -27,27 +27,27 @@
 
 
 {% block content %}
-{% if empty_post %}
-  <div style="width:100%" class="active alert alert-danger">
-    <em>{{ empty_post }}</em>
-  </div>
-{% endif %}
 
 <ol class="breadcrumb" style="margin-bottom: 5px;">
   <li><a href="/home">Home</a></li>
-  <li class="active">All Posts</li>
+  <li><a href="/profile/{{user.key | filterKey }}">{{user.fullname}}</a></li>
+  <li class="active">Delete Draft / {{post.title}}</li>
 </ol>
 
-<div class="container">
-  <ul>
-    {% for post in posts %}
-    <li><h4><a href="/blog/{{post.key|filterKey}}" target="_blank">
-              {{post.title}} - {{post.created.strftime("%b %d, '%y")}} - {{ post.created.strftime("%I:%M %p")}}
-            <a/>
-        </h4>
-    </li>
-    {% endfor %}
-  </ul>
+<div class="container" style="text-align:center;">
+  <form id="form1" method="post">
+    <h1>
+      Are you sure you want to delete the following draft ?
+    </h1>
+    <h1 name="{{post.key | filterKey}}" style="color:#1BC1A1;font-weight:900;font-size:38px;font-family:'Josefin Slab','Open Sans', sans-serif">
+        <i><a href="/blog/{{post.key | filterKey}}">{{post.title | safe}}</a></i>
+    </h1>
+    <button type="submit" class="btn btn-md btn-danger">
+      <i class="fa fa-trash-o"></i> Delete Draft
+    </button>
+    <a href="/user/{{ user.key | filterKey }}/drafts" class="btn btn-md btn-warning"><i class="fa fa-times"></i> Cancel</a>
+    <br><br>
+  </form>
 </div>
 {% endblock %}
 

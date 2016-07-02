@@ -8,6 +8,7 @@ import json
 import time
 import logging
 
+from datetime import datetime
 from models import User,Post,UserPhoto,Likes,Comments
 from google.appengine.ext import ndb
 from google.appengine.ext.webapp import blobstore_handlers
@@ -786,8 +787,9 @@ class ViewDraftHandler(BlogHandler):
 
         if cookie_user:
             if post:
+                delete_draft = self.request.get('draft_delete')
                 self.render('viewdraftpost.html',user = cookie_user,
-                    post = post)
+                    post = post, delete_draft=delete_draft)
             else:
                 self.error(404)
                 return
@@ -855,7 +857,57 @@ class EditDraftHandler(BlogHandler):
 
 class DeleteDraftHandler(BlogHandler):
     def get(self,post_id):
-        self.write('Delete Blog :' + post_id)
+        user_email = check_for_valid_cookie(self)
+        cookie_user = User.query(User.email == user_email).get()
+        post = Post.get_by_id(int(post_id))
+
+        if cookie_user:
+            if post:
+                self.render('deletedraft.html',user=cookie_user,post=post)
+            else:
+                self.error(404)
+                return
+        else:
+            cookie_error = "You need to log in before you delete a draft!"
+            self.render('login.html',cookie_error = cookie_error)
+
+    def post(self,post_id):
+        user_email = check_for_valid_cookie(self)
+        cookie_user = User.query(User.email == user_email).get()
+        
+        if cookie_user:
+            post = Post.get_by_id(int(post_id))
+            if post:
+                post.key.delete()
+                time.sleep(0.2)
+                self.redirect('/user/%s/drafts?draft_delete=True'%cookie_user.key.id())
+            else:
+                self.error(404)
+                return
+        else:
+            cookie_error = "You need to log in before you delete the post!"
+            self.render('login.html',cookie_error = cookie_error)
+
+class PostDraftHandler(BlogHandler):
+    def get(self,post_id):
+        user_email = check_for_valid_cookie(self)
+        cookie_user = User.query(User.email == user_email).get()
+        post = Post.get_by_id(int(post_id))
+
+        if cookie_user:
+            if post:
+                post.is_draft = False
+                post.created = datetime.now()
+                post.put()
+                time.sleep(0.2)
+                self.redirect('/blog/%s'% post.key.id())
+            else:
+                self.error(404)
+                return
+        else:
+            cookie_error = "You need to log in before you post a draft to public!"
+            self.render('login.html',cookie_error = cookie_error)
+
 
 app = webapp2.WSGIApplication([
     ('/', HomeHandler),
@@ -881,5 +933,6 @@ app = webapp2.WSGIApplication([
     ('/draft/([0-9]+)/edit', EditDraftHandler),
     ('/draft/([0-9]+)/delete', DeleteDraftHandler),
     ('/draft/([0-9]+)', ViewDraftHandler),
+    ('/draft/([0-9]+)/post', PostDraftHandler),
     ('/test',TestHandler)
-    ], debug=True)
+], debug=True)

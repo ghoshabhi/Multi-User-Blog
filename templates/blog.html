@@ -54,18 +54,38 @@
     <br>
     {{post.content | safe}}
   </div>
-  <!-- <a data-key='comment' name="comments" style="cursor:pointer" data-toggle="modal" data-target="#myModal">
-    Click to add a comment!
-  </a> -->
 </div>
-  <br><br>
+<hr>
+<br>
+<br>
+<div class="row">
+  <div class="col-md-8">
+    <ul class="list-inline">
+      <li><span class="likeCount label label-pill label-info">{{like_count}} likes</span></li>
+      <li>
+        <a data-key="{{ post.key | filterKey }}" href="#" class="btn btn-md btn-sm btn-success like-button">
+          <span class="fa fa-thumbs-up"></span>&nbsp;Like
+        </a>
+      </li>
+      <li><button class="btn" data-clipboard-target="#foo">
+            <img src="/static/clippy.svg" alt="Copy link!" height="20px" width="25px">
+          </button>
+      </li>
+      <li><a href="/blog/{{ post.key | filterKey }}#comments"><span class="fa fa-comments"></span> {{comment_count}} comments</a></li>
+      {% if is_author %}
+        <li><a href="/editblog/{{ post.key | filterKey }}"><span class="fa fa-edit"></span></a></li>
+        <li><a href="/deleteblog/{{ post.key | filterKey }}"><span class="fa fa-trash"></span></a></li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
 <hr>
 <div class="row">
   <div class="col-md-5">
     <form method="post" action='/comment/{{post.key | filterKey}}' >
       <h4>Give your thoughts about the blog here... </h4>
       <textarea name='comment' placeholder="Write a comment!" style="margin-bottom:5px" class="form-control" rows='3'></textarea>
-      <input type="submit" id="postComment" class="btn btn-success" value="Post!">
+      <input type="submit" id="postComment" class="btn" style="background-color:#5bc0de; color: #fff" value="Comment It!">
       <span></span>
       <input type="reset" class="btn btn-danger" value="Reset">
     </form>

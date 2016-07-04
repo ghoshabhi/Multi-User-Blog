@@ -9,6 +9,7 @@ import time
 import logging
 
 from datetime import datetime
+from dateutil import tz
 from models import User,Post,UserPhoto,Likes,Comments
 from google.appengine.ext import ndb
 from google.appengine.ext.webapp import blobstore_handlers
@@ -408,8 +409,16 @@ class PostPageHandler(BlogHandler):
         cookie_user = User.query(User.email == user_email).get()
         post = Post.get_by_id(int(post_id))
         comments = Comments.query(Comments.post == post.key).order(-Comments.comment_date)
+        likes = Likes.query(Likes.post == post.key).get()
 
         list_dict = []
+        
+        comment_count = comments.count()
+
+        if likes:
+            no_of_likes = likes.like_count
+        else:
+            no_of_likes = 0
 
         for c in comments:
             c_dict = {}
@@ -422,13 +431,22 @@ class PostPageHandler(BlogHandler):
                 c_dict['c_u_key'] = user.key
                 c_dict['c_u_id'] = user.key.id()
                 list_dict.append(c_dict)
-        if user_email:
+        if cookie_user:
             if not post:
                 self.error(404)
                 return
-            self.render("blog.html", post = post,user=cookie_user,comments=list_dict)
+            if cookie_user.key == post.user:
+                self.render("blog.html", post = post,user=cookie_user,
+                    comments=list_dict, like_count = no_of_likes, 
+                    comment_count = comment_count, is_author=True)
+            else:
+                self.render("blog.html", post = post,user=cookie_user,
+                    comments=list_dict, like_count = no_of_likes, 
+                    comment_count = comment_count, is_author=False)
         else:
-            self.render("blog.html", post = post,user=None,comments=list_dict)
+            self.render("blog.html", post = post,user=None,
+                comments=list_dict,like_count = no_of_likes,
+                comment_count = comment_count,is_author=False)
 
 class LikeHandler(BlogHandler):
     def post(self):

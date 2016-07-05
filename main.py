@@ -750,6 +750,20 @@ class TestHandler(BlogHandler):
         #         all_users = each_user_from_db
         #         posts.append(post)
 
+        from_zone = tz.tzutc()
+        to_zone = tz.tzlocal()
+        post = Post.get_by_id(5642556234792960)
+
+        date_utc = post.created
+        date_utc = date_utc.replace(tzinfo=from_zone)
+        
+        localtz = date_utc.astimezone(to_zone)
+        
+        self.write("Post created UTC : %s" % post.created)
+        self.write("<br>")
+        self.write("<br>")
+        self.write("Post Local : %s" % localtz)
+
         if user_email:
             self.render('test.html',user = loggedin_user, all_users=all_users,posts=posts,comments=comments)
         else:

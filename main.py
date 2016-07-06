@@ -140,6 +140,7 @@ class LoginHandler(BlogHandler):
         has_error = False
         u_name = self.request.get('username') 
         password = self.request.get('password')
+        remember = self.request.get('remember')
         
         if u_name and password:
             user = User.query(ndb.AND(ndb.OR(User.user_name==u_name , User.email==u_name),User.password== hash_str(password))).get()
@@ -156,6 +157,12 @@ class LoginHandler(BlogHandler):
 
                 else:
                     self.response.headers.add_header('Set-Cookie','user_email=%s' % make_secure_val(str(user.email)))
+                    if remember == 'on':
+                        lease = 30*24*3600
+                        ends = time.gmtime(time.time() + lease)
+                        expires = time.strftime("%a, %m %B %Y %H:%M:%S GMT",ends)
+                        self.response.headers.add_header('expires', expires)
+                        # self.response.headers.add_header('expires', 'Sat, 13 July 2016 12:00:00 GMT')
                     self.redirect('/home')
             else:
                 error = 'Username and Password do not match!'
@@ -250,7 +257,6 @@ class RegistrationHandler(BlogHandler):
                 #         The your-own-blog Team
                 #         """ % (fullname)
                 # message.send()
-                self.response.headers.add_header('Set-Cookie','user_email=%s' % make_secure_val(str(new_user.email)))
                 self.render('login.html',new_user=new_user.fullname)
         else:
             error_list.append("You did not fill atleast one of the fields!")

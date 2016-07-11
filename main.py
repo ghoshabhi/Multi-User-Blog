@@ -415,46 +415,51 @@ class PostPageHandler(BlogHandler):
     def get(self, post_id):
         user_email = check_for_valid_cookie(self)
         cookie_user = User.query(User.email == user_email).get()
-        post = Post.get_by_id(int(post_id))
-        comments = Comments.query(Comments.post == post.key).order(-Comments.comment_date)
-        likes = Likes.query(Likes.post == post.key).get()
-
-        list_dict = []
         
-        comment_count = comments.count()
+        post = Post.get_by_id(int(post_id))
+        if post:
+            comments = Comments.query(Comments.post == post.key).order(-Comments.comment_date)
+            likes = Likes.query(Likes.post == post.key).get()
 
-        if likes:
-            no_of_likes = likes.like_count
-        else:
-            no_of_likes = 0
+            list_dict = []
+        
+            comment_count = comments.count()
 
-        for c in comments:
-            c_dict = {}
-            if c.post == post.key:
-                c_dict['c_id'] = c.key.id()
-                c_dict['c_comment'] = c.comment
-                c_dict['c_date'] = c.comment_date
-                user = User.query(User.key == c.user).get()
-                c_dict['c_u_name'] = user.fullname
-                c_dict['c_u_key'] = user.key
-                c_dict['c_u_id'] = user.key.id()
-                list_dict.append(c_dict)
-        if cookie_user:
-            if not post:
-                self.error(404)
-                return
-            if cookie_user.key == post.user:
-                self.render("blog.html", post = post,user=cookie_user,
-                    comments=list_dict, like_count = no_of_likes, 
-                    comment_count = comment_count, is_author=True)
+            if likes:
+                no_of_likes = likes.like_count
             else:
-                self.render("blog.html", post = post,user=cookie_user,
-                    comments=list_dict, like_count = no_of_likes, 
-                    comment_count = comment_count, is_author=False)
+                no_of_likes = 0
+
+            for c in comments:
+                c_dict = {}
+                if c.post == post.key:
+                    c_dict['c_id'] = c.key.id()
+                    c_dict['c_comment'] = c.comment
+                    c_dict['c_date'] = c.comment_date
+                    user = User.query(User.key == c.user).get()
+                    c_dict['c_u_name'] = user.fullname
+                    c_dict['c_u_key'] = user.key
+                    c_dict['c_u_id'] = user.key.id()
+                    list_dict.append(c_dict)
+            if cookie_user:
+                if not post:
+                    self.error(404)
+                    return
+                if cookie_user.key == post.user:
+                    self.render("blog.html", post = post,user=cookie_user,
+                        comments=list_dict, like_count = no_of_likes, 
+                        comment_count = comment_count, is_author=True)
+                else:
+                    self.render("blog.html", post = post,user=cookie_user,
+                        comments=list_dict, like_count = no_of_likes, 
+                        comment_count = comment_count, is_author=False)
+            else:
+                self.render("blog.html", post = post,user=None,
+                    comments=list_dict,like_count = no_of_likes,
+                    comment_count = comment_count,is_author=False)
         else:
-            self.render("blog.html", post = post,user=None,
-                comments=list_dict,like_count = no_of_likes,
-                comment_count = comment_count,is_author=False)
+            self.error(404)
+            return
 
 class LikeHandler(BlogHandler):
     def post(self):

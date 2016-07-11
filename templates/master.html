@@ -302,6 +302,37 @@
 </script>
 
 <script type="text/javascript">
+  $('.btn-clippy').tooltip({
+    trigger: 'click',
+    placement: 'top'
+  });
+
+  function setTooltip(message) {
+    $('.btn-clippy').tooltip('hide')
+      .attr('data-original-title', message)
+      .tooltip('show');
+  }
+
+  function hideTooltip() {
+    setTimeout(function() {
+      $('.btn-clippy').tooltip('hide');
+    }, 10000);
+  }
+
+  var clipboard = new Clipboard('.btn-clippy');
+  
+  clipboard.on('success', function(e) {
+    setTooltip('Copied!');
+    hideTooltip();
+  });
+
+  clipboard.on('error', function(e) {
+    setTooltip('Sorry! Your browser doesn\'t support this feature');
+    hideTooltip();
+  });
+</script>
+
+<script type="text/javascript">
   $('.like-button').on('click', function(e){
      e.preventDefault()
      var instance = $(this);

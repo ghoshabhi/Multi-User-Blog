@@ -12,6 +12,8 @@ from datetime import datetime
 from dateutil import tz
 from models import User,Post,UserPhoto,Likes,Comments
 from google.appengine.ext import ndb
+from google.appengine.api import mail
+from google.appengine.api import app_identity
 from google.appengine.ext.webapp import blobstore_handlers
 from google.appengine.ext import blobstore
 from google.appengine.api import images
@@ -947,6 +949,32 @@ class PostDraftHandler(BlogHandler):
             self.render('login.html',cookie_error = cookie_error)
 
 
+class ForgetPasswordHandler(BlogHandler):
+    def post(self):
+        email = self.request.get('email');
+        if email:
+            message = mail.EmailMessage(
+                        sender='Your Own Blog Support <{}@appspot.gserviceaccount.com>'.format(
+                    app_identity.get_application_id()),
+                        subject="Your account has been approved")
+
+            message.to = "Albert Johnson <%s>"%email,
+            message.body = """Dear User:
+
+                Your example.com account has been approved.  You can now visit
+                http://www.example.com/ and sign in using your Google Account to
+                access new features.
+
+                Please let us know if you have any questions.
+
+                The example.com Team
+                """
+            message.send()
+            self.write(json.dumps(({'email': email})))
+        else:
+            self.write(json,dumps(({'email': None})))
+
+
 app = webapp2.WSGIApplication([
     ('/', HomeHandler),
     ('/home', HomeHandler),
@@ -972,5 +1000,6 @@ app = webapp2.WSGIApplication([
     ('/draft/([0-9]+)/delete', DeleteDraftHandler),
     ('/draft/([0-9]+)', ViewDraftHandler),
     ('/draft/([0-9]+)/post', PostDraftHandler),
+    ('/forgetpassword', ForgetPasswordHandler),
     ('/test',TestHandler)
 ], debug=True)

@@ -237,7 +237,6 @@
     });
 
     $('.modal-footer input[type=submit]').on('click',function(e){
-        console.log('submit modal registered!');
         var comment_str = $('#myModal textarea').val();
         
         $.ajax({
@@ -259,6 +258,45 @@
           $('#myModal').modal('hide');
         }
       });
+    });
+  });
+</script>
+
+<script type="text/javascript">
+  $('.forget-password .password-change').on('click',function(){
+    var email = $('#myModal input[type="email"]').val(); //works
+    
+    $.ajax({
+      type: 'post',
+      url: '/forgetpassword',
+      dataType: 'json',
+      data: {'email': email},
+      success: function(data){
+        if(data['email']!= "None"){
+          $('.close').click();
+          toastr.options = {
+              "closeButton": true,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-full-width",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "15000",
+              "hideDuration": "1000",
+              "timeOut": "15000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            };
+            toastr["info"]("<p style='font-size:20px;text-align:center'>Please check your email. You will receive a link to set your new password!</p>")
+        }
+        else{
+          alert('None');
+        }
+      }
     });
   });
 </script>

@@ -272,7 +272,7 @@
       dataType: 'json',
       data: {'email': email},
       success: function(data){
-        if(data['email']!= "None"){
+        if(data['result'] == "success"){
           $('.close').click();
           toastr.options = {
               "closeButton": true,
@@ -293,8 +293,14 @@
             };
             toastr["info"]("<p style='font-size:20px;text-align:center'>Please check your email. You will receive a link to set your new password!</p>")
         }
+        else if(data['result'] == 'invalid_email'){
+          
+        }
+        else if(data['result'] == 'empty_email'){
+
+        }
         else{
-          alert('None');
+          //something went wrong!
         }
       }
     });

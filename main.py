@@ -958,26 +958,34 @@ class ForgetPasswordHandler(BlogHandler):
     def post(self):
         email = self.request.get('email');
         if email:
-            message = mail.EmailMessage(
-                        sender='Your Own Blog Support <{}@appspot.gserviceaccount.com>'.format(
-                    app_identity.get_application_id()),
+            user = User.query(User.email == email).get()
+            if user:
+                message = mail.EmailMessage(
+                        sender="Support @ Your Own Blog <abhighosh18@gmail.com>",
                         subject="Your account has been approved")
 
-            message.to = "Albert Johnson <%s>"%email,
-            message.body = """Dear User:
+                message.to = "%s <%s>" % (user.fullname, email),
+                
+                message.html = """
+            <html><head></head><body>
+            Dear %s:
 
-                Your example.com account has been approved.  You can now visit
-                http://www.example.com/ and sign in using your Google Account to
-                access new features.
+            <p>Your example.com account has been approved.  You can now visit
+            <a href="your-own-blog.appspot.com/home">My Home</a> and sign in using your Google Account to
+            access new features.</p>
 
-                Please let us know if you have any questions.
+            <p>Please let us know if you have any questions.</p>
 
-                The example.com Team
-                """
-            message.send()
-            self.write(json.dumps(({'email': email})))
+            The Your Own Blog Team
+            </body></html>
+            """%user.fullname
+
+                message.send()
+                self.write(json.dumps(({'result': 'success'})))
+            else:
+                self.write(json.dumps(({'result': 'invalid_email'})))
         else:
-            self.write(json,dumps(({'email': None})))
+            self.write(json,dumps(({'result': 'empty_email'})))
 
 
 app = webapp2.WSGIApplication([

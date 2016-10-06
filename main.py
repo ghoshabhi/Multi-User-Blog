@@ -208,7 +208,6 @@ class RegistrationHandler(BlogHandler):
             if not valid_username(u_name):
                 error_list.append('The Username is not valid!\
                     Username should not have any special characters!')
-                has_error = True
             if not valid_email(email):
                 error_list.append('The Email is not valid!\
                     Email should be of the format : abc@example.com!')
@@ -316,7 +315,8 @@ class NewPostHandler(BlogHandler):
                     self.redirect('/blog/%s' % str(new_post_key.id()))
             else:
                 empty_post = "Both Title and Content needed for the Blog!"
-                self.render('newpost.html',user = user, title=title, content=content,empty_post = empty_post)
+                self.render('newpost.html',user = cookie_user,
+                    title=title, content=content,empty_post = empty_post)
         else:
             cookie_error = "Your session has expired please login again to continue!"
             self.render('login.html',cookie_error = cookie_error)

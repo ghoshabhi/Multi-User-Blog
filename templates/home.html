@@ -1,4 +1,4 @@
-{% extends "master.html" %} 
+{% extends "master.html" %}
 
 {% block navigation %}
  {% if user %}
@@ -22,8 +22,8 @@
       <li><a href="/register">Signup</a></li>
     </ul>
   </li>
-{% endif %} 
-{% endblock navigation %} 
+{% endif %}
+{% endblock navigation %}
 
 {% block content %}
 
@@ -71,7 +71,7 @@
                 </div>
                 <div class="col-md-4 col-sm-5 pull-right"><b style="color:#1BC1A1;font-size:18px;font-family:'Josefin Slab','Open Sans',sans-serif">
                   {{ l['p_created'].strftime("%b %d, '%y") }}</b>
-                </div> 
+                </div>
               </div>
               <div class="row">
                 <div class="col-md-9" style="text-align:justify;text-justify:inter-word">
@@ -84,7 +84,7 @@
                   <!-- <div class="row"> -->
                   <div>
                     <p style="text-align:justify;text-justify: inter-word;">{{ l['p_content'] | safe}}</p>
-                    
+
                     <ul class="list-inline">
                       <!-- <li><a href="#">{{ l['p_created'].strftime("%b %d, '%y") }}</a></li> -->
                       <li><span class="likeCount label label-pill label-info">{{ l['like_count'] }} likes</span></li>

@@ -19,7 +19,7 @@
 
   <link rel="stylesheet" href="https://use.typekit.net/c/c5c753/1w;athelas,2,NSP:W:i4,NSR:W:i7,NSN:W:n4,NSQ:W:n7;nimbus-sans-condensed,2,SKw:W:n4,SKx:W:n7;source-code-pro,2,glz:W:n4/l" media="all">
   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Josefin+Slab">
-  
+
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans">
   <style>
     body {
@@ -60,10 +60,10 @@
   <div class="navbar navbar-default navbar-fixed-top one-edge-shadow">
     <div class="container">
       <div class="navbar-header">
-        <button type="button" id="showButton" class="navbar-toggle" data-toggle="collapse" 
+        <button type="button" id="showButton" class="navbar-toggle" data-toggle="collapse"
           data-target=".navbar-collapse">
             <span class="fa fa-bars"></span>
-        </button> 
+        </button>
         <a class="navbar-brand" href="/home">
           Your Own Blog
         </a>
@@ -80,8 +80,8 @@
           <li><a href="/allposts"><b>All Posts</b></a></li>
 
           <li style="list-style: none">
-            {% block navigation %} 
-            
+            {% block navigation %}
+
             {% endblock navigation %}
           </li>
         </ul>
@@ -91,7 +91,7 @@
 
   <div class="container  push-down">
 
-    {% block content %} 
+    {% block content %}
 
     {% endblock %}
   </div>
@@ -100,8 +100,8 @@
     <div class="container">
       <div class="pull-right">
         <p class="text-muted credit">Made with <span class="fa fa-heart" style="color:rgb(255, 51, 51)"></span> by <a href=
-        "https://github.com/ghoshabhi">Abhishek</a>, 
-        <a href='https://github.com/gristoi'>Ian</a> and 
+        "https://github.com/ghoshabhi">Abhishek</a>,
+        <a href='https://github.com/gristoi'>Ian</a> and
         <a href="https://github.com/AbigailMathews">Abigail</a>
         </p>
       </div>
@@ -125,7 +125,7 @@
 
       tinymce.init({
         // selector: "textarea",
-        mode : "exact", 
+        mode : "exact",
         elements: "content",
         height: 500,
         plugins: [
@@ -238,7 +238,7 @@
 
     $('.modal-footer input[type=submit]').on('click',function(e){
         var comment_str = $('#myModal textarea').val();
-        
+
         $.ajax({
         type:'post',
         url: '/editcomment',
@@ -265,7 +265,7 @@
 <script type="text/javascript">
   $('.forget-password .password-change').on('click',function(){
     var email = $('#myModal input[type="email"]').val(); //works
-    
+
     $.ajax({
       type: 'post',
       url: '/forgetpassword',
@@ -294,7 +294,7 @@
             toastr["info"]("<p style='font-size:20px;text-align:center'>Please check your email. You will receive a link to set your new password!</p>")
         }
         else if(data['result'] == 'invalid_email'){
-          
+
         }
         else if(data['result'] == 'empty_email'){
 
@@ -326,7 +326,7 @@
   }
 
   var clipboard = new Clipboard('.btn-clippy');
-  
+
   clipboard.on('success', function(e) {
     setTooltip('Copied!');
     hideTooltip();
@@ -340,7 +340,7 @@
 
 <script type="text/javascript">
   $('.like-button').on('click', function(e){
-     e.preventDefault()
+     e.preventDefault();
      var instance = $(this);
      var key = $(this).data('key');
       $.ajax({
@@ -368,7 +368,6 @@
               "hideMethod": "fadeOut"
             };
             toastr["error"]("You cannot like your own posts!")
-            // alert('You cannot like your own posts!');
           }
           else if(data['like_count'] == -2){
             toastr.options = {

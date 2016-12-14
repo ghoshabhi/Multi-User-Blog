@@ -349,7 +349,8 @@ class EditBlogHandler(BlogHandler):
                 self.render('editpost.html',user=cookie_user,
                     post=post)
             else:
-                self.error(404)
+                #self.error(404)
+                self.render("error.html")
                 return
         else:
             cookie_error = "You need to log in before you edit the post!"

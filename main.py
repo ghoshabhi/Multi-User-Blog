@@ -310,7 +310,7 @@ class NewPostHandler(BlogHandler):
                 time.sleep(0.1)
 
                 if is_draft:
-                    self.redirect('/user/%s/drafts' % str(user.key.id()))
+                    self.redirect('/user/%s/drafts' % str(cookie_user.key.id()))
                 else:
                     self.redirect('/blog/%s' % str(new_post_key.id()))
             else:

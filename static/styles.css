@@ -4,7 +4,34 @@
 html,
 body {
   height: 100%;
+  font-family: 'Open Sans', sans-serif;
   /* The html and body elements cannot have any padding or margin. */
+}
+
+.anchor-link{
+  color:blue;
+}
+
+.anchor-link i{
+  display:none;
+}
+
+.anchor-link:hover{
+  color :#1BC1A1;
+}
+
+.anchor-link:hover i{
+  display: inline;
+}
+
+.postContentBody a{
+  text-decoration: underline;
+  color:#1BC1A1;
+  font-style: italic;
+}
+
+.postContentBody a:hover{
+  color:#1BC1A1;
 }
 
 /* Wrapper for page content to push down footer */

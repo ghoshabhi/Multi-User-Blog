@@ -1,6 +1,4 @@
 .idea
-main.pyc
-models.pyc
-update_schema_handler.pyc
+.DS_Store
+*.pyc
 hash_keys.py
-hash_keys.pyc

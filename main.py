@@ -139,7 +139,7 @@ class LoginHandler(BlogHandler):
             user = User.get_by_id(int(user_id))
             if user:
                 already_logged_in = "You're already logged into the system..."
-                self.render("login.html",already_logged_in=already_logged_in)
+                self.render("login.html",user=user,already_logged_in=already_logged_in)
             else:
                 self.render("login.html")
         else:

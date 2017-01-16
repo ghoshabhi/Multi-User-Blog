@@ -66,6 +66,7 @@ body {
 
 .section-content a {
   text-decoration:underline;
+  cursor: pointer;
 }
 
 .one-edge-shadow {

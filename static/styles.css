@@ -59,6 +59,20 @@ body {
 -------------------------------------------------- */
 /* Not required for template or sticky footer method. */
 
+.postbody {
+  text-align:justify;
+  text-justify: inter-word;
+}
+
+.section-content a {
+  text-decoration:underline;
+  cursor: pointer;
+}
+
+.progressiveMedia-image {
+  max-width: 100%;
+}
+
 .one-edge-shadow {
   -webkit-box-shadow: 0 8px 16px -6px black;
   -moz-box-shadow: 0 8px 16px -6px black;

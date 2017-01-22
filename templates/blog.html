@@ -22,18 +22,18 @@
       <li><a href="/register">Signup</a></li>
     </ul>
   </li>
-{% endif %} 
+{% endif %}
 {% endblock navigation %}
 
 
 {% block content %}
 
 <div style="width:100%;display:none" class="editComment-success active alert alert-success">
-  
+
 </div>
 
 <div style="width:100%;display:none" class="editComment-fail active alert alert-danger">
-  
+
 </div>
 {% if post %}
 
@@ -111,9 +111,9 @@
             </p>
             {% if each_comment['c_u_key'] == user.key %}
               <p style="margin-left:50px; margin-top:-8px">
-                
-                <a class="editComment" data-post-id='{{post.key | filterKey }}' data-comment-id='{{ each_comment['c_id'] }}' 
-                  data-toggle="modal" data-target="#myModal" style="cursor:pointer"> 
+
+                <a class="editComment" data-post-id='{{post.key | filterKey }}' data-comment-id='{{ each_comment['c_id'] }}'
+                  data-toggle="modal" data-target="#myModal" style="cursor:pointer">
                     <span class="fa fa-edit"></span>
                 </a>
 

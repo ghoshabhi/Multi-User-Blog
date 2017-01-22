@@ -11,7 +11,7 @@ import logging
 
 from datetime import datetime
 from dateutil import tz
-from models import User,Post,UserPhoto,Likes,Comments
+from models import User, Post, UserPhoto, Likes, Comments
 from google.appengine.ext import ndb
 from google.appengine.api import mail
 from google.appengine.api import app_identity
@@ -20,15 +20,15 @@ from google.appengine.ext import blobstore
 from google.appengine.api import images
 from hash_keys import SECRET
 
-template_dir = os.path.join(os.path.dirname(__file__),'templates')
-jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
-                            autoescape = True)
+template_dir = os.path.join(os.path.dirname(__file__), 'templates')
+jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), \
+                              autoescape=True)
 
 def hash_str(s):
-    return hmac.new(SECRET,s).hexdigest()
+    return hmac.new(SECRET, s).hexdigest()
 
 def make_secure_val(s):
-    return "%s|%s" % (s,hash_str(s))
+    return "%s|%s" % (s, hash_str(s))
 
 def check_secure_val(h):
     val = h.split("|")[0]
@@ -45,7 +45,7 @@ def valid_password(password):
     return password and PASS_RE.match(password)
 
 
-EMAIL_RE  = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
+EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
 def valid_email(email):
     return not email or EMAIL_RE.match(email)
 
@@ -89,7 +89,7 @@ class BlogHandler(webapp2.RequestHandler):
         if random:
             is_valid_cookie = check_secure_val(random)
             if is_valid_cookie:
-                 return self.request.cookies.get('random').split("|")[0]
+                return self.request.cookies.get('random').split("|")[0]
         return None
 
 
@@ -126,8 +126,8 @@ class HomeHandler(BlogHandler):
             p_dict['c_count'] = comment_count
             list_dict.append(p_dict)
 
-        return self.render('home.html',user=loggedin_user,
-                                       list_dict = list_dict)
+        return self.render('home.html', user=loggedin_user,
+                           list_dict=list_dict)
 
 class LoginHandler(BlogHandler):
     def get(self):
@@ -137,7 +137,7 @@ class LoginHandler(BlogHandler):
             user = User.get_by_id(int(user_id))
             if user:
                 already_logged_in = "You're already logged into the system..."
-                self.render("login.html",user=user,already_logged_in=already_logged_in)
+                self.render("login.html", user=user, already_logged_in=already_logged_in)
             else:
                 self.render("login.html")
         else:
@@ -153,8 +153,8 @@ class LoginHandler(BlogHandler):
             print "username and password present"
             user = User.query(ndb.AND \
                              (ndb.OR \
-                             (User.user_name==u_name,User.email==u_name), \
-                             User.password== hash_str(password))).get()
+                             (User.user_name == u_name, User.email == u_name), \
+                             User.password == hash_str(password))).get()
             if user:
                 print "valid id and pass"
                 user_random = self.request.cookies.get('random')
@@ -165,18 +165,18 @@ class LoginHandler(BlogHandler):
                         print "cookie valid"
                         self.redirect('/home')
                     else:
-                        self.response.headers.add_header('Set-Cookie','random=''')
+                        self.response.headers.add_header('Set-Cookie', 'random=''')
                         cookie_error = "Your session has expired! Please log in again to continue!"
-                        self.render('login.html',cookie_error=cookie_error)
+                        self.render('login.html', cookie_error=cookie_error)
 
                 else:
                     if remember == 'on':
                         print "remember"
                         lease = 30*24*3600
                         ends = time.gmtime(time.time() + lease)
-                        print "ends: " , ends
+                        print "ends: ", ends
                         expires = time.strftime("%a, %m %B %Y %H:%M:%S GMT", ends)
-                        print "expires: " , expires
+                        print "expires: ", expires
                         #self.response.headers.add_header('Expires', lease)
                         self.response.headers.add_header(
                             'Set-Cookie', 'random=%s ; Expires = %s' % \
@@ -189,19 +189,19 @@ class LoginHandler(BlogHandler):
                     self.redirect('/home')
             else:
                 error = 'Username and Password do not match!'
-                self.render("login.html",username=u_name,error=error)
+                self.render("login.html", username=u_name, error=error)
         else:
             error = "Both username and password are needed! \
                 You did not enter either one or both fields!"
-            self.render("login.html", username=u_name,error=error)
+            self.render("login.html", username=u_name, error=error)
 
 
 class LogOutHandler(BlogHandler):
     def get(self):
-        self.response.headers.add_header('Set-Cookie','random=''')
+        self.response.headers.add_header('Set-Cookie', 'random=''')
         thank_you_for_visiting = "Thank you for visiting this site.\
             We appreciate your presence!"
-        self.render('login.html',thank_you_for_visiting = thank_you_for_visiting)
+        self.render('login.html', thank_you_for_visiting=thank_you_for_visiting)
 
 
 class RegistrationHandler(BlogHandler):
@@ -246,20 +246,20 @@ class RegistrationHandler(BlogHandler):
                 has_error = True
 
             if has_error:
-                self.render('register.html',fullname=fullname,
-                                            location=location,
-                                            email=email,
-                                            user_name=u_name,
-                                            error_list=error_list)
+                self.render('register.html', fullname=fullname,
+                            location=location,
+                            email=email,
+                            user_name=u_name,
+                            error_list=error_list)
             else:
                 new_user = User(fullname=fullname,
                                 location=location,
                                 email=email,
                                 user_name=u_name,
-                                password= hash_str(password))
+                                password=hash_str(password))
                 new_user_key = new_user.put()
 
-                new_user_photo_obj = UserPhoto(user= new_user_key)
+                new_user_photo_obj = UserPhoto(user=new_user_key)
                 new_user_photo_obj.put()
 
                 time.sleep(0.2)
@@ -279,23 +279,23 @@ class RegistrationHandler(BlogHandler):
                 #         The your-own-blog Team
                 #         """ % (fullname)
                 # message.send()
-                self.render('login.html',new_user=new_user.fullname)
+                self.render('login.html', new_user=new_user.fullname)
         else:
             error_list.append("You did not fill atleast one of the fields!")
             self.render('register.html', fullname=fullname,
-                                        location=location,
-                                        email=email,
-                                        user_name=u_name,
-                                        error_list=error_list)
+                        location=location,
+                        email=email,
+                        user_name=u_name,
+                        error_list=error_list)
 
 class NewPostHandler(BlogHandler):
     def get(self):
         cookie_user = self.get_user_from_cookie()
         if cookie_user:
-            self.render('newpost.html',user=cookie_user)
+            self.render('newpost.html', user=cookie_user)
         else:
             cookie_error = "Your session has expired please login again to continue!"
-            self.render('login.html',cookie_error = cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
     def post(self):
         cookie_user = self.get_user_from_cookie()
@@ -307,19 +307,19 @@ class NewPostHandler(BlogHandler):
             if is_draft == 'on':
                 is_draft = True
             else:
-                is_draft =  False
+                is_draft = False
 
-            if title!='Click here to give a Title!' and \
-             content!='<p>Start writing here...</p>':
+            if title != 'Click here to give a Title!' and \
+             content != '<p>Start writing here...</p>':
                 new_post = Post(
-                    title = title,
-                    content = content,
-                    user = cookie_user.key,
-                    is_draft = is_draft
+                    title=title,
+                    content=content,
+                    user=cookie_user.key,
+                    is_draft=is_draft
                     )
                 new_post_key = new_post.put()
                 time.sleep(0.3)
-                like_obj = Likes(post=new_post_key,like_count=0)
+                like_obj = Likes(post=new_post_key, like_count=0)
                 like_key = like_obj.put()
                 time.sleep(0.1)
 
@@ -329,11 +329,11 @@ class NewPostHandler(BlogHandler):
                     self.redirect('/blog/%s' % str(new_post_key.id()))
             else:
                 empty_post = "Both Title and Content needed for the Blog!"
-                self.render('newpost.html',user = cookie_user,
-                    title=title, content=content,empty_post = empty_post)
+                self.render('newpost.html', user=cookie_user,
+                            title=title, content=content, empty_post=empty_post)
         else:
             cookie_error = "Your session has expired please login again to continue!"
-            self.render('login.html',cookie_error = cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
         # Debug method to avoid DB writes!
         # user_email = check_for_valid_cookie(self)
@@ -352,7 +352,7 @@ class NewPostHandler(BlogHandler):
 
 
 class EditBlogHandler(BlogHandler):
-    def get(self,post_id):
+    def get(self, post_id):
         # user_id = check_for_valid_cookie(self)
         # cookie_user = User.get_by_id(int(user_id))
         cookie_user = self.get_user_from_cookie()
@@ -360,17 +360,17 @@ class EditBlogHandler(BlogHandler):
 
         if cookie_user:
             if post:
-                self.render('editpost.html',user=cookie_user,
-                    post=post)
+                self.render('editpost.html', user=cookie_user,
+                            post=post)
             else:
                 #self.error(404)
                 self.render("error.html")
                 return
         else:
             cookie_error = "You need to log in before you edit the post!"
-            self.render('login.html',cookie_error = cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
-    def post(self,post_id):
+    def post(self, post_id):
         # user_id = check_for_valid_cookie(self)
         # cookie_user = User.get_by_id(int(user_id))
         cookie_user = self.get_user_from_cookie()
@@ -388,18 +388,18 @@ class EditBlogHandler(BlogHandler):
                     self.redirect('/blog/%s'%post.key.id())
                 else:
                     empty_title_content = True
-                    self.render('editpost.html',user=cookie_user,
-                        post=post,empty_title_content=empty_title_content)
+                    self.render('editpost.html', user=cookie_user,
+                                post=post, empty_title_content=empty_title_content)
             else:
                 self.error(404)
                 return
         else:
             cookie_error = "You need to log in before you edit the post!"
-            self.render('login.html',cookie_error = cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
 
 class DeleteBlogHandler(BlogHandler):
-    def get(self,post_id):
+    def get(self, post_id):
         # user_id = check_for_valid_cookie(self)
         # cookie_user = User.get_by_id(int(user_id))
         cookie_user = self.get_user_from_cookie()
@@ -407,15 +407,15 @@ class DeleteBlogHandler(BlogHandler):
 
         if cookie_user:
             if post:
-                self.render('deletepost.html',user=cookie_user,post=post)
+                self.render('deletepost.html', user=cookie_user, post=post)
             else:
                 self.error(404)
                 return
         else:
             cookie_error = "You need to log in before you delete the post!"
-            self.render('login.html',cookie_error = cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
-    def post(self,post_id):
+    def post(self, post_id):
         # user_id = check_for_valid_cookie(self)
         # cookie_user = User.get_by_id(int(user_id))
         cookie_user = self.get_user_from_cookie()
@@ -431,7 +431,7 @@ class DeleteBlogHandler(BlogHandler):
                 return
         else:
             cookie_error = "You need to log in before you delete the post!"
-            self.render('login.html',cookie_error = cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
 
 
@@ -471,17 +471,29 @@ class PostPageHandler(BlogHandler):
                     self.error(404)
                     return
                 if cookie_user.key == post.user:
-                    self.render("blog.html", post = post,user=cookie_user,
-                        comments=list_dict, like_count = no_of_likes,
-                        comment_count = comment_count, is_author=True)
+                    self.render("blog.html",
+                                post=post,
+                                user=cookie_user,
+                                comments=list_dict,
+                                like_count=no_of_likes,
+                                comment_count=comment_count,
+                                is_author=True)
                 else:
-                    self.render("blog.html", post = post,user=cookie_user,
-                        comments=list_dict, like_count = no_of_likes,
-                        comment_count = comment_count, is_author=False)
+                    self.render("blog.html",
+                                post=post,
+                                user=cookie_user,
+                                comments=list_dict,
+                                like_count=no_of_likes,
+                                comment_count=comment_count,
+                                is_author=False)
             else:
-                self.render("blog.html", post = post,user=None,
-                    comments=list_dict,like_count = no_of_likes,
-                    comment_count = comment_count,is_author=False)
+                self.render("blog.html",
+                            post=post,
+                            user=None,
+                            comments=list_dict,
+                            like_count=no_of_likes,
+                            comment_count=comment_count,
+                            is_author=False)
         else:
             self.error(404)
             return
@@ -508,7 +520,7 @@ class LikeHandler(BlogHandler):
                     like_obj.put()
                     self.write(json.dumps(({'like_count': like_obj.like_count})))
                 else:
-                    like_obj = Likes(post = post_obj.key,like_count=1)
+                    like_obj = Likes(post=post_obj.key, like_count=1)
                     like_obj.put()
                     time.sleep(0.2)
                     self.write(json.dumps(({'like_count' : like_obj.like_count})))
@@ -517,11 +529,11 @@ class LikeHandler(BlogHandler):
 
 
 class CommentHandler(BlogHandler):
-    def get(self,comment_id):
+    def get(self, comment_id):
         commentObj = Comments.get_by_id(int(comment_id))
         self.write(json.dumps(({'comment': commentObj.comment})))
 
-    def post(self,post_id):
+    def post(self, post_id):
         comment = self.request.get('comment')
         post = Post.get_by_id(int(post_id))
         # user_id = check_for_valid_cookie(self)
@@ -539,11 +551,11 @@ class CommentHandler(BlogHandler):
                 self.redirect('/blog/%s?empty_comment=True'%post.key.id())
         else:
             cookie_error = 'You have to be logged in to comment!'
-            self.render('login.html',cookie_error=cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
 
 class DeleteCommentHandler(BlogHandler):
-    def get(self,post_id,comment_id):
+    def get(self, post_id, comment_id):
         cookie_user = self.get_user_from_cookie()
         if cookie_user:
             comment = Comments.get_by_id(int(comment_id))
@@ -556,7 +568,7 @@ class DeleteCommentHandler(BlogHandler):
                 self.redirect('/blog/%s' % post_id)
         else:
             cookie_error = 'You have to be logged in to delete a comment!'
-            self.render('login.html',cookie_error=cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
 
 class EditCommentHandler(BlogHandler):
@@ -583,10 +595,10 @@ class EditCommentHandler(BlogHandler):
                 return
         else:
             cookie_error = 'You have to be logged in to edit a comment!'
-            self.render('login.html',cookie_error=cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
 class ProfileHandler(BlogHandler):
-    def get(self,user_id):
+    def get(self, user_id):
         # cookie_user_id = check_for_valid_cookie(self)
         user_cookie = self.get_user_from_cookie()
         user_public = User.get_by_id(int(user_id))
@@ -599,16 +611,18 @@ class ProfileHandler(BlogHandler):
                 user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
                 if user_photo_obj:
                     if user_photo_obj.photo_blob_key:
-                        pic_serving_url = images.get_serving_url(user_photo_obj.photo_blob_key, size=90, crop=True)
+                        pic_serving_url = images.get_serving_url( \
+                                          user_photo_obj.photo_blob_key, size=90, crop=True)
                     else:
                         pic_serving_url = '//placehold.it/100'
                 else:
                     pic_serving_url = '//placehold.it/100'
 
-                self.render('profile.html',user=user_cookie,
+                self.render('profile.html',
+                            user=user_cookie,
                             user_public=user_public,
-                            public_profile= public_profile,
-                            pic_serving_url = pic_serving_url)
+                            public_profile=public_profile,
+                            pic_serving_url=pic_serving_url)
             else:
                 if user_cookie.email:
                     public_profile = False
@@ -616,36 +630,40 @@ class ProfileHandler(BlogHandler):
                     user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
                     if user_photo_obj:
                         if user_photo_obj.photo_blob_key:
-                            pic_serving_url = images.get_serving_url(user_photo_obj.photo_blob_key, size=90, crop=True)
+                            pic_serving_url = images.get_serving_url( \
+                                              user_photo_obj.photo_blob_key, size=90, crop=True)
                         else:
                             pic_serving_url = '//placehold.it/100'
                     else:
                         pic_serving_url = '//placehold.it/100'
 
-                    self.render('profile.html',user=user_cookie,
-                             user_public=user_public,
-                             public_profile= public_profile,
-                             upload_url=upload_url,
-                             pic_serving_url = pic_serving_url)
+                    self.render('profile.html',
+                                user=user_cookie,
+                                user_public=user_public,
+                                public_profile=public_profile,
+                                upload_url=upload_url,
+                                pic_serving_url=pic_serving_url)
                 else:
                     cookie_error = 'You need to log in first to edit profile!'
-                    self.render('login.html',cookie_error=cookie_error)
+                    self.render('login.html', cookie_error=cookie_error)
         else:
             public_profile = True
             #user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
             user_photo_obj = None
             if user_photo_obj:
                 if user_photo_obj.photo_blob_key:
-                    pic_serving_url = images.get_serving_url(user_photo_obj.photo_blob_key, size=90, crop=True)
+                    pic_serving_url = images.get_serving_url( \
+                                      user_photo_obj.photo_blob_key, size=90, crop=True)
                 else:
                     pic_serving_url = '//placehold.it/100'
             else:
                 pic_serving_url = '//placehold.it/100'
 
-            self.render('profile.html',user=user_cookie,
+            self.render('profile.html',
+                        user=user_cookie,
                         user_public=user_public,
-                        public_profile= public_profile,
-                        pic_serving_url = pic_serving_url)
+                        public_profile=public_profile,
+                        pic_serving_url=pic_serving_url)
 
 
 class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
@@ -670,7 +688,7 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
                     upload = self.get_uploads('img')
                     blobInfo = upload[0]
                     user_photo = UserPhoto(
-                        user= user_cookie.key,
+                        user=user_cookie.key,
                         photo_blob_key=blobInfo.key()
                     )
                     user_photo.put()
@@ -681,7 +699,7 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
                     self.error(500)
         else:
             cookie_error = 'You need to log in first to edit profile!'
-            self.render('login.html',cookie_error=cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
 
 class EditPersonalInfoHandler(BlogHandler):
@@ -705,7 +723,7 @@ class EditPersonalInfoHandler(BlogHandler):
             #     public_profile= False,details_updated=details_updated)
         else:
             cookie_error = 'You need to log in first to edit your profile!'
-            self.render('login.html',cookie_error=cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
 
 class ChangePassHandler(BlogHandler):
@@ -728,7 +746,7 @@ class ChangePassHandler(BlogHandler):
                 self.redirect('/profile/%s?pass_update=False'% str(user_cookie.key.id()))
         else:
             cookie_error = 'You need to log in first to edit profile!'
-            self.render('login.html',cookie_error=cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
 
 # class PhotoUploadHandler(BlogHandler, blobstore_handlers.BlobstoreUploadHandler):
@@ -762,7 +780,7 @@ class ChangePassHandler(BlogHandler):
 class AboutUsHandler(BlogHandler):
     def get(self):
         cookie_user = self.get_user_from_cookie()
-        self.render('aboutus.html',user=cookie_user)
+        self.render('aboutus.html', user=cookie_user)
 
 class TestHandler(BlogHandler):
     def get(self):
@@ -797,10 +815,11 @@ class TestHandler(BlogHandler):
         self.write("<br>")
         self.write("Post Local : %s" % localtz)
 
-        return self.render('test.html',user=loggedin_user,
-                                       all_users=all_users,
-                                       posts=posts,
-                                       comments=comments)
+        return self.render('test.html',
+                           user=loggedin_user,
+                           all_users=all_users,
+                           posts=posts,
+                           comments=comments)
 
     def post(self):
         loggedin_user = self.get_user_from_cookie()
@@ -813,7 +832,7 @@ class TestHandler(BlogHandler):
         post = Post.get_by_id(int(post_id))
 
         if post:
-            new_like_object = Likes(post = post.key, like_count = int(like_count))
+            new_like_object = Likes(post=post.key, like_count=int(like_count))
             key = new_like_object.put()
             time.sleep(0.1)
             new_like = key.get()
@@ -825,57 +844,62 @@ class TestHandler(BlogHandler):
 class AllPostsHandler(BlogHandler):
     def get(self):
         cookie_user = self.get_user_from_cookie()
-        posts = Post.query(Post.is_draft== False).order(-Post.created)
+        posts = Post.query(Post.is_draft == False).order(-Post.created)
 
-        return self.render('allposts.html',user=cookie_user, posts=posts)
+        return self.render('allposts.html', user=cookie_user, posts=posts)
 
 class DraftPostsHandler(BlogHandler):
-    def get(self,user_id):
+    def get(self, user_id):
         cookie_user = self.get_user_from_cookie()
 
         if cookie_user:
-            posts = Post.query(ndb.AND(Post.is_draft == True,Post.user == cookie_user.key)).order(-Post.created)
-            self.render('draftposts.html',user=cookie_user, posts=posts)
+            posts = Post.query(ndb.AND \
+                              (Post.is_draft == True, Post.user == cookie_user.key)) \
+                              .order(-Post.created)
+            self.render('draftposts.html', user=cookie_user, posts=posts)
         else:
             cookie_error = 'You need to be logged in to view your drafts!'
-            self.render('login.html',cookie_error=cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
 
 class ViewDraftHandler(BlogHandler):
-    def get(self,post_id):
+    def get(self, post_id):
         post = Post.get_by_id(int(post_id))
         cookie_user = self.get_user_from_cookie()
 
         if cookie_user:
             if post:
                 delete_draft = self.request.get('draft_delete')
-                self.render('viewdraftpost.html',user = cookie_user,
-                    post = post, delete_draft=delete_draft)
+                self.render('viewdraftpost.html',
+                            user=cookie_user,
+                            post=post,
+                            delete_draft=delete_draft)
             else:
                 self.error(404)
                 return
         else:
             cookie_error = 'You need to be logged in to view your drafts!'
-            self.render('login.html',cookie_error=cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
 
 class EditDraftHandler(BlogHandler):
-    def get(self,post_id):
+    def get(self, post_id):
         cookie_user = self.get_user_from_cookie()
         post = Post.get_by_id(int(post_id))
 
         if cookie_user:
             if post:
-                self.render('editdraft.html',user=cookie_user,
-                    post=post)
+                self.render('editdraft.html',
+                            user=cookie_user,
+                            post=post)
             else:
                 self.error(404)
                 return
         else:
             cookie_error = "You need to log in before you edit the post!"
-            self.render('login.html',cookie_error = cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
-    def post(self,post_id):
+    def post(self, post_id):
         cookie_user = self.get_user_from_cookie()
 
         if cookie_user:
@@ -897,8 +921,10 @@ class EditDraftHandler(BlogHandler):
                         self.redirect('/draft/%s'% post.key.id())
                     else:
                         empty_title_content = True
-                        self.render('editdraft.html',user=cookie_user,
-                            post=post,empty_title_content=empty_title_content)
+                        self.render('editdraft.html',
+                                    user=cookie_user,
+                                    post=post,
+                                    empty_title_content=empty_title_content)
                 else:
                     is_draft = False
                     post.title = postTitle
@@ -912,24 +938,24 @@ class EditDraftHandler(BlogHandler):
                 return
         else:
             cookie_error = "You need to log in before you edit your draft!"
-            self.render('login.html',cookie_error = cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
 class DeleteDraftHandler(BlogHandler):
-    def get(self,post_id):
+    def get(self, post_id):
         cookie_user = self.get_user_from_cookie()
         post = Post.get_by_id(int(post_id))
 
         if cookie_user:
             if post:
-                self.render('deletedraft.html',user=cookie_user,post=post)
+                self.render('deletedraft.html', user=cookie_user, post=post)
             else:
                 self.error(404)
                 return
         else:
             cookie_error = "You need to log in before you delete a draft!"
-            self.render('login.html',cookie_error = cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
-    def post(self,post_id):
+    def post(self, post_id):
         cookie_user = self.get_user_from_cookie()
 
         if cookie_user:
@@ -943,10 +969,10 @@ class DeleteDraftHandler(BlogHandler):
                 return
         else:
             cookie_error = "You need to log in before you delete the post!"
-            self.render('login.html',cookie_error = cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
 class PostDraftHandler(BlogHandler):
-    def get(self,post_id):
+    def get(self, post_id):
         cookie_user = self.get_user_from_cookie()
         post = Post.get_by_id(int(post_id))
 
@@ -962,18 +988,18 @@ class PostDraftHandler(BlogHandler):
                 return
         else:
             cookie_error = "You need to log in before you post a draft to public!"
-            self.render('login.html',cookie_error = cookie_error)
+            self.render('login.html', cookie_error=cookie_error)
 
 
 class ForgetPasswordHandler(BlogHandler):
     def post(self):
-        email = self.request.get('email');
+        email = self.request.get('email')
         if email:
             user = User.query(User.email == email).get()
             if user:
                 message = mail.EmailMessage(
-                        sender="Support @ Your Own Blog <abhighosh18@gmail.com>",
-                        subject="Your account has been approved")
+                    sender="Support @ Your Own Blog <abhighosh18@gmail.com>",
+                    subject="Your account has been approved")
 
                 message.to = "%s <%s>" % (user.fullname, email),
 
@@ -995,26 +1021,26 @@ class ForgetPasswordHandler(BlogHandler):
             else:
                 self.write(json.dumps(({'result': 'invalid_email'})))
         else:
-            self.write(json,dumps(({'result': 'empty_email'})))
+            self.write(json.dumps(({'result': 'empty_email'})))
 
 
 app = webapp2.WSGIApplication([
     ('/', HomeHandler),
     ('/home', HomeHandler),
     ('/login', LoginHandler),
-    ('/register',RegistrationHandler),
+    ('/register', RegistrationHandler),
     ('/logout', LogOutHandler),
-    ('/aboutus',AboutUsHandler),
-    ('/newpost',NewPostHandler),
+    ('/aboutus', AboutUsHandler),
+    ('/newpost', NewPostHandler),
     ('/blog/([0-9]+)', PostPageHandler),
-    ('/profile/([0-9]+)',ProfileHandler),
-    ('/personalinfo',EditPersonalInfoHandler),
-    ('/changepass',ChangePassHandler),
-    ('/upload',PhotoUploadHandler),
-    ('/voteup',LikeHandler),
+    ('/profile/([0-9]+)', ProfileHandler),
+    ('/personalinfo', EditPersonalInfoHandler),
+    ('/changepass', ChangePassHandler),
+    ('/upload', PhotoUploadHandler),
+    ('/voteup', LikeHandler),
     ('/comment/([0-9]+)', CommentHandler),
     ('/comment/([0-9]+)/delete/([0-9]+)', DeleteCommentHandler),
-    ('/editcomment',EditCommentHandler),
+    ('/editcomment', EditCommentHandler),
     ('/editblog/([0-9]+)', EditBlogHandler),
     ('/deleteblog/([0-9]+)', DeleteBlogHandler),
     ('/allposts', AllPostsHandler),
@@ -1024,5 +1050,5 @@ app = webapp2.WSGIApplication([
     ('/draft/([0-9]+)', ViewDraftHandler),
     ('/draft/([0-9]+)/post', PostDraftHandler),
     ('/forgetpassword', ForgetPasswordHandler),
-    ('/test',TestHandler)
+    ('/test', TestHandler)
 ], debug=True)

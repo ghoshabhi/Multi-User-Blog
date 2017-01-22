@@ -68,17 +68,6 @@ jinja_env.filters['filterKey'] = filterKey
 jinja_env.filters['showCount'] = showCount
 
 
-def check_for_valid_cookie(self):
-    random = self.request.cookies.get('random')
-    if random:
-        is_valid_cookie = check_secure_val(random)
-        if is_valid_cookie:
-             return self.request.cookies.get('random').split("|")[0]
-        else:
-            return None
-    else:
-        return None
-
 class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
@@ -90,15 +79,22 @@ class BlogHandler(webapp2.RequestHandler):
         self.write(self.render_str(template, **kw))
 
     def get_user_from_cookie(self):
-        random = check_for_valid_cookie(self)
+        random = self.check_for_valid_cookie()
         if random:
             return User.get_by_id(int(random))
         else:
             return None
+    def check_for_valid_cookie(self):
+        random = self.request.cookies.get('random')
+        if random:
+            is_valid_cookie = check_secure_val(random)
+            if is_valid_cookie:
+                 return self.request.cookies.get('random').split("|")[0]
+        return None
 
 
 class HomeHandler(BlogHandler):
-    def get(self,user=None):
+    def get(self):
         posts = []
         cookie_user = self.get_user_from_cookie()
         if cookie_user:
@@ -135,7 +131,8 @@ class HomeHandler(BlogHandler):
 
 class LoginHandler(BlogHandler):
     def get(self):
-        user_id = check_for_valid_cookie(self)
+        print "show login"
+        user_id = self.check_for_valid_cookie()
         if user_id:
             user = User.get_by_id(int(user_id))
             if user:
@@ -153,12 +150,19 @@ class LoginHandler(BlogHandler):
         remember = self.request.get('remember')
 
         if u_name and password:
-            user = User.query(ndb.AND(ndb.OR(User.user_name==u_name,User.email==u_name),User.password== hash_str(password))).get()
+            print "username and password present"
+            user = User.query(ndb.AND \
+                             (ndb.OR \
+                             (User.user_name==u_name,User.email==u_name), \
+                             User.password== hash_str(password))).get()
             if user:
-                if self.request.cookies.get('random'):
-                    user_random = self.request.cookies.get('random')
+                print "valid id and pass"
+                user_random = self.request.cookies.get('random')
+                if user_random:
+                    print "cookie present"
                     is_valid_cookie = check_secure_val(user_random)
                     if is_valid_cookie:
+                        print "cookie valid"
                         self.redirect('/home')
                     else:
                         self.response.headers.add_header('Set-Cookie','random=''')
@@ -166,13 +170,22 @@ class LoginHandler(BlogHandler):
                         self.render('login.html',cookie_error=cookie_error)
 
                 else:
-                    self.response.headers.add_header('Set-Cookie','random=%s' % make_secure_val(str(user.key.id())))
                     if remember == 'on':
+                        print "remember"
                         lease = 30*24*3600
                         ends = time.gmtime(time.time() + lease)
-                        expires = time.strftime("%a, %m %B %Y %H:%M:%S GMT",ends)
-                        self.response.headers.add_header('expires', expires)
-                        # self.response.headers.add_header('expires', 'Sat, 13 July 2016 12:00:00 GMT')
+                        print "ends: " , ends
+                        expires = time.strftime("%a, %m %B %Y %H:%M:%S GMT", ends)
+                        print "expires: " , expires
+                        #self.response.headers.add_header('Expires', lease)
+                        self.response.headers.add_header(
+                            'Set-Cookie', 'random=%s ; Expires = %s' % \
+                            (make_secure_val(str(user.key.id())), expires))
+                    else:
+                        self.response.headers.add_header(
+                            'Set-Cookie', 'random=%s ; Expires = %s' % \
+                        (make_secure_val(str(user.key.id())), str(7*24*3600)))
+                        print "no remember"
                     self.redirect('/home')
             else:
                 error = 'Username and Password do not match!'

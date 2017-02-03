@@ -1,9 +1,7 @@
 # Multi User Blog
-------
- The Multi-User Blog site is a blogging website where people can write blogs about their favourite topics. Registered users can _"Like"_ & _"Comment"_ on the posts. The live site can be visited here: your-own-blog.appspot.com
+The Multi-User Blog site is a blogging website where people can write blogs about their favourite topics. Registered users can _"Like"_ & _"Comment"_ on the posts. The live site can be visited here: your-own-blog.appspot.com
 
 # Table of Contents
------
 1. [Authors and Contributors](#author)
 2. [How to deploy the app?](#deploy-app)
 3. [Directory Structure](#directory-structure)
@@ -12,13 +10,14 @@
 
 <br><br>
 ### <a name="author"></a>1. Authors and Contributors
---------------------
+
 I, [Abhishek Ghosh](https://github.com/ghoshabhi) am the developer for this site. Also, there were major contributions from [Ian Gristoi](https://github.com/gristoi) and [Abigail Mathews](https://github.com/AbigailMathews). I thank them for their contributions to the site! 
 <br>
 <br>
 <br>
+
 ### <a name="deploy-app"></a>2. How to deploy the app ?
----------------
+
 Follow the steps below to run the app :
 
 1. Download Google App Engine Console
@@ -32,7 +31,7 @@ Follow the steps below to run the app :
 
 
 ### <a name="directory-structure"></a>3. Directory Structure
---------------
+
 ```
 -static
 	-contains all the CSS,JS files
@@ -60,7 +59,7 @@ Follow the steps below to run the app :
 
 <br><br>
 ### <a name="resources"></a> 4. Resources
--------
+
 * Python is used as the scripting language for the server
 * `jinja2`, a templating library for Python & natively implemented in Google App Engine
 `webapp2`, GAE's main library
@@ -75,7 +74,7 @@ Follow the steps below to run the app :
 <br><br>
 
 ### <a name="future-improvements"></a> 5. Future Improvements
------
+
 * Use `ndb.BlobKeyProperty` for Photo uploads
 * Implement `tags` for each post
 * Show posts according to dates

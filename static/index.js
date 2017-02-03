@@ -286,3 +286,14 @@ $('.like-button').on('click', function(e){
     }
   });
 });
+
+$(document).on('DOMContentLoaded', getParameterByName)
+
+function getParameterByName() {
+    const queryParams = window.location.search;
+    const query = queryParams.split("?")[1];
+    console.log(typeof(query));
+    if (query == "updated=true") {
+      //show toast
+    }
+}

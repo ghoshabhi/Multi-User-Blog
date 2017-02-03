@@ -775,10 +775,11 @@ class ChangePassHandler(BlogHandler):
 #             cookie_error = 'You need to log in first to edit profile!'
 #             self.render('login.html',cookie_error=cookie_error)
 
-class AboutUsHandler(BlogHandler):
+class AboutMeHandler(BlogHandler):
     def get(self):
-        cookie_user = self.get_user_from_cookie()
-        self.render('aboutus.html', user=cookie_user)
+        # cookie_user = self.get_user_from_cookie()
+        # self.render('aboutus.html', user=cookie_user)
+        self.render('page_under_construction.html')
 
 class TestHandler(BlogHandler):
     def get(self):
@@ -1035,7 +1036,7 @@ app = webapp2.WSGIApplication([
     ('/login', LoginHandler),
     ('/register', RegistrationHandler),
     ('/logout', LogOutHandler),
-    ('/aboutus', AboutUsHandler),
+    ('/about', AboutMeHandler),
     ('/newpost', NewPostHandler),
     ('/blog/([0-9]+)', PostPageHandler),
     ('/profile/([0-9]+)', ProfileHandler),

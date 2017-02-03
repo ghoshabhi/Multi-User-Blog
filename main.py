@@ -1023,6 +1023,10 @@ class ForgetPasswordHandler(BlogHandler):
         else:
             self.write(json.dumps(({'result': 'empty_email'})))
 
+def handle_404(request, response, exception):
+    logging.exception(exception)
+    response.write('Oops! I could swear this page was here!')
+    response.set_status(404)
 
 app = webapp2.WSGIApplication([
     ('/', HomeHandler),
@@ -1052,3 +1056,5 @@ app = webapp2.WSGIApplication([
     ('/forgetpassword', ForgetPasswordHandler),
     ('/test', TestHandler)
 ], debug=True)
+
+app.error_handlers[404] = handle_404

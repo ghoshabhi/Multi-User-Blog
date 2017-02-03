@@ -607,7 +607,6 @@ class ProfileHandler(BlogHandler):
         if user_cookie:
             if user_cookie.email != user_public.email:
                 public_profile = True
-
                 user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
                 if user_photo_obj:
                     if user_photo_obj.photo_blob_key:
@@ -626,7 +625,6 @@ class ProfileHandler(BlogHandler):
             else:
                 if user_cookie.email:
                     public_profile = False
-
                     user_photo_obj = UserPhoto.query(UserPhoto.user == user_cookie.key).get()
                     if user_photo_obj:
                         if user_photo_obj.photo_blob_key:
@@ -1024,9 +1022,12 @@ class ForgetPasswordHandler(BlogHandler):
             self.write(json.dumps(({'result': 'empty_email'})))
 
 def handle_404(request, response, exception):
-    logging.exception(exception)
-    response.write('Oops! I could swear this page was here!')
+    logging.warn(str(exception))
     response.set_status(404)
+    handler = BlogHandler(request, response)
+    handler.render("404.html");
+
+
 
 app = webapp2.WSGIApplication([
     ('/', HomeHandler),

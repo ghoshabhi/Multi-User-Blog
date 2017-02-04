@@ -293,7 +293,24 @@ function getParameterByName() {
     const queryParams = window.location.search;
     const query = queryParams.split("?")[1];
     console.log(typeof(query));
-    if (query == "updated=true") {
-      //show toast
+    if (query == "updated=True") {
+      toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-left",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      }
+      toastr["success"]("Profile Updated Succesfully!! 😎");
     }
 }

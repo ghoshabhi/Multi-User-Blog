@@ -1022,12 +1022,17 @@ class ForgetPasswordHandler(BlogHandler):
         else:
             self.write(json.dumps(({'result': 'empty_email'})))
 
+
+class MyPostsHandler(BlogHandler):
+    def get(self, user_id):
+        self.render('page_under_construction.html')
+
+
 def handle_404(request, response, exception):
     logging.warn(str(exception))
     response.set_status(404)
     handler = BlogHandler(request, response)
     handler.render("404.html");
-
 
 
 app = webapp2.WSGIApplication([
@@ -1056,6 +1061,7 @@ app = webapp2.WSGIApplication([
     ('/draft/([0-9]+)', ViewDraftHandler),
     ('/draft/([0-9]+)/post', PostDraftHandler),
     ('/forgetpassword', ForgetPasswordHandler),
+    ('/user/([0-9]+)/myposts', MyPostsHandler),
     ('/test', TestHandler)
 ], debug=True)
 

@@ -85,7 +85,12 @@
                   </a>
                   <!-- <div class="row"> -->
                   <div>
-                    <p class="postbody">{{ l['p_content'] | safe}}</p>
+                    <div class="post-container">
+                      <div class="postbody">
+                        {{ l['p_content'] | safe}}
+                      </div>
+                      <a href="/blog/{{ l['p_id'] }}">Read More...</a>
+                    </div>
 
                     <ul class="list-inline">
                       <!-- <li><a href="#">{{ l['p_created'].strftime("%b %d, '%y") }}</a></li> -->

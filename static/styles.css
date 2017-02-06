@@ -34,6 +34,11 @@ body {
   color:#1BC1A1;
 }
 
+
+.postContentBody img {
+  width: 100%;
+}
+
 /* Wrapper for page content to push down footer */
 #wrap {
   min-height: 100%;
@@ -76,6 +81,7 @@ body {
   -webkit-box-orient: vertical;
   margin-bottom:10px;
 }
+
 
 .post-container > a {
   position: relative;

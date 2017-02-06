@@ -20,7 +20,7 @@ from google.appengine.ext import blobstore
 from google.appengine.api import images
 from hash_keys import SECRET
 
-template_dir = os.path.join(os.path.dirname(__file__), 'templates')
+template_dir = os.path.join(os.path.dirname(__file__), 'views')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), \
                               autoescape=True)
 

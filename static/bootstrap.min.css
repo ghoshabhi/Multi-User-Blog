@@ -2952,7 +2952,7 @@ textarea.input-group-sm>.form-control, textarea.input-group-sm>.input-group-addo
     background-color: transparent;
 }
 .navbar-default .navbar-toggle {
-    border-color: white; 
+    border-color: white;
 }
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
     background-color: white;
@@ -3641,9 +3641,10 @@ a.list-group-item-danger.active, a.list-group-item-danger.active:hover, a.list-g
     margin-bottom: 20px;
     background-color: #fff;
     border: 1px solid transparent;
-    border-radius: 4px;
+    border-radius: 2px;
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-    box-shadow: 0 18px 18px rgba(0, 0, 0, .5); /* Change here to increase/decrease box shadow! */
+    /*box-shadow: 0 18px 18px rgba(0, 0, 0, .5); /* Change here to increase/decrease box shadow! */
+    box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 2px 2px 0 rgba(0,0,0,0.24);
 }
 .panel-body {
     padding: 15px;

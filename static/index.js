@@ -209,7 +209,91 @@ clipboard.on('error', function(e) {
   hideTooltip();
 });
 
-$('.like-button').on('click', function(e){
+function showToast(error_no) {
+  if (error_no == -1){
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": true,
+      "positionClass": "toast-top-left",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "1500",
+      "hideDuration": "5000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    };
+    toastr["error"]("You cannot like your own posts!")
+  }
+  else if (error_no == -2){
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": true,
+      "positionClass": "toast-top-left",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "1500",
+      "hideDuration": "5000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    };
+    toastr["warning"]("You have already liked this post!")
+  }
+  else if (error_no == -3) {
+    toastr.options = {
+       "closeButton": true,
+       "debug": false,
+       "newestOnTop": false,
+       "progressBar": true,
+       "positionClass": "toast-top-left",
+       "preventDuplicates": false,
+       "onclick": null,
+       "showDuration": "5000",
+       "hideDuration": "1000",
+       "timeOut": "5000",
+       "extendedTimeOut": "1000",
+       "showEasing": "swing",
+       "hideEasing": "linear",
+       "showMethod": "fadeIn",
+       "hideMethod": "fadeOut"
+     };
+     toastr["error"]("You have to be logged in to like a post!")
+   }
+   else {
+     toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": true,
+      "positionClass": "toast-top-left",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "1500",
+      "hideDuration": "5000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    };
+    toastr["error"]("Error liking the post")
+  }
+}
+
+$('#like-button').on('click', function(e){
+  alert(1);
   e.preventDefault();
   var instance = $(this);
   var key = $(this).data('key');
@@ -220,69 +304,18 @@ $('.like-button').on('click', function(e){
     data: {"postID": key},
     success: function(data){
       if(data['like_count'] == -1){
-        toastr.options = {
-          "closeButton": true,
-          "debug": false,
-          "newestOnTop": false,
-          "progressBar": true,
-          "positionClass": "toast-top-left",
-          "preventDuplicates": false,
-          "onclick": null,
-          "showDuration": "1500",
-          "hideDuration": "5000",
-          "timeOut": "5000",
-          "extendedTimeOut": "1000",
-          "showEasing": "swing",
-          "hideEasing": "linear",
-          "showMethod": "fadeIn",
-          "hideMethod": "fadeOut"
-        };
-        toastr["error"]("You cannot like your own posts!")
+        showToast(-1);
       }
       else if(data['like_count'] == -2){
-        toastr.options = {
-          "closeButton": true,
-          "debug": false,
-          "newestOnTop": false,
-          "progressBar": true,
-          "positionClass": "toast-top-left",
-          "preventDuplicates": false,
-          "onclick": null,
-          "showDuration": "1500",
-          "hideDuration": "5000",
-          "timeOut": "5000",
-          "extendedTimeOut": "1000",
-          "showEasing": "swing",
-          "hideEasing": "linear",
-          "showMethod": "fadeIn",
-          "hideMethod": "fadeOut"
-        };
-        toastr["warning"]("You have already liked this post!")
+        showToast(-2);
       }
       else{
         instance.parent().prev().find('span').html(data['like_count']+' likes');
-        instance.addClass('disabled');
+        //instance.addClass('disabled');
       }
     },
     error: function(data){
-       toastr.options = {
-          "closeButton": true,
-          "debug": false,
-          "newestOnTop": false,
-          "progressBar": true,
-          "positionClass": "toast-top-left",
-          "preventDuplicates": false,
-          "onclick": null,
-          "showDuration": "5000",
-          "hideDuration": "1000",
-          "timeOut": "5000",
-          "extendedTimeOut": "1000",
-          "showEasing": "swing",
-          "hideEasing": "linear",
-          "showMethod": "fadeIn",
-          "hideMethod": "fadeOut"
-        };
-        toastr["error"]("You have to be logged in to like a post!")
+       showToast(-3)
     }
   });
 });
@@ -293,6 +326,26 @@ function getParameterByName() {
     const queryParams = window.location.search;
     const query = queryParams.split("?")[1];
     if (query == "updated=True") {
+      toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-left",
+        "preventDuplicates": false,s
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      }
+      toastr["success"]("Profile Updated Succesfully!! 😎");
+    }
+    else if (query == "pass_update=True"){
       toastr.options = {
         "closeButton": false,
         "debug": false,
@@ -310,6 +363,6 @@ function getParameterByName() {
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
       }
-      toastr["success"]("Profile Updated Succesfully!! 😎");
+      toastr["success"]("Password Updated Succesfully 🔒");
     }
 }

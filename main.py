@@ -500,6 +500,7 @@ class PostPageHandler(BlogHandler):
 
 class LikeHandler(BlogHandler):
     def post(self):
+        print "like called"
         cookie_user = self.get_user_from_cookie()
         if cookie_user:
             postID = self.request.get('postID')
@@ -724,7 +725,7 @@ class EditPersonalInfoHandler(BlogHandler):
             self.render('login.html', cookie_error=cookie_error)
 
 
-class ChangePassHandler(BlogHandler):
+class ChangePasswordHandler(BlogHandler):
     def post(self):
         password = self.request.get('password')
         confirm_pass = self.request.get('confirm_pass')
@@ -734,14 +735,14 @@ class ChangePassHandler(BlogHandler):
         if cookie_user:
             if password == confirm_pass:
                 if valid_password(password):
-                    user_cookie.password = hash_str(password)
-                    user_cookie.put()
+                    cookie_user.password = hash_str(password)
+                    cookie_user.put()
                     time.sleep(0.1)
-                    self.redirect('/profile/%s?pass_update=True'% str(user_cookie.key.id()))
+                    self.redirect('/profile/%s?pass_update=True'% str(cookie_user.key.id()))
                 else:
-                    self.redirect('/profile/%s?pass_update=False'% str(user_cookie.key.id()))
+                    self.redirect('/profile/%s?pass_update=False'% str(cookie_user.key.id()))
             else:
-                self.redirect('/profile/%s?pass_update=False'% str(user_cookie.key.id()))
+                self.redirect('/profile/%s?pass_update=False'% str(cookie_user.key.id()))
         else:
             cookie_error = 'You need to log in first to edit profile!'
             self.render('login.html', cookie_error=cookie_error)
@@ -1046,7 +1047,7 @@ app = webapp2.WSGIApplication([
     ('/blog/([0-9]+)', PostPageHandler),
     ('/profile/([0-9]+)', ProfileHandler),
     ('/personalinfo', EditPersonalInfoHandler),
-    ('/changepass', ChangePassHandler),
+    ('/changepass', ChangePasswordHandler),
     ('/upload', PhotoUploadHandler),
     ('/voteup', LikeHandler),
     ('/comment/([0-9]+)', CommentHandler),

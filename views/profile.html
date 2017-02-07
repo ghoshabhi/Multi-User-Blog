@@ -1,4 +1,4 @@
-{% extends "master.html" %} 
+{% extends "master.html" %}
 
 {% block navigation %}
  {% if user %}
@@ -22,8 +22,8 @@
       <li><a href="/register">Signup</a></li>
     </ul>
   </li>
-{% endif %} 
-{% endblock navigation %} 
+{% endif %}
+{% endblock navigation %}
 
 {% block content %}
 
@@ -105,14 +105,14 @@
           {% if user_photo_url %}
             <img src="{{pic_serving_url}}" class="img-responsive img-rounded" alt="avatar">
             <h6>Upload a different photo...</h6>
-            
+
             <input type="file" name="img" class="form-control">
             <br>
             <input type="submit" name="img" class="btn btn-primary" value="Change Picture">
           {% else %}
             <img src="{{pic_serving_url}}" class="avatar img-circle" alt="avatar">
             <h6>Upload a different photo...</h6>
-            
+
             <input type="file" class="form-control">
             <br>
             <input type="submit" class="btn btn-primary" value="Change Picture">
@@ -122,10 +122,10 @@
       </form>
       <!-- edit form column -->
       <div class="col-md-9 personal-info">
-      
+
        {% if details_updated %}
         <div class="alert alert-success alert-dismissable" style="display:none">
-          <a class="panel-close close" data-dismiss="alert">×</a> 
+          <a class="panel-close close" data-dismiss="alert">×</a>
           <i class="fa fa-coffee"></i>
           This is an <strong>.alert</strong>. Use this to show important messages to the user.
         </div>
@@ -161,7 +161,7 @@
             <label class="col-lg-3 control-label">About:</label>
             <div class="col-lg-8">
               {% if user.about %}
-                <textarea class="form-control" name="about" type="text">{{ user.about}}</textarea> 
+                <textarea class="form-control" name="about" type="text">{{ user.about}}</textarea>
               {% else %}
                 <textarea class="form-control" name="about" type="text" placeholder="Describe yourself in short..."></textarea>
               {% endif %}
@@ -171,8 +171,6 @@
             <label class="col-md-3 control-label"></label>
             <div class="col-md-8">
               <input type="submit" class="btn btn-primary" value="Save Changes">
-              <span></span>
-              <input type="reset" class="btn btn-default" value="Cancel">
             </div>
           </div>
         </form>
@@ -185,13 +183,13 @@
 
         {% if pass_update == 'success' and pass_update!= '' %}
           <div class="alert alert-success alert-dismissable">
-            <a class="panel-close close" data-dismiss="alert">×</a> 
+            <a class="panel-close close" data-dismiss="alert">×</a>
             <i class="fa fa-check" aria-hidden="true"></i>
             The password was changed successfully!
           </div>
         {% elif pass_update == 'fail' %}
           <div class="alert alert-danger alert-dismissable">
-            <a class="panel-close close" data-dismiss="alert">×</a> 
+            <a class="panel-close close" data-dismiss="alert">×</a>
             <i class="fa fa-times" aria-hidden="true"></i>
             Either the passwords do not match or you did not match the minimum requirements to set the password!
               <li>The password should be atleast 3 characters long</li>
@@ -202,7 +200,7 @@
 
         {% endif %}
         <h3>Change Password ?</h3>
-        
+
         <form class="form-horizontal" method="post" action="/changepass">
           <div class="form-group">
             <label class="col-md-3 control-label">New Password:</label>

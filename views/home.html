@@ -96,8 +96,8 @@
                       <!-- <li><a href="#">{{ l['p_created'].strftime("%b %d, '%y") }}</a></li> -->
                       <li><span class="likeCount label label-pill label-info">{{ l['like_count'] }} likes</span></li>
                       <li>
-                        <a data-key="{{ l['p_id'] }}" href="#" class="btn btn-md btn-sm btn-success like-button">
-                          <span class="fa fa-thumbs-up"></span>&nbsp;Like
+                        <a id="like-button" data-key="{{ l['p_id'] }}" href="#" class="btn btn-md btn-sm btn-success">
+                          <span id="like" class="fa fa-thumbs-up"></span>&nbsp;Like
                         </a>
                       </li>
                       <li>

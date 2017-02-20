@@ -510,17 +510,18 @@ class LikeHandler(BlogHandler):
                 self.write(json.dumps(({'like_count': -1})))
             else:
                 if like_obj:
-                    like_obj.like_count += 1
                     liked_by = like_obj.user_id
                     for u_id in liked_by:
                         if u_id == cookie_user.key.id():
                             self.write(json.dumps(({'like_count': -2})))
                             return
+                    like_obj.like_count += 1
                     liked_by.append(cookie_user.key.id())
                     like_obj.put()
                     self.write(json.dumps(({'like_count': like_obj.like_count})))
                 else:
                     like_obj = Likes(post=post_obj.key, like_count=1)
+                    like_obj.user_id.append(cookie_user.key.id())
                     like_obj.put()
                     time.sleep(0.2)
                     self.write(json.dumps(({'like_count' : like_obj.like_count})))

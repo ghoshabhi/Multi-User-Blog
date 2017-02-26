@@ -3,8 +3,8 @@ import os
 import webapp2
 import jinja2
 import re
-import hashlib
-import hmac
+# import hashlib
+# import hmac
 import json
 import time
 import logging
@@ -18,22 +18,23 @@ from google.appengine.api import app_identity
 from google.appengine.ext.webapp import blobstore_handlers
 from google.appengine.ext import blobstore
 from google.appengine.api import images
-from hash_keys import SECRET
+# from hash_keys import SECRET
+from handlers import hash_str, make_secure_val, check_secure_val
 
 template_dir = os.path.join(os.path.dirname(__file__), 'views')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), \
                               autoescape=True)
 
-def hash_str(s):
-    return hmac.new(SECRET, s).hexdigest()
+# def hash_str(s):
+#     return hmac.new(SECRET, s).hexdigest()
 
-def make_secure_val(s):
-    return "%s|%s" % (s, hash_str(s))
+# def make_secure_val(s):
+#     return "%s|%s" % (s, hash_str(s))
 
-def check_secure_val(h):
-    val = h.split("|")[0]
-    if h == make_secure_val(val):
-        return val
+# def check_secure_val(h):
+#     val = h.split("|")[0]
+#     if h == make_secure_val(val):
+#         return val
 
 USERNAME_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 def valid_username(username):

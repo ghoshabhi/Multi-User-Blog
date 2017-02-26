@@ -1,4 +1,3 @@
-#import statements
 import os
 import webapp2
 import jinja2
@@ -24,15 +23,15 @@ template_dir = os.path.join(os.path.dirname(__file__), 'views')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), \
                               autoescape=True)
 
-def hash_str(s):
-    return hmac.new(SECRET, s).hexdigest()
+def hash_str(password):
+    return hmac.new(SECRET, password).hexdigest()
 
-def make_secure_val(s):
-    return "%s|%s" % (s, hash_str(s))
+def make_secure_val(password):
+    return "%s|%s" % (password, hash_str(password))
 
-def check_secure_val(h):
-    val = h.split("|")[0]
-    if h == make_secure_val(val):
+def check_secure_val(hash_value):
+    val = hash_value.split("|")[0]
+    if hash_value == make_secure_val(val):
         return val
 
 USERNAME_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")

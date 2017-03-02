@@ -1,17 +1,16 @@
 import os
 import webapp2
 import jinja2
-import re
-# import hashlib
-# import hmac
 import json
 import time
 import logging
 
-from handlers import check_secure_val, hash_str, make_secure_val
+from utility import check_secure_val, hash_str, make_secure_val,\
+                    valid_username, valid_password, valid_email
+from models import User, Post, Likes, Comments
+
 from datetime import datetime
 from dateutil import tz
-from models import User, Post, UserPhoto, Likes, Comments
 from google.appengine.ext import ndb
 from google.appengine.api import mail
 from google.appengine.api import app_identity
@@ -24,19 +23,19 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), \
                               autoescape=True)
 
 
-USERNAME_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
-def valid_username(username):
-    return username and USERNAME_RE.match(username)
-
-
-PASS_RE = re.compile(r"^.{3,20}$")
-def valid_password(password):
-    return password and PASS_RE.match(password)
-
-
-EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
-def valid_email(email):
-    return not email or EMAIL_RE.match(email)
+# USERNAME_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
+# def valid_username(username):
+#     return username and USERNAME_RE.match(username)
+#
+#
+# PASS_RE = re.compile(r"^.{3,20}$")
+# def valid_password(password):
+#     return password and PASS_RE.match(password)
+#
+#
+# EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
+# def valid_email(email):
+#     return not email or EMAIL_RE.match(email)
 
 
 def render_str(template, **params):

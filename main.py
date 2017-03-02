@@ -8,6 +8,7 @@ import logging
 from utility import check_secure_val, hash_str, make_secure_val,\
                     valid_username, valid_password, valid_email
 from models import User, Post, UserPhoto, Likes, Comments
+from utility import showCount, filterKey
 
 from datetime import datetime
 from dateutil import tz
@@ -19,22 +20,13 @@ from google.appengine.ext import blobstore
 from google.appengine.api import images
 
 template_dir = os.path.join(os.path.dirname(__file__), 'views')
-jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), \
+jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                               autoescape=True)
 
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
-def filterKey(key):
-    return key.id()
-
-def showCount(post_key):
-    like_obj = Likes.query(Likes.post == post_key).get()
-    if like_obj:
-        return like_obj.like_count
-    else:
-        return "0"
 
 jinja_env.filters['filterKey'] = filterKey
 jinja_env.filters['showCount'] = showCount

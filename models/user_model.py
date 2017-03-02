@@ -8,3 +8,4 @@ class User(ndb.Model):
     email = ndb.StringProperty(required=True)
     password = ndb.TextProperty(indexed=True,required=True)
     location = ndb.StringProperty()
+    avatar_url = ndb.StringProperty()

@@ -7,7 +7,7 @@ import logging
 
 from utility import check_secure_val, hash_str, make_secure_val,\
                     valid_username, valid_password, valid_email
-from models import User, Post, Likes, Comments
+from models import User, Post, UserPhoto, Likes, Comments
 
 from datetime import datetime
 from dateutil import tz

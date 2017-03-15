@@ -7,3 +7,4 @@ from new_post_handler import NewPostHandler
 from edit_blog_handler import EditBlogHandler
 from delete_blog_handler import DeleteBlogHandler
 from post_page_handler import PostPageHandler
+from edit_personal_info_handler import EditPersonalInfoHandler

@@ -12,9 +12,6 @@ The Multi-User Blog site is a blogging website where people can write blogs abou
 ### <a name="author"></a>1. Authors and Contributors
 
 I, [Abhishek Ghosh](https://github.com/ghoshabhi) am the developer for this site. Also, there were major contributions from [Ian Gristoi](https://github.com/gristoi) and [Abigail Mathews](https://github.com/AbigailMathews). I thank them for their contributions to the site! 
-<br>
-<br>
-<br>
 
 ### <a name="deploy-app"></a>2. How to deploy the app ?
 
@@ -33,29 +30,48 @@ Follow the steps below to run the app :
 ### <a name="directory-structure"></a>3. Directory Structure
 
 ```
--static
-	-contains all the CSS,JS files
--templates
-	-contains all the template(.html) files
--app.yaml
--favicon.ico
--find_utf8.py
--index.yaml
--main.py
--models.py
--README.md
+|__
+   |__ static
+      |__ login.css
+      |__ styles.css
+      |__ ...
+   |__ views
+      |__ master.html
+      |__ login.html
+      |__ home.html
+      |__ 404.html
+      |__ ...
+   |__ handlers
+      |__ __init__.py
+      |__ base_handler.py
+      |__ registration_handler.py
+      |__ new_post_handler.py
+      |__ ...
+   |__ models
+      |__ __init__.py
+      |__ post.py
+      |__ user.py
+      |__ ...
+   |__ utility
+      |__ __init__.py
+      |__ ...
+   |__ app.yaml
+   |__ favicon.ico
+   |__ index.yaml
+   |__ main.py
+   |__ README.md
 ```
 
-1. **static :** This folder contains all the CSS/JS/Image files
-2. **templates :** This folder contains all the template files.
-3. **app.yaml :** Has all the app configurations
-4. **favicon.ico :** The website icon seen in the tab 
-5. **find_utf8.py :** Utility script written to remove the UTF8 characters from a file
-6. **index.yaml :** Contains index definitions
-7. **main.py :** Contains the application logic and all the handler definitions
-8. **models.py :** Contains all the model definitions 
-9. **README.md :** README file
-
+1. **static :** This folder contains all the CSS/JS/Image resources
+2. **views :** This folder contains all the template files.
+3. **models:** Contains schema definitaions for all the models
+4. **handlers:** Contains handlers to handle each individual route
+5. **utility:** Has helper functions and jinja filters
+6. **app.yaml :** Has all the app configurations
+7. **favicon.ico :** The website icon seen in the tab 
+8. **find_utf8.py :** Utility script written to remove the UTF8 characters from a file
+9. **index.yaml :** Contains index definitions
+10. **main.py :** Houses the routing configurations and runs the webapp
 
 <br><br>
 ### <a name="resources"></a> 4. Resources

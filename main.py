@@ -11,7 +11,7 @@ from models import User, Post, UserPhoto, Likes, Comments
 from utility import showCount, filterKey
 from handlers import BlogHandler, HomeHandler, LoginHandler, LogOutHandler,\
                      RegistrationHandler, NewPostHandler, EditBlogHandler, \
-                     DeleteBlogHandler, PostPageHandler
+                     DeleteBlogHandler, PostPageHandler, AboutMeHandler
 
 from datetime import datetime
 from dateutil import tz
@@ -299,12 +299,6 @@ class ChangePassHandler(BlogHandler):
 #         else:
 #             cookie_error = 'You need to log in first to edit profile!'
 #             self.render('login.html',cookie_error=cookie_error)
-
-class AboutMeHandler(BlogHandler):
-    def get(self):
-        # cookie_user = self.get_user_from_cookie()
-        # self.render('aboutus.html', user=cookie_user)
-        self.render('page_under_construction.html')
 
 class TestHandler(BlogHandler):
     def get(self):

@@ -27,9 +27,13 @@ class BlogHandler(webapp2.RequestHandler):
 
     def get_user_from_cookie(self):
         random = self.check_for_valid_cookie()
+        print "random: ", random
         if random:
-            return User.get_by_id(int(random))
+            user = User.get_by_id(int(random))
+            print "user: ", user
+            return user
         else:
+            print "None"
             return None
     def check_for_valid_cookie(self):
         random = self.request.cookies.get('random')

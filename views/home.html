@@ -105,7 +105,12 @@
                           <img src="/static/clippy.svg" alt="Copy link!" height="15px" width="15px">
                         </button>
                       </li>
-                      <li><a href="/blog/{{ l['p_id'] }}#comments"><span class="fa fa-comments"></span> {{l['c_count']}} comments</a></li>
+                      <li>
+                        <a href="/blog/{{ l['p_id'] }}#comments">
+                          <span class="fa fa-comments"></span>
+                          {{l['c_count']}} comments
+                        </a>
+                      </li>
                       {% if user.key == l['a_key'] %}
                         <li><a href="/editblog/{{ l['p_id'] }}"><span style="color:#1BC1A1" class="fa fa-edit"></span></a></li>
                         <li><a href="/deleteblog/{{ l['p_id'] }}"><span style="color:#1BC1A1" class="fa fa-trash"></span></a></li>

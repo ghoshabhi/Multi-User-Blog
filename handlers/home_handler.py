@@ -6,8 +6,10 @@ class HomeHandler(BlogHandler):
         posts = []
         cookie_user = self.get_user_from_cookie()
         if cookie_user:
+            print "cookie_user found: ", cookie_user.username
             loggedin_user = cookie_user
         else:
+            print "cookie_user not found"
             loggedin_user = None
 
         posts = Post.query(Post.is_draft == False).order(-Post.created)

@@ -59,7 +59,7 @@ Follow the steps below to run the app :
    |__ README.md
 ```
 
-1. **static :** This folder contains all the CSS/JS/Image resources
+1. **static :** This folder contains all the CSS/JS/Image resources for development process.
 2. **views :** This folder contains all the template files.
 3. **models:** Contains schema definitaions for all the models
 4. **handlers:** Contains handlers to handle each individual route
